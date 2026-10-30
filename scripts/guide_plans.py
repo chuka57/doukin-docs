@@ -75,7 +75,7 @@ def add_plan_pages(add):
         ('<a href="plan-n2.html">N2 ユーザー名</a>','メール・電話なしの通し検証待ち','新端末・管理者復旧・本番ドメイン条件'),
         ('<a href="plan-p1.html">P1 個人OAuth</a>','個人アカウントを許容','提供元の属性・RLS・復旧と停止条件'),
         ('<a href="plan-p2.html">P2 個人メール</a>','個人メールを許容','外部SMTPとドメインを含めた費用・配信'),
-        ('<a href="plan-f1.html">F1 Firebase</a>','個人の認証手段を許容','文書設計・読取数・課金なしの復元')], 'どれも未採用。用途に合わせた評価で、提供元による順位ではありません'))
+        ('<a href="plan-f1.html">F1 Firebase</a>','個人の認証手段を許容','文書設計・読取数・課金なしの復元')], 'いずれも検討用の候補。仮定した用途での評価で、提供元による順位や採用結果ではありません'))
     compare += section('plans','各案の取扱説明書をひらこう',grid(*[card(p['name'],p['intro'],p['icon'],f'plan-{p["id"]}.html',p['tag']) for p in PLANS]))
     compare += section('choose','どこから絞るとよさそう？',steps([
         ('まずN1で招待から復旧まで試す','メールなしの条件に合うN1を優先。Workers互換性・CPU・端末紛失と復旧を試し、認証周辺を３人で保守できるか確認します。'),

@@ -1,10 +1,10 @@
 # 認証・公開範囲・基盤の比較資料
 
-**検討中・未採用｜確認日：2026-10-30（日本時間）｜対象：Issue #3・#4**
+**公開用の調査・検討資料｜出典確認日：2026-10-30（日本時間）｜背景：Issue #3・#4**
 
 閲覧用の入口は[テーマ別HTML](../docs/index.html)です。このMarkdownは詳細な調査メモです。
 
-この資料は、doukinの開発・運営者が**次に試す構成と、運用開始までの作業を選ぶための技術提案**です。候補の比較に加えて推奨順序と運用初期値を示します。チームの採用決定ではありません。「確認済み」は公式文書上の確認を指し、このアプリでの実装・実機検証済みを意味しません。料金はUSD、税・為替・ドメイン取得費を含みません。
+この資料は、doukinの構成候補を比較するための公開用の調査メモです。条件付きの推奨と理由、代替案、運用を想定した例と検証観点をまとめます。**確定要件・採用結果・実際の運用体制や設定は掲載しません。**「確認済み」は出典での仕様確認を指し、このアプリでの実装・実機検証済みを意味しません。料金はUSD、税・為替・ドメイン取得費を含みません。資料の版と変更要約は[改訂履歴](../docs/history.html)を参照してください。
 
 ## 今回の推奨と運用方針
 
@@ -18,7 +18,7 @@
 | [データ](../docs/data.html#recommendation) | SQL・テキスト中心。写真はMVPで必要性を確認して追加 | 毎日の暗号化退避、日次７世代、月１回の交代復元、削除・失効の再適用 |
 | [費用](../docs/cost.html#recommendation) | 無料枠内で始め、利用制限で調整 | 毎日の確認、70%で調査、85%で対処。CPUは呼出ごとに別途実測 |
 
-招待24時間、許容損失24時間・復旧１日、退避の頻度と世代数、70%／85%は**doukin向けの提案値**です。公式の保証値や確定要件ではありません。各テーマの「次の作業と、運用開始の条件」から担当と合否を具体化します。表示用の推奨本文は `scripts/guide_decisions.py` で管理し、手順の詳細は上のHTMLに集約します。
+招待24時間、許容損失24時間・復旧１日、退避の頻度と世代数、70%／85%は**比較用の提案値**です。公式の保証値や確定要件ではありません。各テーマの「追加調査・試作の例と確認観点」で調べたい点を具体化します。表示用の推奨本文は `scripts/guide_decisions.py` で管理し、検討用の運用例は上のHTMLに集約します。
 
 今回再確認した根拠は、[Workersの実行制約](https://developers.cloudflare.com/workers/platform/limits/)、[D1の容量・Time Travel](https://developers.cloudflare.com/d1/platform/limits/)、[D1の退避・取込](https://developers.cloudflare.com/d1/best-practices/import-export-data/)、[Supabaseのバックアップ範囲](https://supabase.com/docs/guides/platform/backups)、[OWASPの認可指針](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)。推奨順位や運用目安は、これらの機能・制約と今回の条件からの設計判断です。
 
@@ -29,11 +29,11 @@
 | 目的 | 同期のトレーニング記録を共有し、筋トレの継続を後押しする。現在のREADMEとIssueを参照 |
 | 規模 | 数十人。概算の基準は30人、増加例は50人。開発者はPR #1の案では3人 |
 | アクセス | 同期だけが利用・閲覧できる仕組みを比較する。具体的な対象者の範囲は未決 |
-| 会社アカウント | **利用しない。必須条件**。会社SSO、会社メールを前提とする案は対象外 |
+| 会社アカウント | **利用しない場合を比較条件として仮定**。会社SSO、会社メールに依存しない候補を調べる |
 | 個人情報 | 個人メール以外を優先して探索する。個人メールは代替案。ニックネームやIDでも記録と結び付けば個人に関する情報になる |
 | 費用 | 原則無料。課金設定が必要な無料枠と、課金設定なしで使える無料プランを区別する |
 | 要件 | トレーニング、応援、公開範囲、体重、PWA等はPR #1の要件案。MVPはIssue #2でも相談中 |
-| 現在のGitHub | Organization所有のPrivateリポジトリ。取得時点でWiki無効、Pages無効。契約プランは今回のAPIでは未確認 |
+| GitHubの比較条件 | Organization所有のprivateリポジトリを使うケースを仮定。実際の契約・管理設定は本資料に記載しない |
 
 参照：[Issue #3](https://github.com/chuka57/doukin/issues/3)、[Issue #4](https://github.com/chuka57/doukin/issues/4)、[Issue #2](https://github.com/chuka57/doukin/issues/2)。背景の[要件案](https://github.com/chuka57/doukin/blob/d46cd222cff8051969818be0158e8cd126ce9b8d/docs/requirements.md)と[進め方案](https://github.com/chuka57/doukin/blob/d46cd222cff8051969818be0158e8cd126ce9b8d/docs/workflow.md)は、未マージのPR #1の特定コミットを参照しています。
 
@@ -214,7 +214,7 @@ HTML版では人数・記録頻度・API回数・写真の頻度／サイズ／�
 
 閲覧用の正面は[テーマ別HTMLの入口](../docs/index.html)。HTMLはテーマ別ガイドと構成別詳細に分け、共通のCSS・SVG・JavaScriptを使います。料金や復旧の重要条件は本文に残し、細かな補足と出典は折りたたみで読める設計です。
 
-資料と生成元はリポジトリの `doukin-docs` の `scripts/`・`content/`・`docs/` に置き、通常のPRでレビューします。比較資料をmainへ取り込むことと、サービスや仕様の採用は区別し、決定時には理由・不採用案・見直し条件を決定事項へ記録します。Organizationのprivate repoではGitHub FreeのDraft PRを前提にしません（[公式の対応プラン](https://docs.github.com/en/rest/pulls/pulls)）。現在の契約プランは未確認です。
+資料と生成元は `doukin-docs` の `scripts/`・`content/`・`docs/` に置き、PRで調査内容をレビューします。推奨理由・制約・代替案・追加検証をまとめ、採用結果や確定要件はここへ記録しません。変更の要約は[改訂履歴](../docs/history.html)、詳しい差分・議論は関連PRへ残します。Organizationのprivate repoに関する機能は、[公式の対応プラン](https://docs.github.com/en/rest/pulls/pulls)を比較時に確認します。
 
 共有方法は[HTMLの共有・更新ガイド](../docs/sharing.html)で比較しています。今回の共有先はPublicリポジトリのGitHub Pagesです。URLで読む場合はWorkers Static Assets＋Cloudflare Accessを候補とし、閲覧対象を別途設定してから共有します。Zero Trust Freeでも支払情報が必要です。資料用の個人GitHub認証は、全参加者向けアプリ認証の採用を意味しません。
 

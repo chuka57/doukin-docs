@@ -29,7 +29,7 @@ def make_pages(bibliography):
     def add(slug, nav, title, intro, body, icon='book', group='テーマから調べる', issue='Issue #3・#4', kicker='DOUKIN / GUIDE', related=()):
         pages[slug] = dict(nav=nav, title=title, intro=intro, body=body, icon=icon, group=group, issue=issue, kicker=kicker, related=related)
 
-    index = note('この資料で決めたいこと', 'doukinを数十人で使い始めるために、<strong>どの構成を試すか、どうデータを守り、誰が復旧と費用管理を担うか</strong>を相談する技術提案です。対象は開発・運営する３人。推奨案・理由・代替案・運用手順・開始条件を５つのテーマで説明します。')
+    index = note('この資料で調べること', 'doukinの構成候補を比較するために、<strong>推奨の理由、データ保護の方法、復旧や費用管理を想定した運用例</strong>を調査・整理します。数十人の利用・３人での保守を比較条件として仮定し、５つのテーマで追加検証の観点を説明します。確定要件や採用結果を記録する資料ではありません。')
     index += recommendation_overview()
     index += section('start', 'どこから読もう？', grid(
         card('構成案を見くらべる', '５つの組み合わせを、メール・費用・つくる負担で比較。各案の詳しい取扱説明書へ進めます。', 'map', 'compare.html', '全体を知りたい'),
@@ -41,12 +41,12 @@ def make_pages(bibliography):
         card('データ・画像・復元', 'SQL・テキスト中心・毎日の退避を推奨。DBの選び分けと復元の手順を説明します。', 'db', 'data.html', '#4'),
         card('無料枠・費用', '無料を続ける制限と監視を推奨。上限前に対処し、有料化を相談する条件を決めます。', 'cost', 'cost.html', '#4')))
     index += section('rules', '今回、忘れないこと', definition([
-        ('必須の条件', '<strong>会社アカウントは使いません。</strong>登録・ログイン・復旧・開発運用も対象です。'),
+        ('比較に置く条件', '<strong>会社アカウントを使わない場合</strong>を仮定して比較します。登録・ログイン・復旧・開発運用も対象にします。確定要件の記載ではありません。'),
         ('優先して探す方法', '個人メール以外の方法を優先。個人メールや個人OAuthは、許容できる場合の代替案として比較します。'),
         ('費用の考え方', '原則無料。月額0円と、支払情報の登録・超過課金のある無料枠を区別します。'),
         ('まだ仮定の部分', '数十人の利用・開発者約3人を想定。写真・体重・PWAなどのMVP範囲はIssue #2と相談中です。')]) + '<div class="legend"><span>公式確認：提供元の文書で確認</span><span>設計提案：今回に合わせた案</span><span>要検証：実機・本番設定で未確認</span></div>')
-    index += '<div class="buttons"><a class="button primary" href="workflow.html#actions">次の作業と担当を確認する →</a><a class="button" href="sharing.html">資料の共有・更新</a></div>'
-    add('index','はじめに','doukinを始めるための、<br>技術と運用の提案。','どの構成を選び、なぜ選ぶのか。認証・権限・基盤・データ・費用の推奨と、運用開始までの作業をまとめます。',index,'book','はじめに',kicker='DOUKIN / FIELD GUIDE 01',related=('compare','workflow','sources'))
+    index += '<div class="buttons"><a class="button primary" href="workflow.html#actions">追加調査・試作の例を見る →</a><a class="button" href="history.html">改訂履歴を見る</a></div>'
+    add('index','はじめに','doukinの技術と運用を、<br>検討するための調査ノート。','認証・権限・基盤・データ・費用を比較し、条件付きの推奨、その理由、運用例と追加検証の観点をまとめます。',index,'book','はじめに',kicker='DOUKIN / FIELD GUIDE 01',related=('compare','workflow','sources'))
 
     auth = theme_guide('auth')
     auth += section('journey','参加から復旧までの流れ',diagram([
@@ -86,7 +86,7 @@ def make_pages(bibliography):
         '会員B：Aが共有した記録だけ見える。非公開の体重は直接APIを呼んでも読めない。',
         '未承認の人：ログインできても、共有データは読めない。',
         '失効済みの人：手元に古いCookieやJWTがあっても、決めた時間内に読めなくなる。') + details('PWAと画像も忘れずに','<p>端末に体重・認証情報・他人の記録を安易に永続キャッシュしない方針です。ログアウト後の表示、共有端末、オフラインの残存を確認。非公開の画像には認可付き配信や短い期限のURLを使い、公開バケットへ置かない設計を検討します。</p>'))
-    add('privacy','公開範囲・権限','何を共有し、<br>どこで権限を守る？','初期非公開と明示共有を推奨する理由、API・DBの実装方針、退会時の失効と運用開始の条件です。',privacy,'shield',issue='Issue #3',kicker='02 / PRIVACY',related=('auth','data','workflow'))
+    add('privacy','公開範囲・権限','何を共有し、<br>どこで権限を守る？','初期非公開と明示共有を推奨する理由、API・DBの設計案、退会時の失効を検証する観点です。',privacy,'shield',issue='Issue #3',kicker='02 / PRIVACY',related=('auth','data','workflow'))
 
     platform = theme_guide('platform')
     platform += section('roles','アプリをつくる４つの部品',diagram([
@@ -139,22 +139,22 @@ def make_pages(bibliography):
 
 
 def add_workflow_and_sharing(add):
-    workflow = note('次は、N1の通し試作と運用手順を作ります。','５テーマの推奨を試せる形にする作業案です。最初に下の担当を３人で割り振り、招待・記録・失効・復旧・DB復元まで通します。<strong>合格後に採用を相談し、不合格なら理由を残して代替案へ進みます。</strong>')
-    workflow += section('actions', '次の作業・担当・成果物', table(['担当する役割', '先に作るもの', '判断に使う条件'], [
+    workflow = note('N1を優先して検証する場合の調査案。','５テーマの推奨を比較できる形にするため、招待・記録・失効・復旧・DB復元をつなぐ試作を例にします。下の役割や成果物は分担を考える材料です。<strong>実施予定、実際の担当者、採用結果は記載しません。</strong>')
+    workflow += section('actions', '追加調査・試作で整理したいもの', table(['役割の例', '検証用に作るものの例', '比較の観点'], [
         ('認証・権限担当／代行１人', '<a href="auth.html#next">N1の通し試作</a>と<a href="privacy.html#next">４者の権限テスト</a>。#3へ結果を記録。', 'スマホ２種で復旧、旧セッションの失効、非公開データの拒否。'),
         ('基盤・データ担当／代行１人', '<a href="platform.html#next">本番・検証の分離</a>と<a href="data.html#next">毎日の退避・復元手順</a>。#4へ結果を記録。', '再現可能なビルド、代行者による復元、削除・失効の再適用。'),
-        ('運用担当／代行１人', '<a href="cost.html#next">費用台帳・監視と制限の対応表</a>。認証の本人確認と復旧手順を別担当と試す。', '毎日の確認先、70%／85%時の操作、予算と有料化の判断者が明確。')], '役割は兼任可能。担当者名・代行者・期限をIssue #3／#4で割り当てる提案です')
+        ('運用担当／代行１人', '<a href="cost.html#next">費用項目・監視と制限の対応例</a>。認証の本人確認と復旧を交代で試す。', '確認する指標、70%／85%時の対応例、有料化を比較する条件。')], '３人で分担する場合を仮定した役割例です。実際の担当者名・期限・予算は記載しません')
         + '<p>試作を始める前に相談するのは、記録の初期非公開、写真を後にする案、管理者復旧を２人で担えるか、バックアップ先と許容損失24時間／復旧１日の目標です。個人OAuthを代替として許容するかも確認します。未合意の項目はダミーデータで検証し、実会員の運用へ持ち込みません。</p>')
     workflow += section('order','進める順序は、この４歩',steps([
-        ('前提を合わせる','誰を招待するか、体重と記録の公開範囲、メール不要の意味、無料の定義を相談。会社アカウント不使用は必須条件として固定します。'),
-        ('N1で小さく通す','上の役割を分担し、招待・記録・権限・失効・復旧・バックアップ復元までつなげます。各テーマの運用開始条件で合否を記録します。'),
+        ('比較条件を置く','参加者の範囲、体重と記録の公開範囲、メール不要の意味、無料の定義を仮定します。会社アカウント不使用も比較の条件として扱い、確定要件とは表現しません。'),
+        ('N1を試作の例にする','招待・記録・権限・失効・復旧・バックアップ復元をつなぐ検証例を整理します。各テーマの確認観点から、測定項目を揃える案です。'),
         ('不合格の条件で代替を選ぶ','認証保守が難しく個人OAuthを許容できればP1、メールなしを維持するならN2の成立条件を確認。無料枠に収まらなければ機能範囲か予算を相談します。'),
-        ('判断を残す','選んだ理由、見送った理由、残る制約、見直す条件を決定事項として記録。比較資料を共有するPRと、技術採用の判断は区別します。')]))
+        ('調査の要点を残す','推奨の理由、候補ごとの制約、代替案、追加検証の観点をまとめます。採用の判断や確定した要件は、この公開資料へ転記しません。')]))
     workflow += section('issues','Sub-issueは、必要な単位で分けよう',table(['親Issue','子の作業案','分ける目的'],[
         ('<a href="https://github.com/chuka57/doukin/issues/3">#3 認証・公開範囲</a>','A：前提・権限<br>B：メールなし認証・復旧','誰を参加させ、どう本人とデータを守るか。'),
         ('<a href="https://github.com/chuka57/doukin/issues/4">#4 基盤・費用</a>','C：配信・開発環境<br>D：DB・画像・復元<br>E：全体の小さな試作','無料条件を満たし、運用まで続けられるか。'),
         ('<a href="https://github.com/chuka57/doukin/issues/2">#2 MVP</a>','写真・体重・PWA等の範囲を相談','A/Dへ前提を共有。#3/#4でMVPを決め直さない。')], 'A〜Eは相談用のラベル。まだ実際のIssue番号ではありません') + '<p>#3と#4は同じ階層に残します。横断するEは親を#4、関連先を#3にする案。親子関係と、「どの結果を待つか」の依存関係は分けて表そう。</p>'+ref('S55','S56') +
-        details('A：参加資格・公開範囲を整理する',definition([('親 / 関連','#3 / #2、B、D、E'),('調べること','同期の範囲、承認者、私的な招待経路、離脱、復旧の本人確認、権限表。メール不要がアプリ入力だけか、認証基盤の保有までかも確認。'),('完了の目安','必須条件・提案・未決事項を区別した権限表ができ、BとDが同じ前提で比較できる。')])) +
+        details('A：参加資格・公開範囲を整理する',definition([('親 / 関連','#3 / #2、B、D、E'),('調べること','同期の範囲、承認者、私的な招待経路、離脱、復旧の本人確認、権限表。メール不要がアプリ入力だけか、認証基盤の保有までかも確認。'),('完了の目安','比較の仮定・提案・追加検証の点を区別した権限表ができ、BとDが同じ前提で比較できる。')])) +
         details('B：メールなし認証・復旧を検証する',definition([('親 / 関連','#3 / A、C、E'),('調べること','最初にN1のWorkers互換性・紛失復旧を試す。失敗時は条件に応じてN2の登録・Device Trust・管理者復旧、またはP1の個人OAuthを確認。'),('完了の目安','招待・登録・新端末・失効・復旧・保存属性・費用を説明できる。実測結果と不合格の理由から、試作を継続する案か代替案を決められる。')])) +
         details('C：ホスティング・共同開発の条件を確認する',definition([('親 / 関連','#4 / B、D、E'),('調べること','Workers/Pages/Firebase/Vercel、React/ViteとNext.jsの違い、org private Git連携、３人の管理権限、CPUとビルド枠。'),('完了の目安','現在のGitHub構成を維持できる候補と、費用や運用が変わる候補が分かる。プレビューと本番データを分離できる。')])) +
         details('D：DB・画像・バックアップを比較する',definition([('親 / 関連','#4 / #2、A、C、E'),('調べること','30/50人のテキストと写真、走査/文書読取、認可、復元、退会と再削除、保管先、無料プランと従量課金の違い。'),('完了の目安','仮定と式、上限、運用で補うことが整理され、画像とバックアップを含めた継続条件を説明できる。')])) +
@@ -169,10 +169,10 @@ def add_workflow_and_sharing(add):
     workflow += section('record','議論を、あとからたどれるように',definition([
         ('Issueのコメント','質問、追加調査、試作結果、判断の要点。該当ページや変更PRへリンク。'),
         ('HTML資料','最新版の比較、前提、出典、未解決事項。リポジトリ内で更新し、PRでレビュー。'),
-        ('決定事項','合意した内容、理由、不採用案、残る制約、再検討条件。比較ページと判断したIssue/PRへリンク。')]) + '<p>親#3・#4の現在の目的は、比較結果と未解決事項を共有すること。採用が未決でも、次の判断と作業が明確なら調査を区切れます。最初からA〜Eすべてを起票する必要はありません。</p>')
-    add('workflow','検討の進め方','一緒に決めるための、<br>小さな手順書。','Issue #3・#4をつなぎながら、調査・試作・合意を進めるための案です。',workflow,'steps','相談と資料のこと',kicker='WORKFLOW / DISCUSS',related=('compare','privacy','sharing'))
+        ('改訂履歴','この資料で何を調べ直し、何を追記したかの短い要約。詳しい差分・レビューは関連PRから辿ります。確定事項や採用の議事録は載せません。')]) + '<p>ここでは比較結果と追加検証の観点を共有します。実際の採用結果・確定要件・運用体制の記録は、このリポジトリの対象外です。</p>')
+    add('workflow','検討の進め方','調査と試作を、<br>どう整理する？','Issue #3・#4を背景にした調査項目・役割例・検証の進め方を整理します。実施予定や採用結果の記録ではありません。',workflow,'steps','相談と資料のこと',kicker='WORKFLOW / DISCUSS',related=('compare','privacy','history'))
 
-    sharing = note('管理はGitHub、読むときはHTML。','ソースと変更履歴はリポジトリに置き、Issueからテーマ別ページへリンクする形を提案します。検討中の資料も、<strong>docs/research配下で「未採用」と明示すれば管理できます。</strong>')
+    sharing = note('公開するのは、調査と検討の材料。','原稿と変更履歴はこのリポジトリで管理します。<strong>アプリの確定事項や採用結果は掲載しません。</strong>資料の版と変更要約は<a href="history.html">改訂履歴</a>から、詳細な差分・レビューは関連PRから確認できます。')
     sharing += section('choices','２つの共有方法から選べるよ',grid(
         card('GitHub Pagesで読む','PublicリポジトリからHTMLを配信する方法。GitHub内で資料を更新し、同じURLから最新版を読めます。資料とソースは一般公開になります。','book','https://chuka57.github.io/doukin-docs/','今回の配信方法'),
         card('URLで読む：認証付き配信','Workers Static Assets＋Cloudflare Accessを候補に。スマホから読みやすく、更新先を１つにできます。設定・支払情報・ログイン連携が必要です。','cloud','sharing.html#web','未設定の候補')) + '<p>GitHubの通常ファイル画面ではHTMLはソース表示になります。Wikiも任意のCSS/JavaScriptを使うサイトの配信先にはなりません。HTML本体と共通assetsをセットで扱おう。</p>'+ref('S45','S44'))
@@ -189,7 +189,7 @@ def add_workflow_and_sharing(add):
         ('Wiki','Markdown等の文書を整理する。','private Wikiには対応プランが必要。公開範囲はrepoに従い、リンク限定やページ別ACLはない。'+ref('S44')),
         ('GitHub Pages','HTMLサイトを配信する。','private repoだからサイトもprivateとは限らない。組織サイトの非公開配信にはEnterprise Cloudの条件。'+ref('S46'))], 'GitHub上での管理と、HTMLの配信を分けて考える'))
     sharing += section('updates','更新するときの、お約束',steps([
-        ('調査資料を更新する','テーマ別の原稿と公式出典を更新。確認日、未検証事項、変更理由を残してHTMLを生成します。'),
+        ('調査資料を更新する','テーマ別原稿と、content/revisions.jsonの版・改訂日・短い変更要約・PR番号を更新し、HTMLを生成します。出典確認日は実際に再確認した場合だけ更新。採用結果・確定要件は転記しません。'),
         ('PRでレビューする','料金・上限は公式情報を再確認。別モデルのレビューも補助にし、最後は根拠と実機検証で判断します。'),
         ('入口を一定に保つ','index.htmlとテーマのURLを維持し、Issueから該当ページへリンク。複数の場所に本文をコピーして手動更新しない方針です。')]))
     add('sharing','資料の共有・更新','読みやすいまま、<br>みんなに届けよう。','GitHubで管理しながら、HTMLをブラウザで読めるようにする方法と、更新のルール案です。',sharing,'share','相談と資料のこと',issue='資料の共有方法',kicker='SHARING / HANDBOOK',related=('index','workflow','sources'))
@@ -198,7 +198,7 @@ def add_workflow_and_sharing(add):
 def add_sources(add, bibliography):
     body = note('根拠と、まだ確かめていないことを残そう。','料金・機能は提供元の公式文書を優先。設計の考え方はOWASP等の専門ガイドも参照しています。<strong>公式確認は、今回のアプリで動作確認済みという意味ではありません。</strong>')
     body += section('reading','この資料の読み方',definition([
-        ('確認日','2026-10-30（日本時間）。料金はUSD、税・為替・ドメイン費は別。サービスの情報は採用・設定時にも再確認します。'),
+        ('確認日','2026-10-30（日本時間）。料金はUSD、税・為替・ドメイン費は別。サービスの情報は比較に使う時点でも再確認します。'),
         ('公式確認','公式の料金・制限・機能説明に記載がある事項。提供元の記述が分かれる場合は、そのまま条件と不確実さを記載します。'),
         ('設計提案','今回の用途と条件に合わせた判断。N1を先に試す順序、初期非公開、招待24時間、日次７世代の退避、許容損失24時間／復旧１日、70%／85%の対応目安も提案です。サービスの仕様・保証値やチームの合意事項ではありません。'),
         ('要検証','組み合わせの実動作、本番契約の画面、端末や負荷など。ベンダーの説明やモデルのレビューだけでは確認済みにしません。')]))
@@ -220,7 +220,7 @@ def add_sources(add, bibliography):
         ('GB / GiB','十進と二進の容量単位。概算はMB/GB、Firestoreの公式枠はGiB表記を維持しています。'),
         ('SMTP / DNS','SMTPはメールを送る仕組み。DNSはドメインの接続先などを管理する設定。送信ドメインの確認にも使います。'),
         ('PITR / Time Travel','ある時点へデータを戻す仕組み。対象期間・プラン・戻せるデータはサービスごとに異なります。'),
-        ('PWA / SSR','PWAはWebアプリをインストール等に対応させる仕組み。SSRはサーバーで画面のHTMLを生成する方式。どちらも今回の必須条件とはまだ決まっていません。')]))
+        ('PWA / SSR','PWAはWebアプリをインストール等に対応させる仕組み。SSRはサーバーで画面のHTMLを生成する方式。本資料では利用する場合・省く場合を比較し、要件の確定状況は記載しません。')]))
     groups = {'認証と権限':[], 'Cloudflare':[], 'Supabase':[], 'Firebase':[], 'GitHub・Vercel':[]}
     for key, (title, url, claim) in sorted(bibliography.items()):
         if any(s in url for s in ['clerk.com','simplewebauthn','better-auth','owasp']): group = '認証と権限'
@@ -230,5 +230,5 @@ def add_sources(add, bibliography):
         else: group = 'GitHub・Vercel'
         groups[group].append(f'<li id="source-{key}"><a href="{escape(url, quote=True)}">{key} · {escape(title)} ↗</a><small>{escape(claim)}</small></li>')
     body += section('bibliography','一次情報の一覧', '<p>各ページのS番号から、そのページで使った出典を直接ひらけます。こちらは一覧です。</p>' + ''.join(details(f'{group}（{len(items)}件）','<ul class="source-index">'+''.join(items)+'</ul>') for group, items in groups.items()))
-    body += section('context','今回の背景と、確認の範囲', '<p>目的と調査範囲は<a href="https://github.com/chuka57/doukin/issues/3">Issue #3</a>・<a href="https://github.com/chuka57/doukin/issues/4">#4</a>、MVPは<a href="https://github.com/chuka57/doukin/issues/2">#2</a>を参照しています。開発者３人・要件・運用の背景は、未マージの<a href="https://github.com/chuka57/doukin/blob/d46cd222cff8051969818be0158e8cd126ce9b8d/docs/requirements.md">PR #1の要件案（特定コミット）</a>も参照。確定仕様とは扱っていません。</p><p>確認できている作業は、文書調査とHTML資料の制作。サービスの採用・契約・デプロイ・Issueの起票や投稿は実施していません。</p>')
+    body += section('context','今回の背景と、確認の範囲', '<p>目的と調査範囲は<a href="https://github.com/chuka57/doukin/issues/3">Issue #3</a>・<a href="https://github.com/chuka57/doukin/issues/4">#4</a>、MVPは<a href="https://github.com/chuka57/doukin/issues/2">#2</a>を参照しています。開発者３人・要件・運用の背景は、背景資料の<a href="https://github.com/chuka57/doukin/blob/d46cd222cff8051969818be0158e8cd126ce9b8d/docs/requirements.md">PR #1の要件案（特定コミット）</a>も参照。本資料には確定仕様として転記しません。</p><p>ここにまとめるのは文書調査と検証の観点です。アプリの採用・契約・本番設定や実施状況は、本資料には記載しません。</p>')
     add('sources','出典・用語・レビュー','確かめたことを、<br>たどれる形に。','出典、言葉の意味、レビューで見直した点を、ひとつの場所にまとめています。',body,'book','相談と資料のこと',issue='調査の根拠',kicker='REFERENCE / SOURCES',related=('compare','workflow','index'))
