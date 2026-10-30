@@ -71,4 +71,50 @@ python scripts/build_html.py
 - `scripts/`：HTMLを生成するPython。Pagesでは実行しません。
 - `content/`：調査メモと出典。
 
-Settings → PagesでDeploy from a branch、main、/docsを選択します。生成後のHTMLも同じPRに含めます。
+生成後のHTMLも同じPRに含めます。公開は以下のActionsフローで行います。
+
+## PRプレビューと正式版の自動公開
+
+AIには、同じリポジトリ内のブランチで修正し、原稿と生成HTMLをまとめてPRにするよう依頼します。PRのチェックが成功すると、公開後に自動コメントへプレビューURLが表示されます。修正をpushすると同じURLが更新され、マージまたはクローズするとプレビューを削除します。
+
+| 処理 | 担当するファイル |
+| --- | --- |
+| PR・mainの生成、リンクとID、生成漏れ、公開処理のテスト | `.github/workflows/docs-build.yml` |
+| 成功したPRビルドの公開、mainの正式版更新、終了したPRの削除 | `.github/workflows/docs-publish.yml` |
+| 静的ファイルの検査 | `scripts/check_html.py` |
+| プレビューの保存・組立、公開後のコメント更新 | `scripts/publish_pages.py` |
+| 古いビルド・複数PR・削除・アーカイブ境界等のテスト | `tests/test_pages.py` |
+
+正式版のURLは [https://chuka57.github.io/doukin-docs/](https://chuka57.github.io/doukin-docs/) のままです。PR #2ならプレビューは `https://chuka57.github.io/doukin-docs/pr-preview/pr-2/` になります。プレビューも一般公開です。フォークからのPRはチェックのみ行い、プレビューは公開しません。
+
+### 初回だけ必要な設定
+
+このフローをmainへマージしてから、管理権限のある人が次を行います。
+
+1. **Settings → Pages → Build and deployment → Source** を **GitHub Actions** に変更します。`gh-pages` を公開元として指定する方式ではありません。
+2. **Settings → Environments → github-pages** で、デプロイを許可するブランチを **main** にします。毎回の手動承認を不要にする場合はRequired reviewersを設定しません。
+3. **Actions → Publish docs and PR previews → Run workflow → main** で初回公開します。設定変更前に公開ジョブが失敗していた場合も、この操作で再実行できます。
+4. 既存のPRは、そのブランチに変更をpushするか **Docs build** の実行を再実行して、ビルド完了後のプレビューコメントを確認します。導入前に作成されたPRでビルド実行自体がなければ、空コミットでも起動できます。
+
+組織でActionsを制限している場合は、使用している公式 `actions/*` を許可し、ワークフローで宣言した権限を使えることを確認します。権限はジョブごとに指定し、個人アクセストークンや追加シークレットは不要です。設定はこのPRの作成だけでは切り替わりません。
+
+### 普段の操作と、失敗したとき
+
+- 原稿を変更したら `python scripts/build_html.py` を実行し、生成HTMLもコミットします。CIでは生成し直した結果との差分をチェックするので、原稿だけの更新は失敗します。
+- PRコメントのURLは同じままで、対象PRコミットをコメントに記載します。プレビューはチェック時のmainとのマージ結果です。ビルドに失敗した場合は最後に公開できた版が残るため、対象コミットと最新チェックの結果を確認します。
+- ビルド失敗は **Docs build**、公開・コメント失敗は **Publish docs and PR previews** のログを確認し、修正後にpushするか失敗した実行を再実行します。コメントはPagesの公開成功後に更新します。
+- 一時障害後の全体再公開・クローズ済みプレビューの再整理は **Publish docs and PR previews → Run workflow → main** で行えます。コメント更新だけが失敗した場合は、該当実行の失敗ジョブを再実行します。
+- `gh-pages` は生成済みサイトとプレビューの保存専用ブランチで、自動作成します。直接編集・削除しません。正式版は毎回mainから生成し、開いている他のPRのプレビューを保存したまま一括配信します。公開処理は同時実行を直列化します。
+- PRのビルド成果物は７日で期限切れになりますが、公開済みプレビューは `gh-pages` に残るため期限では消えません。未公開のまま７日経過した場合はDocs buildを再実行します。PRを閉じると保存済みプレビューも削除します。
+- 公開側はmainのコードだけを実行します。PRのPythonは読取専用のビルドで実行し、公開側は成果物を静的ファイルとして検査・配置します。PR側へ書込トークンや本番のシークレットは渡しません。
+
+ローカル確認はPython 3の標準ライブラリだけで実行できます。
+
+```sh
+python -m unittest discover -s tests -v
+python scripts/build_html.py
+python scripts/check_html.py docs
+git diff --exit-code -- docs
+```
+
+公式ActionはコミットSHAで固定しています。更新はSHAとバージョンコメントを同じPRで変更し、チェック・公開・クローズ削除を確認します。[Pagesの公開設定](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)と[公式deploy-pages](https://github.com/actions/deploy-pages)も参照してください。
