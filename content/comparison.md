@@ -2,7 +2,7 @@
 
 **検討中・未採用｜確認日：2026-10-30（日本時間）｜対象：Issue #3・#4**
 
-閲覧用の入口は[テーマ別HTML](index.html)です。このMarkdownは詳細な調査メモです。
+閲覧用の入口は[テーマ別HTML](../docs/index.html)です。このMarkdownは詳細な調査メモです。
 
 この資料は採用案の決定ではなく、候補・制約・追加検証を同じ基準で相談するためのものです。「確認済み」は公式文書上の確認を指し、このアプリでの実装・実機検証済みを意味しません。料金はUSD、税・為替・ドメイン取得費を含みません。
 
@@ -196,15 +196,15 @@ HTML版では人数・記録頻度・API回数・写真の頻度／サイズ／�
 
 ## 9. 資料をどこに置くか
 
-閲覧用の正面は[テーマ別HTMLの入口](index.html)。HTMLはテーマ別ガイドと構成別詳細に分け、共通のCSS・SVG・JavaScriptを使います。料金や復旧の重要条件は本文に残し、細かな補足と出典は折りたたみで読める設計です。
+閲覧用の正面は[テーマ別HTMLの入口](../docs/index.html)。HTMLはテーマ別ガイドと構成別詳細に分け、共通のCSS・SVG・JavaScriptを使います。料金や復旧の重要条件は本文に残し、細かな補足と出典は折りたたみで読める設計です。
 
-資料と生成元はリポジトリの `docs/research/issue-3-4/` に置き、通常のPRでレビューします。比較資料をmainへ取り込むことと、サービスや仕様の採用は区別し、決定時には理由・不採用案・見直し条件を決定事項へ記録します。Organizationのprivate repoではGitHub FreeのDraft PRを前提にしません（[公式の対応プラン](https://docs.github.com/en/rest/pulls/pulls)）。現在の契約プランは未確認です。
+資料と生成元はリポジトリの `doukin-docs` の `scripts/`・`content/`・`docs/` に置き、通常のPRでレビューします。比較資料をmainへ取り込むことと、サービスや仕様の採用は区別し、決定時には理由・不採用案・見直し条件を決定事項へ記録します。Organizationのprivate repoではGitHub FreeのDraft PRを前提にしません（[公式の対応プラン](https://docs.github.com/en/rest/pulls/pulls)）。現在の契約プランは未確認です。
 
-共有方法は[HTMLの共有・更新ガイド](sharing.html)で比較しています。今回の共有先はPublicリポジトリのGitHub Pagesです。URLで読む場合はWorkers Static Assets＋Cloudflare Accessを候補とし、閲覧対象を別途設定してから共有します。Zero Trust Freeでも支払情報が必要です。資料用の個人GitHub認証は、全参加者向けアプリ認証の採用を意味しません。
+共有方法は[HTMLの共有・更新ガイド](../docs/sharing.html)で比較しています。今回の共有先はPublicリポジトリのGitHub Pagesです。URLで読む場合はWorkers Static Assets＋Cloudflare Accessを候補とし、閲覧対象を別途設定してから共有します。Zero Trust Freeでも支払情報が必要です。資料用の個人GitHub認証は、全参加者向けアプリ認証の採用を意味しません。
 
 Wikiは任意のCSS/JavaScriptを含むHTMLのホストにはならず、private Wikiには対応プランが必要。Pagesもprivate repoの権限がそのままサイトの公開範囲になるとは限りません。[S44][s44] [S45][s45] [S46][s46]
 
-Issueには質問・調査の補足・試作結果・判断の要点を残し、本文の最新版は該当HTMLへリンクします。分割案は[進め方のHTML](workflow.html)と[起票用の詳細メモ](issue-plan.md)を参照。Issue作成・投稿・設定変更・デプロイは未実施です。
+Issueには質問・調査の補足・試作結果・判断の要点を残し、本文の最新版は該当HTMLへリンクします。分割案は[進め方のHTML](../docs/workflow.html)と[起票用の詳細メモ](issue-plan.md)を参照。Issue作成・投稿・設定変更・デプロイは未実施です。
 
 ## 10. 採用前に残る確認
 
@@ -323,7 +323,7 @@ Issueには質問・調査の補足・試作結果・判断の要点を残し、
 
 ## HTML再構成時のレビュー追記
 
-2026-10-30 JSTに別モデルの独立レビューを行い、Clerkの新端末・統合登録フロー、Supabaseの容量制御、支払情報の条件を再確認しました。反映内容と追加の一次情報は[出典・レビュー](sources.html#review)に記載しています。
+2026-10-30 JSTに別モデルの独立レビューを行い、Clerkの新端末・統合登録フロー、Supabaseの容量制御、支払情報の条件を再確認しました。反映内容と追加の一次情報は[出典・レビュー](../docs/sources.html#review)に記載しています。
 
 - ClerkのDevice Trust：[公式](https://clerk.com/docs/guides/secure/mfa-recovery)。メール・電話なしの新端末利用は要検証。
 - Clerkの統合登録フロー：[公式](https://clerk.com/docs/guides/development/custom-flows/authentication/sign-in-or-up)。ユーザー名のみのsign-in-or-upには未対応。

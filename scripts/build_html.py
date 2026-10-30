@@ -7,12 +7,13 @@ import re
 from guide_content import make_pages, EXTRA_SOURCES
 from guide_ui import icon
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
+OUTPUT = ROOT / 'docs'
 DATE = '2026-10-30'
 
 
 def sources():
-    text = (ROOT / 'comparison.md').read_text(encoding='utf-8')
+    text = (ROOT / 'content' / 'comparison.md').read_text(encoding='utf-8')
     urls = dict(re.findall(r'^\[(s\d+)\]: (https?://\S+)', text, re.M))
     rows = re.findall(r'^\| (S\d+) \| \[([^\]]+)\]\[s\d+\] \| ([^|]+) \|', text, re.M)
     result = {key: (title, urls[key.lower()], claim.strip()) for key, title, claim in rows}
@@ -61,10 +62,11 @@ def render(slug, page, pages, bibliography):
 
 
 def main():
+    OUTPUT.mkdir(parents=True, exist_ok=True)
     bibliography = sources()
     pages = make_pages(bibliography)
     for slug, page in pages.items():
-        (ROOT / f'{slug}.html').write_text(render(slug, page, pages, bibliography), encoding='utf-8')
+        (OUTPUT / f'{slug}.html').write_text(render(slug, page, pages, bibliography), encoding='utf-8')
     print(f'Built {len(pages)} HTML pages.')
 
 
