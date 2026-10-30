@@ -1,5 +1,6 @@
 """Five candidate assemblies, described with the same reviewable structure."""
 from guide_ui import section, note, card, grid, bullets, steps, details, table, diagram, definition, ref
+from guide_decisions import selection_path
 
 
 PLANS = [
@@ -14,7 +15,7 @@ PLANS = [
   budget='Workers Freeの動的10万回/日・CPU 10ms、D1の１DB 500MB・読取500万行/日・書込10万行/日が基準。写真や課金機能は初期構成に含めない案です。'+ref('S20','S24','S25'),
   gotcha='パスキーはRP IDとドメインの設計が大切。後からログイン用ドメインを変えると影響が出るため、試作と本番の境界を先に決めよう。'+ref('S01'),
   checks=['採用するライブラリの固定バージョンで、登録と検証がWorkers上で動く。Node互換フラグだけで対応済みと見なさない。','CPU 10ms内で安定するか実測。収まらなければ実行先や費用を見直す。','challengeを短期・単回にし、origin・RP ID・本人の識別・必要なユーザー検証を確認する。','CookieのSecure/HttpOnly/SameSite等と変更操作のCSRF対策、会員失効、招待の同時引換を確認。','iOS Safari／Android Chrome、新端末、全認証手段の紛失、管理者不在時の復旧を実際に試す。'],
-  next='復旧の運営負担を担えるなら優先試作。難しい場合はN2の管理型認証、個人アカウントが許容されるならP1と比較します。', related=('auth','plan-n2','cost')),
+  next='メールをアプリで持たない条件に合うため、最初の試作に推奨。認証・復旧を保守できなければ、個人OAuthを許容できる場合のP1を第一代替に。メールなしを維持するならN2の本番成立を検証します。', related=('auth','plan-p1','cost')),
  dict(id='n2', name='N2 ユーザー名', title='ユーザー名で入って、<br>認証をサービスに任せる案。', icon='person', tag='メールなし成立を要検証',
   intro='React＋Vite / Workers＋Hono / D1 / Clerk。認証の保守を減らす候補ですが、メール・電話なしの利用が最後まで通るかを確かめます。',
   verdict='Clerkのユーザー名対応は公式で確認。<strong>メール・電話なしの登録、新端末、招待、復旧が、無料の本番環境で成立するかは未検証です。</strong>'+ref('S03','S04'),
@@ -38,7 +39,7 @@ PLANS = [
   budget='Supabase FreeはDB500MB、50,000 MAU、ファイル1GB、非キャッシュ５GB＋キャッシュ５GB/月。静的画面はWorkers Static Assets。標準URL利用なら独自ドメイン購入を必須にしない案です。'+ref('S26','S27','S19'),
   gotcha='JWTはサインアウト後も期限まで使えるので、会員状態をRLS等で参照して失効を反映。Freeのバックアップと、非活動１週間の停止条件も含めて検討しよう。'+ref('S15','S26','S43'),
   checks=['個人OAuthを参加条件にすることと、保存される属性を合意できる。会社アカウントに依存しない。','提供元ごとの設定、同意、リダイレクト、スマホ・PWA、新端末で通し動作を確認。','新規・未承認・失効済みをRLSで拒否し、利用者自身が会員状態を変更できない。','元の個人アカウントを失った場合に、他人に履歴を渡さず復旧できる。','DBと画像を分けて退避・復元でき、Freeの停止を許容できる。'],
-  next='個人アカウントと属性の扱いを許容できる場合の有力な比較対象。メール保有を避ける条件が強ければN1/N2を優先します。',related=('auth','plan-p2','privacy')),
+  next='N1の認証保守を担えず、個人アカウントと属性の扱いを許容できる場合の第一代替。招待・RLS・失効・復元まで通して採用を相談します。メール保有を避ける条件を維持するならN1/N2を検証します。',related=('auth','plan-p2','privacy')),
  dict(id='p2', name='P2 個人メール', title='メールのコードやリンクで、<br>ログインする案。', icon='mail', tag='個人メールを許容する場合',
   intro='React＋Vite / Workers Static Assets / Supabase Auth＋Postgres＋RLS / 外部SMTP。メールをログインと復旧の入口にする代替案です。',
   verdict='個人メールを使える場合の代替案。<strong>Supabase標準SMTPは、参加者向けの本番配信には使えません。</strong>メール配信サービスを含めて選びます。'+ref('S29'),
@@ -67,7 +68,8 @@ PLANS = [
 
 
 def add_plan_pages(add):
-    compare = note('候補は５つ。いまは、選ぶための比較です。','会社アカウントを使わない条件は共通。まずメールなしのN1・N2の成立条件を調べ、個人の認証手段を許容する場合の代替案と比較しよう。<strong>順位や点数は、まだ実測していません。</strong>')
+    compare = note('推奨：N1を先に試し、運用負担が合わなければP1へ。','メールを持たない条件に合わせ、個別招待＋パスキーを最初の試作に推奨します。個人アカウントを許容できる場合の第一代替はP1。<strong>これは設計上の推奨で、実測結果や本番採用の決定ではありません。</strong>')
+    compare += section('recommendation', '推奨する順序と、選び直す条件', selection_path())
     compare += section('overview','選び分けの早見表',table(['案','認証の条件','大きな判断ポイント'],[
         ('<a href="plan-n1.html">N1 パスキー</a>','メール不要に設計可能','認証周辺と復旧を自分たちで保守できるか'),
         ('<a href="plan-n2.html">N2 ユーザー名</a>','メール・電話なしの通し検証待ち','新端末・管理者復旧・本番ドメイン条件'),
@@ -76,9 +78,9 @@ def add_plan_pages(add):
         ('<a href="plan-f1.html">F1 Firebase</a>','個人の認証手段を許容','文書設計・読取数・課金なしの復元')], 'どれも未採用。用途に合わせた評価で、提供元による順位ではありません'))
     compare += section('plans','各案の取扱説明書をひらこう',grid(*[card(p['name'],p['intro'],p['icon'],f'plan-{p["id"]}.html',p['tag']) for p in PLANS]))
     compare += section('choose','どこから絞るとよさそう？',steps([
-        ('メールなしを優先するなら','N1のパスキーと復旧、N2のメール・電話なしの本番利用を試します。成立しない条件があれば、先に明らかにしよう。'),
+        ('まずN1で招待から復旧まで試す','メールなしの条件に合うN1を優先。Workers互換性・CPU・端末紛失と復旧を試し、認証周辺を３人で保守できるか確認します。'),
         ('運営の負担も同じ表に置く','初期実装だけでなく、端末紛失・退会・復元・上限到達時の対応を３人で続けられるか比較します。'),
-        ('代替案と合わせて１〜２案に絞る','個人OAuth／個人メールを許容する場合のP1/P2、文書DBのF1も比較。招待から復旧までを小さく通してから採用を相談します。')]) + note('資料の配信先と、アプリの技術選定は別だよ','このHTMLをCloudflareで共有しても、doukin本体をCloudflare構成に決める意味にはなりません。資料用のログインを、全参加者のアプリ認証条件にも引き継ぎません。'))
+        ('不合格なら条件に合う代替へ進む','保守負担が合わず個人OAuthを許容できればP1。メールなしを維持するならN2の成立条件を検証。どちらも合わなければ要件・予算を再相談し、未確認のまま本番へ進みません。')]) + note('資料の配信先と、アプリの技術選定は別だよ','このHTMLをCloudflareで共有しても、doukin本体をCloudflare構成に決める意味にはなりません。資料用のログインを、全参加者のアプリ認証条件にも引き継ぎません。'))
     add('compare','構成案を見くらべる','５つの組み合わせを、<br>同じものさしで。','認証だけ、DBだけでは決めにくいところを、アプリ全体の組み合わせとして整理します。',compare,'map','はじめに',kicker='ASSEMBLY / COMPARE',related=('auth','cost','workflow'))
     for p in PLANS:
         body = note(p['tag'],p['verdict'])

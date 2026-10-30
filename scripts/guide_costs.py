@@ -1,9 +1,19 @@
 """Free-tier facts and a separate, explicitly hypothetical usage calculator."""
 from guide_ui import section, note, card, grid, bullets, details, table, definition, ref
+from guide_decisions import theme_guide
 
 
 def cost_body():
-    body = note('０円にも、いくつか種類があります。','月額０円のプラン、課金契約に含まれる無料利用量、運用全体の支出０円。<strong>この３つを分ける</strong>と、あとで困りにくくなるよ。料金はUSD。税・為替・ドメイン費は別です。')
+    body = theme_guide('cost')
+    body += section('thresholds', '上限前に動くための対応表',
+        '<p>70%／85%は今回の運用目安です。日次枠は当日の利用率、月次枠は累計と月末予測、保存容量は現在値で判断します。増加が急なら目安より前に対処します。料金はUSD、税・為替・ドメイン費は別です。</p>'
+        + table(['指標', '70%：原因を調べる', '85%：対処を実施'], [
+            ('D1：１DB 500MB', '350MB。増分・索引・ログを調査。', '425MB。拡張・移行を相談し、必要なら新規招待を制限。'+ref('S25')),
+            ('D1：読取500万行/日', '350万行。全走査と再取得を調査。', '425万行。重い集計を止め、取得頻度を制限。'+ref('S24')),
+            ('Workers：動的10万回/日', '７万回。異常呼出・再試行を調査。', '8.5万回。呼出頻度・新規招待を制限。'+ref('S20')),
+            ('Supabase：非キャッシュ転送5GB/月', '3.5GB相当。月末予測と再取得量を調査。', '4.25GB相当。取得頻度を制限し、有料化か機能範囲を相談。'+ref('S26', 'S27'))
+        ], '上限値は公式文書、対処の数値と内容はdoukin向けの提案')
+        + '<p>CPUは上の累計利用率に含めません。パスキー検証を含む各APIのCPU時間と失敗を実測し、10msの枠に余裕を持って収まらなければ、最適化・実行先・有料化を見直します。ほかの指標も85%で必ず停止できる保証はなく、制限機能の実装が必要です。</p>')
     body += section('types','無料の条件を３つに分けよう',grid(
         card('無料プランの範囲で使う','Workers Free・D1 Free、Supabase Free、Firebase Sparkなど。容量のほかに、機能制限・停止・復元の条件があります。','leaf'),
         card('無料利用量のある課金契約','R2、FirebaseのBlazeが必要な機能など。無料枠を超えると支出につながるため、支払登録なしの案とは分けて比較します。','cost')) + note('本体が無料でも、ここを足してね','Clerk本番の所有ドメイン、メール認証のSMTP・送信ドメイン、画像、バックアップ先、開発と本番の複数環境。運営アカウントは会社のものを使わない前提です。','orange'))
