@@ -43,7 +43,7 @@ def make_pages(bibliography):
         ('優先して探す方法', '個人メール以外の方法を優先。個人メールや個人OAuthは、許容できる場合の代替案として比較します。'),
         ('費用の考え方', '原則無料。月額0円と、支払情報の登録・超過課金のある無料枠を区別します。'),
         ('まだ仮定の部分', '数十人の利用・開発者約3人を想定。写真・体重・PWAなどのMVP範囲はIssue #2と相談中です。')]) + '<div class="legend"><span>公式確認：提供元の文書で確認</span><span>設計提案：今回に合わせた案</span><span>要検証：実機・本番設定で未確認</span></div>')
-    index += '<div class="buttons"><a class="button primary" href="compare.html">構成案を見くらべる →</a><a class="button" href="doukin-guide.zip" download>まとめてダウンロード（ZIP）</a></div><p class="subtle">ZIPは全体を展開して、index.htmlを開いてね。HTMLだけを１枚取り出すと、色や図が読み込めません。</p>'
+    index += '<div class="buttons"><a class="button primary" href="compare.html">構成案を見くらべる →</a></div>'
     add('index','はじめに','小さく試して、<br>みんなで決めよう。','doukin の技術検討ノート。認証・データ・費用を、図と小さなページで見くらべます。',index,'book','はじめに',kicker='DOUKIN / FIELD GUIDE 01',related=('compare','workflow','sources'))
 
     auth = note('ログインできる、のその先へ。','今回の第一候補は「メールなし」の方法。<strong>招待 → 登録 → 普段の利用 → 紛失・復旧 → 利用停止</strong>が、同じ本人の記録につながるかを見よう。')
@@ -167,7 +167,7 @@ def add_workflow_and_sharing(add):
 
     sharing = note('管理はGitHub、読むときはHTML。','ソースと変更履歴はリポジトリに置き、Issueからテーマ別ページへリンクする形を提案します。検討中の資料も、<strong>docs/research配下で「未採用」と明示すれば管理できます。</strong>')
     sharing += section('choices','２つの共有方法から選べるよ',grid(
-        card('すぐ読める：ZIPで配布','この資料一式を展開してindex.htmlを開く方法。新しいホスティング契約は不要。更新のたびに取り直す手間と、手元のコピーが残る点があります。','book','doukin-guide.zip','いま使える'),
+        card('GitHub Pagesで読む','PublicリポジトリからHTMLを配信する方法。GitHub内で資料を更新し、同じURLから最新版を読めます。資料とソースは一般公開になります。','book','https://chuka57.github.io/doukin-docs/','今回の配信方法'),
         card('URLで読む：認証付き配信','Workers Static Assets＋Cloudflare Accessを候補に。スマホから読みやすく、更新先を１つにできます。設定・支払情報・ログイン連携が必要です。','cloud','sharing.html#web','未設定の候補')) + '<p>GitHubの通常ファイル画面ではHTMLはソース表示になります。Wikiも任意のCSS/JavaScriptを使うサイトの配信先にはなりません。HTML本体と共通assetsをセットで扱おう。</p>'+ref('S45','S44'))
     sharing += section('web','URLで共有する場合の構成案',diagram([
         ('book','GitHub','HTML・履歴・PRを管理'),('cloud','Static Assets','標準workers.devで配信'),('shield','Access','許可した人だけ閲覧')], '配信の考え方。現時点では設定・デプロイしていません。') + definition([
@@ -184,7 +184,7 @@ def add_workflow_and_sharing(add):
     sharing += section('updates','更新するときの、お約束',steps([
         ('調査資料を更新する','テーマ別の原稿と公式出典を更新。確認日、未検証事項、変更理由を残してHTMLを生成します。'),
         ('PRでレビューする','料金・上限は公式情報を再確認。別モデルのレビューも補助にし、最後は根拠と実機検証で判断します。'),
-        ('入口を一定に保つ','index.htmlとテーマのURLを維持し、Issueから該当ページへリンク。複数の場所に本文をコピーして手動更新しない方針です。')]) + '<div class="buttons"><a class="button primary" href="doukin-guide.zip" download>HTML一式をダウンロード</a></div>')
+        ('入口を一定に保つ','index.htmlとテーマのURLを維持し、Issueから該当ページへリンク。複数の場所に本文をコピーして手動更新しない方針です。')]))
     add('sharing','資料の共有・更新','読みやすいまま、<br>みんなに届けよう。','GitHubで管理しながら、HTMLをブラウザで読めるようにする方法と、更新のルール案です。',sharing,'share','相談と資料のこと',issue='資料の共有方法',kicker='SHARING / HANDBOOK',related=('index','workflow','sources'))
 
 

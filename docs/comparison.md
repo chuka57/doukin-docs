@@ -200,7 +200,7 @@ HTML版では人数・記録頻度・API回数・写真の頻度／サイズ／�
 
 資料と生成元はリポジトリの `docs/research/issue-3-4/` に置き、通常のPRでレビューします。比較資料をmainへ取り込むことと、サービスや仕様の採用は区別し、決定時には理由・不採用案・見直し条件を決定事項へ記録します。Organizationのprivate repoではGitHub FreeのDraft PRを前提にしません（[公式の対応プラン](https://docs.github.com/en/rest/pulls/pulls)）。現在の契約プランは未確認です。
 
-共有方法は[HTMLの共有・更新ガイド](sharing.html)で比較しています。ZIPを展開してindex.htmlを開けば、新しいホスティング契約なしで読めます。URLで読む場合はWorkers Static Assets＋Cloudflare Accessを候補とし、閲覧対象を別途設定してから共有します。Zero Trust Freeでも支払情報が必要です。資料用の個人GitHub認証は、全参加者向けアプリ認証の採用を意味しません。
+共有方法は[HTMLの共有・更新ガイド](sharing.html)で比較しています。今回の共有先はPublicリポジトリのGitHub Pagesです。URLで読む場合はWorkers Static Assets＋Cloudflare Accessを候補とし、閲覧対象を別途設定してから共有します。Zero Trust Freeでも支払情報が必要です。資料用の個人GitHub認証は、全参加者向けアプリ認証の採用を意味しません。
 
 Wikiは任意のCSS/JavaScriptを含むHTMLのホストにはならず、private Wikiには対応プランが必要。Pagesもprivate repoの権限がそのままサイトの公開範囲になるとは限りません。[S44][s44] [S45][s45] [S46][s46]
 

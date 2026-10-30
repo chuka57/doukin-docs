@@ -10,11 +10,11 @@
 
 資料のPRをmainにマージした後、Settings → Pagesで Source を Deploy from a branch、Branch を main、Folder を /docs にして保存します。
 
-以後、mainのdocs配下を更新するとサイトへ反映されます。HTML・assets・ZIPは一緒に更新してください。
+以後、mainのdocs配下を更新するとサイトへ反映されます。HTML・assetsは一緒に更新してください。
 
 ## 更新
 
-生成元もdocs配下に置き、次のコマンドでHTMLとZIPを更新します。
+生成元もdocs配下に置き、次のコマンドでHTMLを更新します。
 
 ```sh
 python docs/build_html.py

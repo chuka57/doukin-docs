@@ -3,7 +3,6 @@
 from pathlib import Path
 from html import escape
 import re
-import zipfile
 
 from guide_content import make_pages, EXTRA_SOURCES
 from guide_ui import icon
@@ -66,15 +65,7 @@ def main():
     pages = make_pages(bibliography)
     for slug, page in pages.items():
         (ROOT / f'{slug}.html').write_text(render(slug, page, pages, bibliography), encoding='utf-8')
-    output = ROOT / 'doukin-guide.zip'
-    files = sorted([ROOT / f'{slug}.html' for slug in pages] + list((ROOT / 'assets').glob('*')))
-    with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
-        for path in files:
-            info = zipfile.ZipInfo('doukin-guide/' + path.relative_to(ROOT).as_posix(), (2026, 10, 30, 0, 0, 0))
-            info.compress_type = zipfile.ZIP_DEFLATED
-            info.external_attr = 0o644 << 16
-            archive.writestr(info, path.read_bytes())
-    print(f'Built {len(pages)} HTML pages and {output.name}.')
+    print(f'Built {len(pages)} HTML pages.')
 
 
 if __name__ == '__main__':
