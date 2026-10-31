@@ -7,6 +7,7 @@ import re
 from guide_content import make_pages, EXTRA_SOURCES
 from guide_ui import icon
 from guide_history import add_history_page, load_history, version_anchor
+from guide_minimal_auth import SOURCE_DATES
 
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT = ROOT / 'docs'
@@ -24,7 +25,7 @@ def sources():
 
 def navigation(pages, current):
     result = []
-    for group in ['はじめに', 'テーマから調べる', '構成案をくわしく', '相談と資料のこと']:
+    for group in ['はじめに', 'テーマから調べる', '追加調査', '構成案をくわしく', '相談と資料のこと']:
         links = []
         for slug, page in pages.items():
             if page['group'] != group:
@@ -38,9 +39,11 @@ def navigation(pages, current):
 def render(slug, page, pages, bibliography, revision):
     body = page['body']
     refs = sorted(set(re.findall(r'data-ref="(S\d+)"', body)))
+    dated_keys = bibliography if slug == 'sources' else refs
+    source_dates = ' / '.join(sorted({SOURCE_DATES.get(key, DATE) for key in dated_keys}))
     if refs:
-        items = ''.join(f'<li id="ref-{key}"><a href="{escape(bibliography[key][1], quote=True)}">{key} · {escape(bibliography[key][0])} ↗</a><span>{escape(bibliography[key][2])}</span></li>' for key in refs)
-        body += f'<details class="sources"><summary>このページの一次情報・出典（{len(refs)}件）</summary><p>確認日：{DATE}（日本時間）。公式の仕様と、今回の設計提案を分けて読もう。</p><ul>{items}</ul></details>'
+        items = ''.join(f'<li id="ref-{key}"><a href="{escape(bibliography[key][1], quote=True)}">{key} · {escape(bibliography[key][0])} ↗</a><span>{escape(bibliography[key][2])} · 確認 {SOURCE_DATES.get(key, DATE)}（日本時間）</span></li>' for key in refs)
+        body += f'<details class="sources"><summary>このページの一次情報・出典（{len(refs)}件）</summary><p>出典確認日：{source_dates}（日本時間）。各項目にも確認日を記載。公式の仕様と、今回の設計提案を分けて読もう。</p><ul>{items}</ul></details>'
     toc = re.findall(r'<h2 id="([^"]+)">(.*?)</h2>', body)
     toc_html = '<nav class="on-page" aria-label="このページの目次">' + ''.join(f'<a href="#{key}">{re.sub("<[^>]+>", "", title)}</a>' for key, title in toc) + '</nav>' if toc else ''
     related = ''.join(f'<a class="next-link" href="{key}.html">{icon(pages[key]["icon"])}<span>{pages[key]["nav"]}</span><span aria-hidden="true">↗</span></a>' for key in page.get('related', []))
@@ -55,7 +58,7 @@ def render(slug, page, pages, bibliography, revision):
 <p class="edition"><a href="history.html#{version_anchor(revision)}">資料 v{escape(revision['version'])}</a> / 調査・検討用</p><nav aria-label="資料全体の目次">{navigation(pages, slug)}</nav>
 <div class="side-note">一度にぜんぶ読まなくて大丈夫。<br>気になるところからどうぞ。</div></aside>
 <main id="main"><div class="topline"><a href="index.html">検討ノート</a><span>／ {escape(page['nav'])}</span><span class="status">調査・検討用</span></div>
-<header class="hero"><div><p class="eyebrow">{page['kicker']}</p><h1>{page['title']}</h1><p class="intro">{page['intro']}</p><div class="meta"><span>{page['issue']}</span><a class="revision-link" href="history.html#{version_anchor(revision)}">資料 v{escape(revision['version'])} · 改訂 {escape(revision['date'])}</a>{f'<span>出典確認 {DATE} · JST</span>' if refs else ''}</div></div>
+<header class="hero"><div><p class="eyebrow">{page['kicker']}</p><h1>{page['title']}</h1><p class="intro">{page['intro']}</p><div class="meta"><span>{page['issue']}</span><a class="revision-link" href="history.html#{version_anchor(revision)}">資料 v{escape(revision['version'])} · 改訂 {escape(revision['date'])}</a>{f'<span>出典確認 {source_dates} · JST</span>' if refs else ''}</div></div>
 <img class="mascot" src="assets/guide.svg" width="220" height="190" alt="" aria-hidden="true"></header>
 <aside class="scope-note" aria-label="資料の位置づけ">公開用の調査・検討資料です。推奨や数値は比較のための提案で、アプリの確定事項・採用結果・実運用の記録は掲載しません。</aside>
 {toc_html}{body}

@@ -2,6 +2,7 @@
 from html import escape
 from guide_ui import section, note, card, grid, bullets, steps, details, table, diagram, definition, ref
 from guide_decisions import recommendation_overview, theme_guide
+from guide_minimal_auth import RESEARCH_SOURCES, SOURCE_DATES, add_minimal_auth_pages
 
 EXTRA_SOURCES = {
  'S47': ('Clerk: MFA and recovery / Device Trust', 'https://clerk.com/docs/guides/secure/mfa-recovery', '新端末での追加認証と識別子・MFAの条件'),
@@ -22,6 +23,7 @@ EXTRA_SOURCES = {
  'S62': ('Supabase: Send Email Hook', 'https://supabase.com/docs/guides/auth/auth-hooks/send-email-hook', 'SMTPに代わり独自の配信経路を使うAuth Hook'),
  'S63': ('D1: Import and export data', 'https://developers.cloudflare.com/d1/best-practices/import-export-data/', 'SQLのエクスポート・インポートと復元時の制約'),
 }
+EXTRA_SOURCES.update(RESEARCH_SOURCES)
 
 
 def make_pages(bibliography):
@@ -31,6 +33,9 @@ def make_pages(bibliography):
 
     index = note('この資料で調べること', 'doukinの構成候補を比較するために、<strong>推奨の理由、データ保護の方法、復旧や費用管理を想定した運用例</strong>を調査・整理します。数十人の利用・３人での保守を比較条件として仮定し、５つのテーマで追加検証の観点を説明します。確定要件や採用結果を記録する資料ではありません。')
     index += recommendation_overview()
+    index += section('additional-research', '本人情報と、ログインの手間を減らすには', grid(
+        card('個人との紐付きを減らす', 'メールを持たない目的から、記録・ログ・復旧に残る情報を整理。少人数での再識別と、安定利用のトレードオフも比較します。', 'shield', 'minimization.html', '追加調査'),
+        card('毎回のログインを省く', '端末別セッションと保護されたCookieを優先検証。保存場所、期限、失効、更新トークン、端末追加を比べます。', 'key', 'sessions.html', '追加調査')))
     index += section('start', 'どこから読もう？', grid(
         card('構成案を見くらべる', '５つの組み合わせを、メール・費用・つくる負担で比較。各案の詳しい取扱説明書へ進めます。', 'map', 'compare.html', '全体を知りたい'),
         card('決める順序をつかむ', 'Issue #3と#4をつなぐ進め方。先に合わせる前提と、小さく試すことを整理しています。', 'steps', 'workflow.html', '相談を進めたい')))
@@ -42,13 +47,16 @@ def make_pages(bibliography):
         card('無料枠・費用', '無料を続ける制限と監視を推奨。上限前に対処し、有料化を相談する条件を決めます。', 'cost', 'cost.html', '#4')))
     index += section('rules', '今回、忘れないこと', definition([
         ('比較に置く条件', '<strong>会社アカウントを使わない場合</strong>を仮定して比較します。登録・ログイン・復旧・開発運用も対象にします。確定要件の記載ではありません。'),
-        ('優先して探す方法', '個人メール以外の方法を優先。個人メールや個人OAuthは、許容できる場合の代替案として比較します。'),
+        ('情報を持たない目的', '個人の特定につながる情報の保持を減らすことを軸に比較。メールなし自体をゴールにせず、表示名・記録・ログ・復旧での紐付きも調べます。個人OAuth等は属性保持を許容する条件での代替です。'),
         ('費用の考え方', '原則無料。月額0円と、支払情報の登録・超過課金のある無料枠を区別します。'),
         ('まだ仮定の部分', '数十人の利用・開発者約3人を想定。写真・体重・PWAなどのMVP範囲はIssue #2と相談中です。')]) + '<div class="legend"><span>公式確認：提供元の文書で確認</span><span>設計提案：今回に合わせた案</span><span>要検証：実機・本番設定で未確認</span></div>')
     index += '<div class="buttons"><a class="button primary" href="workflow.html#actions">追加調査・試作の例を見る →</a><a class="button" href="history.html">改訂履歴を見る</a></div>'
     add('index','はじめに','doukinの技術と運用を、<br>検討するための調査ノート。','認証・権限・基盤・データ・費用を比較し、条件付きの推奨、その理由、運用例と追加検証の観点をまとめます。',index,'book','はじめに',kicker='DOUKIN / FIELD GUIDE 01',related=('compare','workflow','sources'))
 
     auth = theme_guide('auth')
+    auth += section('persistent-login', '認証をメールなしにしても、毎回ログインする必要はない',
+        '<p>初回の本人確認と、その後のログイン状態の保持は別の仕組みです。端末別のセッションを保持すれば、期限内の通常利用を入力なしにできる設計があります。保存場所・失効・復旧まで含めて比較します。'+ref('S64')+'</p>'
+        + '<div class="buttons"><a class="button primary" href="sessions.html">自動ログインの調査を見る →</a><a class="button" href="minimization.html">本人情報を減らす目的から比べる</a></div>')
     auth += section('journey','参加から復旧までの流れ',diagram([
         ('person','参加を確認','運営者が既知の同期か確認'),('key','個別に招待','期限付き・１回限り'),('shield','会員として利用','ログイン＋会員状態を確認'),('steps','復旧・失効','元の履歴に戻す／利用を止める')], '設計提案：会社の名簿・会社SSOに頼らず、既知の私的な連絡手段や対面で確認します。') + note('ログインと参加資格は、別々に確認しよう','GoogleやGitHubでログインできても、「この集まりの同期」とは限りません。認証後にも招待・承認を確認し、未承認なら共有データを返さない設計です。','orange'))
     auth += section('methods','４つの入口を見くらべよう', table(['方法','よいところ','採用前に確かめること'],[
@@ -68,6 +76,9 @@ def make_pages(bibliography):
     add('auth','認証・招待・復旧','どの認証を選び、<br>どう招待・復旧する？','まず個別招待＋パスキーを試す理由、個人OAuth等へ切り替える条件、参加から紛失・退会までの運用案です。',auth,'key',issue='Issue #3',kicker='01 / IDENTITY',related=('privacy','plan-n1','plan-p1'))
 
     privacy = theme_guide('privacy')
+    privacy += section('minimize-identifiers', '共有範囲と、本人に結び付く情報の量は別に考える',
+        '<p>氏名やメールを持たないことは漏えい時の直接の結び付けを減らしますが、少人数での表示名・日時・記録の内容から本人が分かる可能性は残ります。仮名のIDで履歴をつなぐことと、再識別できないことを同じには扱いません。'+ref('S68')+'</p>'
+        + '<p><a href="minimization.html">持つ情報・残る手掛かり・復旧のトレードオフを見る →</a></p>')
     privacy += section('scope','見られる範囲の初期案',table(['データ','本人','承認済みの同期'],[
         ('トレーニング記録','初期非公開。閲覧・編集・削除','本人が同期共有を選んだ記録だけ閲覧'),
         ('体重・身体情報','任意入力。初期は非公開を提案','本人が明示的に共有した範囲のみ'),
@@ -101,7 +112,7 @@ def make_pages(bibliography):
         ('Vercel Hobby','現在の無料Git連携先には選ばない提案。','Organizationのprivate repoをGit連携でデプロイ不可。個人・非商用、コミット作成者にも条件。'+ref('S37','S38'))], 'GitHub Organizationのprivateリポジトリを維持する前提で比較'))
     platform += section('runtime','組み合わせの境目を確認しよう',grid(
         card('Next.jsをWorkersへ','Cloudflareの公式経路はOpenNext。Nodeと同じ実行環境だとは見なさず、使う機能と互換性をプレビューで確認します。'+ref('S17'),'cloud'),
-        card('認証を入れ替えるとき','ClerkのIDはアプリの会員と関連付けが必要。独自認証を入れただけでは、SupabaseのRLSが自動でその本人を認識しません。信頼するトークンの設計が要ります。','key')))
+        card('認証を入れ替えるとき','ClerkのIDはアプリの会員と関連付けが必要。独自認証を入れただけでは、SupabaseのRLSが自動でその本人を認識しません。信頼するトークンの設計が要ります。','key')) + '<p>ブラウザから直接DBを使う案と、HttpOnlyセッションでサーバーを仲介する案では、トークンの持ち方とAPIの負担も変わります。<a href="sessions.html#managed">管理型SDKと自動ログインの比較を見る →</a></p>')
     platform += section('team','３人で保守するための、小さな約束',steps([
         ('個人アカウントで、必要な権限だけ','開発・運営にも会社SSOや会社メールを使いません。共通ログインを避け、保守担当を複数人にする案です。管理席数や既存の無料枠消費を確認します。'),
         ('プレビューは、検証データへ','本番の会員・体重を開発プレビューへつなぎません。OAuthの戻り先やパスキーのRP IDも環境ごとに確認します。'),
@@ -129,6 +140,8 @@ def make_pages(bibliography):
     from guide_costs import cost_body, calculator_body
     add('cost','無料枠・費用','無料をどう維持し、<br>いつ見直す？','写真なしで始める理由、利用率70%・85%での対処案、有料化や構成変更を相談する条件です。',cost_body(),'cost',issue='Issue #4',kicker='05 / COST',related=('compare','data','sharing'))
     add('calculator','利用量の計算機','何人で、どのくらい？<br>使い方を試算しよう。','人数・記録・写真量を変えると、保存量と転送量はどう変わるかな。',calculator_body(),'cost',issue='Issue #4',kicker='06 / CALCULATOR',related=('cost','data','compare'))
+
+    add_minimal_auth_pages(add)
 
     from guide_plans import add_plan_pages
     add_plan_pages(add)
@@ -165,7 +178,8 @@ def add_workflow_and_sharing(add):
         '会員A/B、未承認、失効済みで、APIを直接呼んでも権限が守られる。',
         '旧JWT/Cookieがある場合の失効と、ブラウザデータ削除後の履歴復旧ができる。',
         'iOS SafariとAndroid Chrome、必要ならPWAで、登録・認証・復旧を確認。',
-        'CPU・DB読書き・転送を測り、バックアップから復元し、削除済みデータの扱いも確認。'))
+        'CPU・DB読書き・転送を測り、バックアップから復元し、削除済みデータの扱いも確認。',
+        'ブラウザ再起動・Cookie消去・別端末の追加・紛失時の失効を試し、毎回の認証入力を省ける条件と、復旧不能になる条件を分ける。') + '<p><a href="sessions.html#checks">ログイン保持の確認観点</a>と<a href="minimization.html#inventory">保存する情報の棚卸し例</a>を合わせて比較します。</p>')
     workflow += section('record','議論を、あとからたどれるように',definition([
         ('Issueのコメント','質問、追加調査、試作結果、判断の要点。該当ページや変更PRへリンク。'),
         ('HTML資料','最新版の比較、前提、出典、未解決事項。リポジトリ内で更新し、PRでレビュー。'),
@@ -198,7 +212,7 @@ def add_workflow_and_sharing(add):
 def add_sources(add, bibliography):
     body = note('根拠と、まだ確かめていないことを残そう。','料金・機能は提供元の公式文書を優先。設計の考え方はOWASP等の専門ガイドも参照しています。<strong>公式確認は、今回のアプリで動作確認済みという意味ではありません。</strong>')
     body += section('reading','この資料の読み方',definition([
-        ('確認日','2026-10-30（日本時間）。料金はUSD、税・為替・ドメイン費は別。サービスの情報は比較に使う時点でも再確認します。'),
+        ('確認日','初回の出典は2026-10-30、情報最小化・ログイン保持の追加出典は2026-10-31（日本時間）。各項目に併記します。料金はUSD、税・為替・ドメイン費は別。比較に使う時点でも再確認します。'),
         ('公式確認','公式の料金・制限・機能説明に記載がある事項。提供元の記述が分かれる場合は、そのまま条件と不確実さを記載します。'),
         ('設計提案','今回の用途と条件に合わせた判断。N1を先に試す順序、初期非公開、招待24時間、日次７世代の退避、許容損失24時間／復旧１日、70%／85%の対応目安も提案です。サービスの仕様・保証値やチームの合意事項ではありません。'),
         ('要検証','組み合わせの実動作、本番契約の画面、端末や負荷など。ベンダーの説明やモデルのレビューだけでは確認済みにしません。')]))
@@ -221,14 +235,16 @@ def add_sources(add, bibliography):
         ('SMTP / DNS','SMTPはメールを送る仕組み。DNSはドメインの接続先などを管理する設定。送信ドメインの確認にも使います。'),
         ('PITR / Time Travel','ある時点へデータを戻す仕組み。対象期間・プラン・戻せるデータはサービスごとに異なります。'),
         ('PWA / SSR','PWAはWebアプリをインストール等に対応させる仕組み。SSRはサーバーで画面のHTMLを生成する方式。本資料では利用する場合・省く場合を比較し、要件の確定状況は記載しません。')]))
-    groups = {'認証と権限':[], 'Cloudflare':[], 'Supabase':[], 'Firebase':[], 'GitHub・Vercel':[]}
+    groups = {'情報最小化・ログイン保持の追加調査':[], '認証と権限':[], 'Cloudflare':[], 'Supabase':[], 'Firebase':[], 'GitHub・Vercel':[]}
     for key, (title, url, claim) in sorted(bibliography.items()):
-        if any(s in url for s in ['clerk.com','simplewebauthn','better-auth','owasp']): group = '認証と権限'
+        if key in RESEARCH_SOURCES: group = '情報最小化・ログイン保持の追加調査'
+        elif any(s in url for s in ['clerk.com','simplewebauthn','better-auth','owasp']): group = '認証と権限'
         elif 'cloudflare.com' in url: group = 'Cloudflare'
         elif 'supabase.com' in url: group = 'Supabase'
         elif 'firebase.google.com' in url: group = 'Firebase'
         else: group = 'GitHub・Vercel'
-        groups[group].append(f'<li id="source-{key}"><a href="{escape(url, quote=True)}">{key} · {escape(title)} ↗</a><small>{escape(claim)}</small></li>')
+        checked = f' · 確認 {SOURCE_DATES[key]}（日本時間）' if key in SOURCE_DATES else ''
+        groups[group].append(f'<li id="source-{key}"><a href="{escape(url, quote=True)}">{key} · {escape(title)} ↗</a><small>{escape(claim)}{checked}</small></li>')
     body += section('bibliography','一次情報の一覧', '<p>各ページのS番号から、そのページで使った出典を直接ひらけます。こちらは一覧です。</p>' + ''.join(details(f'{group}（{len(items)}件）','<ul class="source-index">'+''.join(items)+'</ul>') for group, items in groups.items()))
     body += section('context','今回の背景と、確認の範囲', '<p>目的と調査範囲は<a href="https://github.com/chuka57/doukin/issues/3">Issue #3</a>・<a href="https://github.com/chuka57/doukin/issues/4">#4</a>、MVPは<a href="https://github.com/chuka57/doukin/issues/2">#2</a>を参照しています。開発者３人・要件・運用の背景は、背景資料の<a href="https://github.com/chuka57/doukin/blob/d46cd222cff8051969818be0158e8cd126ce9b8d/docs/requirements.md">PR #1の要件案（特定コミット）</a>も参照。本資料には確定仕様として転記しません。</p><p>ここにまとめるのは文書調査と検証の観点です。アプリの採用・契約・本番設定や実施状況は、本資料には記載しません。</p>')
     add('sources','出典・用語・レビュー','確かめたことを、<br>たどれる形に。','出典、言葉の意味、レビューで見直した点を、ひとつの場所にまとめています。',body,'book','相談と資料のこと',issue='調査の根拠',kicker='REFERENCE / SOURCES',related=('compare','workflow','index'))
