@@ -6,6 +6,7 @@ import re
 
 from guide_content import make_pages, EXTRA_SOURCES
 from guide_ui import icon
+from guide_history import add_history_page, load_history, version_anchor
 
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT = ROOT / 'docs'
@@ -34,7 +35,7 @@ def navigation(pages, current):
     return ''.join(result)
 
 
-def render(slug, page, pages, bibliography):
+def render(slug, page, pages, bibliography, revision):
     body = page['body']
     refs = sorted(set(re.findall(r'data-ref="(S\d+)"', body)))
     if refs:
@@ -51,22 +52,25 @@ def render(slug, page, pages, bibliography):
 <body><a class="skip" href="#main">本文へすすむ</a>
 <header class="mobile-head"><a href="index.html">doukin <span>の検討ノート</span></a><button id="menu-button" type="button" aria-controls="sidebar" aria-expanded="false">目次をひらく</button></header>
 <aside class="sidebar" id="sidebar"><a class="brand" href="index.html">{icon('book')}<span>doukin<small>みんなで選ぶ、技術の手引き</small></span></a>
-<p class="edition">ISSUE 03 + 04 / 検討版</p><nav aria-label="資料全体の目次">{navigation(pages, slug)}</nav>
+<p class="edition"><a href="history.html#{version_anchor(revision)}">資料 v{escape(revision['version'])}</a> / 調査・検討用</p><nav aria-label="資料全体の目次">{navigation(pages, slug)}</nav>
 <div class="side-note">一度にぜんぶ読まなくて大丈夫。<br>気になるところからどうぞ。</div></aside>
-<main id="main"><div class="topline"><a href="index.html">検討ノート</a><span>／ {escape(page['nav'])}</span><span class="status">検討中・未採用</span></div>
-<header class="hero"><div><p class="eyebrow">{page['kicker']}</p><h1>{page['title']}</h1><p class="intro">{page['intro']}</p><div class="meta"><span>{page['issue']}</span><span>確認 {DATE} · JST</span></div></div>
+<main id="main"><div class="topline"><a href="index.html">検討ノート</a><span>／ {escape(page['nav'])}</span><span class="status">調査・検討用</span></div>
+<header class="hero"><div><p class="eyebrow">{page['kicker']}</p><h1>{page['title']}</h1><p class="intro">{page['intro']}</p><div class="meta"><span>{page['issue']}</span><a class="revision-link" href="history.html#{version_anchor(revision)}">資料 v{escape(revision['version'])} · 改訂 {escape(revision['date'])}</a>{f'<span>出典確認 {DATE} · JST</span>' if refs else ''}</div></div>
 <img class="mascot" src="assets/guide.svg" width="220" height="190" alt="" aria-hidden="true"></header>
+<aside class="scope-note" aria-label="資料の位置づけ">公開用の調査・検討資料です。推奨や数値は比較のための提案で、アプリの確定事項・採用結果・実運用の記録は掲載しません。</aside>
 {toc_html}{body}
 <nav class="related" aria-label="関連するページ"><p class="eyebrow">つづきは、こちらから</p><div>{related}</div></nav>
-<footer>doukin の検討ノート · 公式文書の確認と実機検証は別だよ。<br><a href="sources.html">出典・用語・レビュー記録</a> <span>／</span> <a href="index.html">表紙にもどる</a></footer></main></body></html>'''
+<footer>doukin の検討ノート · 公開用の調査・検討資料<br><a href="history.html#{version_anchor(revision)}">資料 v{escape(revision['version'])} · 改訂履歴</a> <span>／</span> <a href="sources.html">出典・用語・レビュー記録</a> <span>／</span> <a href="index.html">表紙にもどる</a></footer></main></body></html>'''
 
 
 def main():
     OUTPUT.mkdir(parents=True, exist_ok=True)
     bibliography = sources()
     pages = make_pages(bibliography)
+    history = load_history()
+    add_history_page(pages, history)
     for slug, page in pages.items():
-        (OUTPUT / f'{slug}.html').write_text(render(slug, page, pages, bibliography), encoding='utf-8')
+        (OUTPUT / f'{slug}.html').write_text(render(slug, page, pages, bibliography, history['revisions'][0]), encoding='utf-8')
     print(f'Built {len(pages)} HTML pages.')
 
 
