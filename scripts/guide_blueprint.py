@@ -36,7 +36,7 @@ def add_blueprint_page(pages):
     original = original.replace('<h2 ', '<h3 ').replace('<h2>', '<h3>').replace('</h2>', '</h3>')
     zero = zero.replace('<h2 ', '<h3 ').replace('<h2>', '<h3>').replace('</h2>', '</h3>')
     body += details('必要なときだけ：構成図・技術仕様・公式出典', original + zero)
-    pages['overall-spec'] = dict(nav='全体設計案（要約）',title='全体設計案を、<br>1ページで確認。',intro='基本構成とZero Trustをまとめて確認。通常は4項目だけ、細かな仕様と出典は下の補足から読めます。',body=body,icon='map',group='はじめに',issue='統合設計案 / 要約',kicker='DOUKIN / BLUEPRINT',related=('index',))
+    pages['overall-spec'] = dict(nav='全体設計案（要約）',title='全体設計案を、<br>1ページで確認。',intro='基本構成とZero Trustをまとめて確認。通常は4項目だけ、細かな仕様と出典は下の補足から読めます。',body=body,icon='map',group='はじめに',issue='統合設計案 / 要約',kicker='DOUKIN / BLUEPRINT',related=('workers-hono','index'))
     anchors = re.findall(r'id="([^"]+)"', extra['zero-trust']['body'])
     pages['zero-trust'] = dict(extra['zero-trust'])
     pages['zero-trust'].update(group='互換URL',title='Zero Trust案は、全体設計案へ統合しました。',intro='基本構成とZero Trustの比較を、ひとつの資料で確認できます。',body='<p><a class="button primary" href="overall-spec.html#summary-access">統合した全体設計案を見る →</a></p>'+''.join(f'<p id="{a}"><a href="overall-spec.html#{a}">旧資料の該当箇所を見る →</a></p>' for a in anchors),related=('overall-spec',))
