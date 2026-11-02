@@ -33,6 +33,7 @@ def make_pages(bibliography):
 
     index = note('この資料で調べること', 'doukinの構成候補を比較するために、<strong>推奨の理由、データ保護の方法、復旧や費用管理を想定した運用例</strong>を調査・整理します。数十人の利用・３人での保守を比較条件として仮定し、５つのテーマで追加検証の観点を説明します。確定要件や採用結果を記録する資料ではありません。')
     index += recommendation_overview()
+    index += section('blueprint', '推奨をひとつの全体像で読む', card('推奨を統合した全体設計案', 'Cloudflare Workers・D1の役割から、画面、認証、権限、復旧まで。7つのSVGと表で読み、Workers制約の追加調査も確認できます。', 'map', 'overall-spec.html', '統合設計案'))
     index += section('additional-research', '本人情報と、ログインの手間を減らすには', grid(
         card('個人との紐付きを減らす', 'メールを持たない目的から、記録・ログ・復旧に残る情報を整理。少人数での再識別と、安定利用のトレードオフも比較します。', 'shield', 'minimization.html', '追加調査'),
         card('毎回のログインを省く', '端末別セッションと保護されたCookieを優先検証。保存場所、期限、失効、更新トークン、端末追加を比べます。', 'key', 'sessions.html', '追加調査')))
@@ -248,3 +249,4 @@ def add_sources(add, bibliography):
     body += section('bibliography','一次情報の一覧', '<p>各ページのS番号から、そのページで使った出典を直接ひらけます。こちらは一覧です。</p>' + ''.join(details(f'{group}（{len(items)}件）','<ul class="source-index">'+''.join(items)+'</ul>') for group, items in groups.items()))
     body += section('context','今回の背景と、確認の範囲', '<p>目的と調査範囲は<a href="https://github.com/chuka57/doukin/issues/3">Issue #3</a>・<a href="https://github.com/chuka57/doukin/issues/4">#4</a>、MVPは<a href="https://github.com/chuka57/doukin/issues/2">#2</a>を参照しています。開発者３人・要件・運用の背景は、背景資料の<a href="https://github.com/chuka57/doukin/blob/d46cd222cff8051969818be0158e8cd126ce9b8d/docs/requirements.md">PR #1の要件案（特定コミット）</a>も参照。本資料には確定仕様として転記しません。</p><p>ここにまとめるのは文書調査と検証の観点です。アプリの採用・契約・本番設定や実施状況は、本資料には記載しません。</p>')
     add('sources','出典・用語・レビュー','確かめたことを、<br>たどれる形に。','出典、言葉の意味、レビューで見直した点を、ひとつの場所にまとめています。',body,'book','相談と資料のこと',issue='調査の根拠',kicker='REFERENCE / SOURCES',related=('compare','workflow','index'))
+

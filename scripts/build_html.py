@@ -6,6 +6,7 @@ import re
 
 from guide_content import make_pages, EXTRA_SOURCES
 from guide_ui import icon
+from guide_blueprint import add_blueprint_page
 from guide_history import add_history_page, load_history, version_anchor
 from guide_minimal_auth import SOURCE_DATES
 
@@ -70,12 +71,15 @@ def main():
     OUTPUT.mkdir(parents=True, exist_ok=True)
     bibliography = sources()
     pages = make_pages(bibliography)
+    add_blueprint_page(pages)
     history = load_history()
     add_history_page(pages, history)
     for slug, page in pages.items():
         (OUTPUT / f'{slug}.html').write_text(render(slug, page, pages, bibliography, history['revisions'][0]), encoding='utf-8')
-    print(f'Built {len(pages)} HTML pages.')
+    (OUTPUT / 'stack-diagram.html').write_text((ROOT / 'content' / 'stack-diagram.html').read_text(encoding='utf-8'), encoding='utf-8')
+    print(f'Built {len(pages) + 1} HTML pages.')
 
 
 if __name__ == '__main__':
     main()
+

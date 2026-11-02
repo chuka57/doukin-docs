@@ -354,3 +354,8 @@ Issueには質問・調査の補足・試作結果・判断の要点を残し、
 - Cloudflare Zero Trustの初期設定：[公式](https://developers.cloudflare.com/cloudflare-one/setup/)。Freeでも支払情報が必要。
 - R2とアドオンの支払方法：[公式](https://developers.cloudflare.com/billing/get-started/update-billing-info/)。実際のcheckoutは未操作。
 - SupabaseのSend Email Hook：[公式](https://supabase.com/docs/guides/auth/auth-hooks/send-email-hook)。P2は外部SMTP案だが、一般に本番配信の唯一の方法ではない。
+
+
+## 推奨の統合とWorkers互換性（2026-11-01追加調査）
+
+[全体設計案](../docs/overall-spec.html)にN1の推奨と情報最小化・端末別セッションの追加調査を統合しました。今回補った画面・テーブル・Cookie・競合処理の例は設計提案です。公式文書の確認先と日付は同ページのW1〜W10にまとめ、既存出典の確認日は変更していません。Node.js互換はAPI単位・compatibility_date単位に確認し、import成功と実行成功を区別します。SimpleWebAuthnの対応記載と、実際のCPU・スマホ・復旧試験も区別します。
