@@ -180,3 +180,7 @@ git diff --exit-code -- docs
 ## Zero Trustを含めた追加案
 
 [Zero Trustを追加する案](docs/zero-trust.html)で、運営・検証だけをAccessで保護するZT-Aと、全会員にAccessを求めるZT-Bを比較します。構成図、情報最小化、二重のセッション、Static Assetsのctx.access制約、契約条件と試験観点を記載。公式確認日は2026-11-02、実際のAccess設定変更はしていません。
+
+### 確認用の入口を統合（2026-11-03）
+
+[全体設計案](docs/overall-spec.html)に基本構成とZero Trustを統合しました。通常表示は4項目、詳細・構成図・出典は折りたたみに保存。旧 `zero-trust.html` は既存リンクを維持する案内ページです。出典確認日は変更していません。

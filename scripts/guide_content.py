@@ -33,7 +33,7 @@ def make_pages(bibliography):
 
     index = note('この資料で調べること', 'doukinの構成候補を比較するために、<strong>推奨の理由、データ保護の方法、復旧や費用管理を想定した運用例</strong>を調査・整理します。数十人の利用・３人での保守を比較条件として仮定し、５つのテーマで追加検証の観点を説明します。確定要件や採用結果を記録する資料ではありません。')
     index += recommendation_overview()
-    index += section('blueprint', '推奨をひとつの全体像で読む', card('推奨を統合した全体設計案', 'Cloudflare Workers・D1の役割から、画面、認証、権限、復旧まで。7つのSVGと表で読み、Workers制約の追加調査も確認できます。', 'map', 'overall-spec.html', '統合設計案'))
+    index += section('blueprint', '推奨をひとつの全体像で読む', card('推奨を統合した全体設計案', '基本構成とZero Trustを1ページに統合。推奨する構成・利用時の動き・Accessの範囲・実装前の確認を短くまとめています。', 'map', 'overall-spec.html', '統合設計案'))
     index += section('additional-research', '本人情報と、ログインの手間を減らすには', grid(
         card('個人との紐付きを減らす', 'メールを持たない目的から、記録・ログ・復旧に残る情報を整理。少人数での再識別と、安定利用のトレードオフも比較します。', 'shield', 'minimization.html', '追加調査'),
         card('毎回のログインを省く', '端末別セッションと保護されたCookieを優先検証。保存場所、期限、失効、更新トークン、端末追加を比べます。', 'key', 'sessions.html', '追加調査')))

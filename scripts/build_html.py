@@ -7,7 +7,6 @@ import re
 from guide_content import make_pages, EXTRA_SOURCES
 from guide_ui import icon
 from guide_blueprint import add_blueprint_page
-from guide_zero_trust import add_zero_trust_page
 from guide_history import add_history_page, load_history, version_anchor
 from guide_minimal_auth import SOURCE_DATES
 
@@ -73,7 +72,6 @@ def main():
     bibliography = sources()
     pages = make_pages(bibliography)
     add_blueprint_page(pages)
-    add_zero_trust_page(pages)
     history = load_history()
     add_history_page(pages, history)
     for slug, page in pages.items():
