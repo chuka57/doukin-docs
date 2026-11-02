@@ -21,3 +21,5 @@ details{border:1px solid var(--line);border-radius:14px;margin:15px 0;background
 @media print{.blueprint-diagram{overflow:visible;break-inside:avoid}.blueprint-diagram svg{min-width:0}.blueprint th,.blueprint td{overflow-wrap:anywhere}}
 
 .stack-image{display:block;max-width:100%;height:auto}.blueprint-diagram figcaption{font-size:13px;margin-top:12px}
+
+.example-code{overflow-x:auto;padding:18px;background:#18252a;color:#eef6ef;border-radius:12px;font:13px/1.65 ui-monospace,monospace;white-space:pre;overflow-wrap:normal;margin:16px 0}.example-code code{font:inherit}@media print{.example-code{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f5f3;color:#18252a}}
