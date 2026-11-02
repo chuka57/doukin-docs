@@ -6,7 +6,13 @@
 
 メールをアプリで持たない条件を仮定すると、**N1（招待＋パスキー／Workers＋D1）を優先検証する案**を推奨します。認証保守の負担を抑え、個人OAuthを許容する条件なら**P1（Supabase）を第一代替**として比較します。初期非公開、写真を後にする、毎日の退避・費用監視等は検討用の運用例です。採用結果や確定要件を表しません。招待期限・復旧目標・監視しきい値等も提案値で、サービスの保証値とは異なります。
 
-全19ページで、共通の色・SVG・図解、テーマ間のリンク、折りたたみの補足、利用量の計算機を備えます。[追加調査・試作の例](docs/workflow.html#actions)と[改訂履歴](docs/history.html)から調査の内容を辿れます。
+全24ページで、共通の色・SVG・図解、テーマ間のリンク、折りたたみの補足、利用量の計算機を備えます。[追加調査・試作の例](docs/workflow.html#actions)と[改訂履歴](docs/history.html)から調査の内容を辿れます。
+
+## 推奨を統合した全体設計案
+
+[全体設計案](docs/overall-spec.html)は、N1の推奨を選んだ場合の構成・画面・認証・権限・データ・復旧を、構成図と6つのSVGと表でまとめた検討資料です。Workersの互換性と制約の追加調査（2026-11-01）を含みます。採用済み仕様や実機検証結果ではありません。
+
+原稿は `content/overall-spec.html`、ページ登録は `scripts/guide_blueprint.py`。既存と同じ `python scripts/build_html.py` で共通目次・版・履歴付きHTMLを生成します。
 
 ## 追加調査：個人との紐付きと、ログインの手間を減らす
 
@@ -167,3 +173,16 @@ git diff --exit-code -- docs
 ```
 
 公式ActionはコミットSHAで固定しています。更新はSHAとバージョンコメントを同じPRで変更し、チェック・公開・クローズ削除を確認します。[Pagesの公開設定](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)と[公式deploy-pages](https://github.com/actions/deploy-pages)も参照してください。
+
+
+構成図は [stack-diagram](https://github.com/caru-ini/stack-diagram) スキルのテンプレートと配置ルールに沿って作成。原稿は `content/stack-diagram.html`（ロゴ埋込、ローカルフォント）、PNGはこのHTMLをChromiumで描画したものです。図の変更時はHTMLと明暗2枚のPNGを更新してください。テンプレートのMITライセンスは `content/stack-diagram-LICENSE.txt`。
+
+## Zero Trustを含めた追加案
+
+[Zero Trustを追加する案](docs/zero-trust.html)で、運営・検証だけをAccessで保護するZT-Aと、全会員にAccessを求めるZT-Bを比較します。構成図、情報最小化、二重のセッション、Static Assetsのctx.access制約、契約条件と試験観点を記載。公式確認日は2026-11-02、実際のAccess設定変更はしていません。
+
+### 確認用の入口を統合（2026-11-03）
+
+[全体設計案](docs/overall-spec.html)に基本構成とZero Trustを統合しました。通常表示は4項目、詳細・構成図・出典は折りたたみに保存。旧 `zero-trust.html` は既存リンクを維持する案内ページです。出典確認日は変更していません。
+
+[Workers＋Hono入門](docs/workers-hono.html)：素のWorkersとの比較、ミドルウェア、D1保存・取得の学習用コード。原稿は `scripts/guide_hono.py`、表示するコードは `content/examples/hono/`。本番認証は含まず、npm依存を入れた実行は未検証です。
