@@ -7,7 +7,8 @@
       "summary": [
         "N1の推奨、情報最小化、ログイン保持を図表中心の全体設計案に統合。",
         "Workersの互換性・制約の追加調査と未検証の合格条件を整理。",
-        "stack-diagramの公式ロゴ付き構成図と拡大用HTML・明暗PNGを追加。"
+        "stack-diagramの公式ロゴ付き構成図と拡大用HTML・明暗PNGを追加。",
+        "Cloudflare Accessを運営・検証または全アプリに追加する2案、構成図、本人情報・Workers制約・費用を追加調査。"
       ],
       "pull_requests": [
         5
