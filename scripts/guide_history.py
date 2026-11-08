@@ -27,8 +27,10 @@ def load_history(path=REVISIONS):
         if revised > previous_date:
             raise ValueError('Document revisions must be newest first')
         previous_date = revised
-        if not revision['title'] or not revision['summary'] or not revision['pull_requests']:
-            raise ValueError('Each revision needs a title, summary and PR link')
+        if not revision['title'] or not revision['summary']:
+            raise ValueError('Each revision needs a title and summary')
+        if not isinstance(revision['pull_requests'], list):
+            raise ValueError('PR links must be a list (empty before a PR is created)')
     for entry in [*revisions, *history.get('publishing_changes', [])]:
         date.fromisoformat(entry['date'])
         if any(type(number) is not int or number < 1 for number in entry['pull_requests']):
@@ -41,6 +43,8 @@ def version_anchor(revision):
 
 
 def pr_links(numbers):
+    if not numbers:
+        return '関連PRは未作成（ローカル原稿）。'
     return ' ／ '.join(f'<a href="{PR_BASE}{number}">PR #{number} ↗</a>' for number in numbers)
 
 

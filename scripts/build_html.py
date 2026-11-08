@@ -8,6 +8,7 @@ from guide_content import make_pages, EXTRA_SOURCES
 from guide_ui import icon
 from guide_blueprint import add_blueprint_page
 from guide_hono import add_hono_page
+from guide_proposal_mvp import add_proposal_mvp_page
 from guide_history import add_history_page, load_history, version_anchor
 from guide_minimal_auth import SOURCE_DATES
 
@@ -74,6 +75,7 @@ def main():
     pages = make_pages(bibliography)
     add_blueprint_page(pages)
     add_hono_page(pages)
+    add_proposal_mvp_page(pages)
     history = load_history()
     add_history_page(pages, history)
     for slug, page in pages.items():
