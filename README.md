@@ -8,7 +8,7 @@
 
 全25ページで、共通の色・SVG・図解、テーマ間のリンク、折りたたみの補足、利用量の計算機を備えます。[追加調査・試作の例](docs/workflow.html#actions)と[改訂履歴](docs/history.html)から調査の内容を辿れます。
 
-[MVP機能の個人提案](docs/proposal-mvp.html)は、簡易記録・履歴コピー・テンプレート・応援・体重履歴の範囲を相談する資料です。チームの採用決定ではありません。原稿は `content/proposal-mvp.html`、ページ登録は `scripts/guide_proposal_mvp.py`。Discussion用概要は `content/proposal-mvp-discussion.md`、前提・未決事項は `content/proposal-mvp-handoff.md` に置きます。
+[MVP機能の提案](docs/proposal-mvp.html)は、簡易記録・履歴コピー・テンプレート・応援・体重履歴の範囲を相談する資料です。原稿は `content/proposal-mvp.html`、ページ登録は `scripts/guide_proposal_mvp.py`。Discussion用概要は `content/proposal-mvp-discussion.md`、前提・未決事項は `content/proposal-mvp-handoff.md` に置きます。
 
 ## 推奨を統合した全体設計案
 
