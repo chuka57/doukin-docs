@@ -6,7 +6,15 @@
 
 メールをアプリで持たない条件を仮定すると、**N1（招待＋パスキー／Workers＋D1）を優先検証する案**を推奨します。認証保守の負担を抑え、個人OAuthを許容する条件なら**P1（Supabase）を第一代替**として比較します。初期非公開、写真を後にする、毎日の退避・費用監視等は検討用の運用例です。採用結果や確定要件を表しません。招待期限・復旧目標・監視しきい値等も提案値で、サービスの保証値とは異なります。
 
-全24ページで、共通の色・SVG・図解、テーマ間のリンク、折りたたみの補足、利用量の計算機を備えます。[追加調査・試作の例](docs/workflow.html#actions)と[改訂履歴](docs/history.html)から調査の内容を辿れます。
+全25ページで、共通の色・SVG・図解、テーマ間のリンク、折りたたみの補足、利用量の計算機を備えます。[追加調査・試作の例](docs/workflow.html#actions)と[改訂履歴](docs/history.html)から調査の内容を辿れます。
+
+## 参加・ログイン・招待・復旧の個人提案
+
+[参加・認証の提案](docs/proposal-auth.html)は、招待＋パスキーを主案として検証する個人からの提案です。チームの採用決定ではありません。構成図、参加から失効までのフロー、方式比較、画面例、他テーマの前提・未決事項をまとめています。
+
+原稿は `content/proposal-auth.html`、登録は `scripts/guide_proposal_auth.py`。Discussion用概要は `content/proposal-auth-discussion.md`、引き継ぎは `content/proposal-auth-handoff.md` に置きます。構成図はstack-diagramテンプレートと同梱の汎用図形を使い、原稿 `content/proposal-auth-architecture.html` から、PlaywrightとChromiumを利用できる環境で `python scripts/render_auth_diagram.py` を実行すると明暗PNGを更新できます。通常のHTML生成に追加依存はありません。
+
+未投稿のローカル草案の版は、`content/revisions.json` の先頭に限り `pending_pr: true` と空の `pull_requests` を指定できます。PR作成後に実際の番号を記録し、`pending_pr` を削除して再生成します。架空のPR番号は記録しません。
 
 ## 推奨を統合した全体設計案
 

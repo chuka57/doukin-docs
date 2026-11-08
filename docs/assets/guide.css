@@ -22,4 +22,9 @@ details{border:1px solid var(--line);border-radius:14px;margin:15px 0;background
 
 .stack-image{display:block;max-width:100%;height:auto}.blueprint-diagram figcaption{font-size:13px;margin-top:12px}
 
+/* Personal auth proposal: readable text accompanies every visual. */
+.auth-proposal .cards h2{font-size:19px;margin-bottom:12px}.proposal-architecture{margin:22px 0;border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--surface)}.proposal-architecture figcaption,.proposal-flow figcaption{font-size:13px;color:var(--muted);margin-top:12px}.proposal-keypoints{border-left:3px solid var(--green);padding-left:16px}.proposal-flow{max-width:440px;margin:22px auto;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px}.proposal-flow svg{width:100%;height:auto;display:block}.proposal-action{display:block;border:1px solid var(--green);border-radius:12px;padding:12px;margin:18px 0;color:var(--green);background:var(--sage);font-weight:700;font-size:14px}.proposal-screens .card{border-top:4px solid var(--green)}
+@media(max-width:760px){.proposal-flow{padding:8px}.proposal-architecture{overflow:auto}.proposal-architecture img{min-width:680px}.proposal-keypoints{font-size:14px}}
+@media print{.proposal-architecture{overflow:visible}.proposal-architecture img{min-width:0}.proposal-flow{max-width:350px;break-inside:avoid}}
+
 .example-code{overflow-x:auto;padding:18px;background:#18252a;color:#eef6ef;border-radius:12px;font:13px/1.65 ui-monospace,monospace;white-space:pre;overflow-wrap:normal;margin:16px 0}.example-code code{font:inherit;color:inherit;background:transparent;padding:0;border-radius:0}@media print{.example-code{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f5f3;color:#18252a}}

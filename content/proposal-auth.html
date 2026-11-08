@@ -1,0 +1,104 @@
+<div class="auth-proposal">
+<aside class="note green"><div class="note-symbol" aria-hidden="true">案</div><div><strong>私の提案：運営の個別招待＋パスキーを主案として検証する。</strong><p>会社アカウントには依存せず、氏名・メール・電話の名簿をアプリに作らない。日常はログインを保持し、紛失時は個人的な連絡経路で確認して復旧する案です。以下はすべてチーム未合意の提案です。</p></div></aside>
+<div class="cards">
+<article class="card"><h2>提案</h2><p>運営だけが個別招待を発行。招待の引き換えと認証手段の登録で利用開始し、その後の運営承認は挟まない。</p></article>
+<article class="card"><h2>理由</h2><p>漏えい時の影響を減らすため、そもそも保持する情報を減らしたい。内輪で広める規模を想定し、一定の手動対応は許容する。</p></article>
+<article class="card"><h2>代替案</h2><p>個人OAuthや、本人が保管する復旧手段も比較する。仕組み・保持情報・運営負担を確認してから判断する。</p></article>
+<article class="card"><h2>相談したい点</h2><p>招待の誤送信・転送対策、旧アカウントとの対応確認、期限と失効の詳細。方式の実機検証を経て要件を詰めたい。</p></article>
+</div>
+
+<section class="chapter"><h2 id="scope">1. 提案の範囲と、情報を減らす目的</h2>
+<p>参加者は同じ期の同期を中心に想定します。ただし所属や在籍状況で機械的に限定するのではなく、運営が参加してほしい相手にだけ招待を渡す案です。一般公開の自己登録や、参加者による招待の発行は当初設けません。</p>
+<p><strong>目的は、メールなし自体ではなく、漏えい時に本人との結び付けに使える情報を減らすこと。</strong>認証サービス・ログ・バックアップに何が残るかも確認します。表示名、記録、日時、共有関係から本人が分かる場合があるため、「個人情報を一切持たない」「漏れても問題ない」とは扱いません。</p>
+<p>会社アカウントを登録・ログイン・復旧の前提にしません。開発・運用側も会社アカウントへの依存を避ける条件を他テーマに引き継ぎます。個人のApple・Google等に同期するパスキーは、アプリがメールを保持しなくても、その提供元のアカウントに依存する場合があります。</p>
+<figure class="proposal-architecture"><img class="stack-image" src="assets/proposal-auth-architecture.png" width="1600" height="864" alt="利用者の端末から認証と会員状態の確認を経てデータへ進む。運営はアプリ外の個人的な連絡経路で本人を確認し、運営用の権限を通して招待・復旧・停止を行う。"><figcaption>役割の構成案。実装サービスは未選定です。運営が本人を知っていることと、アプリに連絡先名簿を保存することを分けます。</figcaption></figure>
+<div class="proposal-keypoints"><p><strong>端末：</strong>パスキーで認証し、端末ごとのセッションで日常利用。</p><p><strong>アプリ：</strong>認証後も会員状態と各データの権限を確認。</p><p><strong>運営：</strong>連絡経路はアプリ外。管理操作には別途運営権限が必要。</p></div>
+</section>
+
+<section class="chapter"><h2 id="journey">2. 参加 → 日常利用 → 復旧 → 失効</h2>
+<figure class="diagram"><ol>
+<li><div class="diagram-icon" aria-hidden="true">1</div><strong>個別に招待</strong><span>運営から既存の連絡経路で渡す</span></li>
+<li><div class="diagram-icon" aria-hidden="true">2</div><strong>引き換えて参加</strong><span>パスキー登録・追加承認なし</span></li>
+<li><div class="diagram-icon" aria-hidden="true">3</div><strong>日常利用</strong><span>有効なセッションで入力を省く</span></li>
+<li><div class="diagram-icon" aria-hidden="true">4</div><strong>端末追加・復旧</strong><span>認証、または本人と旧会員を確認</span></li>
+<li><div class="diagram-icon" aria-hidden="true">5</div><strong>失効・停止</strong><span>端末単位／全端末の権限を止める</span></li>
+</ol><figcaption>通常利用を軽くし、招待・端末変更・紛失・停止の場面で必要な確認をする要件案です。</figcaption></figure>
+<div class="cards">
+<article class="card"><h3>参加：招待を持つ人が入れる</h3><p>相手ごとに期限付き・一度だけ使える招待を発行。パスキー登録と引き換えを完了して会員化します。期限切れ・使用済み・取り消し済みは利用開始できない要件にします。</p><p>招待の転送や誤送信では別人が先に引き換えるリスクが残ります。運営が個別に渡すことだけで本人確認が保証されるとは扱いません。引き換え前の確認・再発行手順は相談事項です。</p></article>
+<article class="card"><h3>日常：通常は入力なし</h3><p>自分の端末ではログインを保持。有効なセッション・有効な会員状態なら利用画面へ進みます。期限切れなら再認証し、履歴は同じ会員に戻します。</p><p>端末追加など重要操作では再認証する案です。無操作期限・絶対期限の具体値は未決。Cookie消去やブラウザの保存制限で保持できない場合もあります。</p></article>
+<article class="card"><h3>追加・紛失：端末と認証手段を分ける</h3><p>追加端末で使えるパスキーがあれば同じ会員として認証し、新しいセッションを作る検証案です。使えなければ復旧経路へ進みます。既存端末による追加承認は代替候補で、採用未決です。</p><p>端末紛失時は対象セッションに加え、その端末で使われ得る認証手段も確認して無効化します。同期パスキーがあるため、「端末1台＝パスキー1個」とは限りません。</p></article>
+<article class="card"><h3>停止：入れなくする処理を先に</h3><p>本人の依頼、誤招待、不正利用等への運営判断で会員を停止。全端末のセッションを失効し、新しい認証でも利用を再開できない要件です。</p><p>停止は削除とは別です。停止理由の基準・異議の連絡・再開手順は相談事項。退会後のデータやバックアップの扱いは他テーマで決めます。</p></article>
+</div>
+<h3>全端末を失った場合の分岐</h3>
+<figure class="proposal-flow">
+<svg viewBox="0 0 360 820" role="img" aria-labelledby="recovery-title recovery-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="recovery-title">旧アカウントとの対応を確認できた場合だけ復旧するフロー</title>
+<desc id="recovery-desc">使えるパスキー等があれば再認証。なければ個人的な連絡経路で運営に相談し、本人と旧アカウントとの対応を確認する。確認できれば古いセッションと認証手段を失効して新しい認証手段を登録し、同じ履歴へ戻る。確認できなければ旧データを渡さず、必要なら新規招待で再参加する。</desc>
+<defs><marker id="recovery-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#355f4c"/></marker></defs>
+<g fill="none" stroke="#355f4c" stroke-width="2" marker-end="url(#recovery-arrow)"><path d="M180 74V110"/><path d="M180 190V245"/><path d="M180 319V360"/><path d="M180 434V470"/><path d="M180 558V602"/><path d="M20 399H5V767H20" stroke-dasharray="5 4"/></g>
+<g fill="#f5f7ef" stroke="#8ca38d"><rect x="20" y="10" width="320" height="64" rx="12"/><rect x="20" y="110" width="320" height="80" rx="12"/><rect x="20" y="245" width="320" height="74" rx="12"/><rect x="20" y="360" width="320" height="74" rx="12"/><rect x="20" y="470" width="320" height="88" rx="12"/><rect x="20" y="602" width="320" height="82" rx="12"/><rect x="20" y="732" width="320" height="70" rx="12"/></g>
+<g fill="#243b30" font-size="17" text-anchor="middle" font-family="'Noto Sans CJK JP',sans-serif">
+<text x="180" y="49">全端末・ログイン状態を失った</text>
+<text x="180" y="142">使えるパスキー等がある？</text><text x="180" y="172" font-size="15">ある → 再認証して同じ会員へ</text>
+<text x="180" y="225" font-size="15">ない ↓</text>
+<text x="180" y="276">個人的な連絡経路で</text><text x="180" y="302">運営に復旧を相談</text>
+<text x="180" y="391">本人と旧アカウントの対応を確認</text><text x="180" y="418" font-size="14">表示名・記録内容だけで渡さない</text>
+<text x="180" y="498">確認できた場合</text><text x="180" y="523" font-size="15">古いセッション・認証手段を失効</text><text x="180" y="546" font-size="15">本人にだけ新しい登録経路を渡す</text>
+<text x="180" y="631">新しい認証手段を登録して復帰</text><text x="180" y="658" font-size="15">同じ会員ID・履歴へ戻す</text>
+<text x="180" y="712" font-size="14">確認できない場合の別経路</text>
+<text x="180" y="760">旧データを渡さない</text><text x="180" y="786" font-size="15">必要なら新規招待で再参加</text>
+</g></svg>
+<figcaption>手動復旧の限界：本人だと分かることと、戻すべき旧アカウントが分かることの両方が必要です。確認できない場合は左の破線を通り、旧データを渡さず再参加を案内します。</figcaption></figure>
+<p><strong>相談したい点：</strong>旧アカウントを何で照合するかは未決です。アプリ専用IDは識別用であり、知っているだけで復旧できる秘密にはしません。連絡先の名簿を作らず確認できる手順と、運営権限の乗っ取り・なりすましへの対策を検証します。復旧用の経路も期限付き・一度限りとし、記録本文・身分証・秘密の値を連絡ログへ転記しない案です。</p>
+</section>
+
+<section class="chapter"><h2 id="information">3. 何を保持し、何を集めないか</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="保持情報の提案"><table><caption>提案する情報の最小化。保存項目と保持期間の最終設計は未決です。</caption><thead><tr><th scope="col">区分</th><th scope="col">扱いの提案</th><th scope="col">残る注意点</th></tr></thead><tbody>
+<tr><th scope="row">氏名・連絡先・会社情報</th><td>氏名、メール、電話、社員番号、所属の名簿をアプリに作らない。会社アカウントを使わない。</td><td>個人的な連絡経路や運営の記憶には本人との結び付きが残る。</td></tr>
+<tr><th scope="row">会員・表示</th><td>ランダムなアプリ専用ID、会員状態。表示名が必要なら本名を必須にしない。</td><td>表示名・アイコン等の必須項目と公開範囲は別テーマの未決事項。</td></tr>
+<tr><th scope="row">認証・セッション</th><td>パスキーの公開鍵等の検証情報、会員との対応、端末別セッションの検証値・期限・失効状態。</td><td>秘密鍵や端末の生体情報をアプリへ送る前提にしない。認証ライブラリと保存仕様を検証する。</td></tr>
+<tr><th scope="row">招待・復旧・管理記録</th><td>期限・使用状態・取り消し状態、必要最小限の管理操作記録。生の招待秘密・セッション秘密はログへ出さない。</td><td>追跡できる範囲と最小化の両立が必要。記録項目・保持期間・閲覧権限は未決。</td></tr>
+<tr><th scope="row">記録・基盤・バックアップ</th><td>本来必要な記録と、基盤・委託先が処理するIP等も棚卸しする。</td><td>メールを省くだけでは匿名化にならない。身体情報の保持・共有・削除は別途決める。</td></tr>
+</tbody></table></div>
+<p>認証の復旧は「同じ会員として入れるようにする」ことです。消した記録の復元や、暗号化されたデータの復号を保証するものではありません。</p>
+</section>
+
+<section class="chapter"><h2 id="comparison">4. 情報最小化／使いやすさ／運営負担で比較</h2>
+<p>下表は設計上の比較で、実装・実機評価の結果ではありません。この比較で技術スタック全体の採用を決定しません。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="認証候補の比較"><table><caption>主案は招待＋パスキー。復旧の備えと個人OAuthを代替候補として比較します。</caption><thead><tr><th scope="col">候補</th><th scope="col">情報最小化</th><th scope="col">使いやすさ</th><th scope="col">運営負担</th></tr></thead><tbody>
+<tr><th scope="row">主案：招待＋パスキー＋手動復旧</th><td>アプリに連絡先名簿を作らずに設計できる。運営との個人的な結び付きは残る。</td><td>日常は保持セッション。全喪失時は連絡と確認を待つ。同期パスキーは提供元への依存もある。</td><td>招待・失効の管理と、例外時の本人・旧会員の確認が必要。復旧の即時対応は保証しない。</td></tr>
+<tr><th scope="row">追加候補：予備パスキー／復旧コード</th><td>連絡先を追加せず、本人の所持する手段で復旧する設計案。</td><td>運営を待たず戻れる可能性。別保管の手間があり、全喪失なら主案と同じ限界。</td><td>問い合わせを減らし得るが、再発行・失効・盗難・同時使用への対策が増える。必須化は未決。</td></tr>
+<tr><th scope="row">代替：個人OAuth</th><td>個人の提供元IDと結び付く。自前DBで省いても、認証基盤にメール等が残る場合がある。</td><td>持っている個人アカウントで入れる。提供元の停止・紛失の影響を受け、アプリ側の参加確認は別に必要。</td><td>認証実装の一部を提供元へ任せられる。属性・ログ・退会時の削除・提供元での復旧範囲の確認は残る。</td></tr>
+</tbody></table></div>
+<div class="cards"><article class="card"><h3>個人OAuthは何をする？</h3><p>例として、個人Googleで本人確認し、結果をdoukinが受け取ります。doukinへGoogleのパスワードを渡す方式ではありません。「同じ人がログインした」と分かることと、「招待された人が参加できる」ことは別です。</p></article><article class="card"><h3>なぜ主案にしない？</h3><p>今回は、漏えいに備えて保持情報を減らしたいという目的から、まずパスキー案を検証したいと考えています。OAuthの取得属性・認証サービスの保存内容を比較した後に見直す余地は残します。会社OAuthは候補に含めません。</p></article></div>
+<p class="subtle">方式の仕組み・制約の背景は、既存の<a href="auth.html">認証比較</a>、<a href="minimization.html">情報最小化</a>、<a href="sessions.html">ログイン保持</a>を参照。各資料の出典と確認日を引き継ぎ、今回サービス仕様を再確認したとは扱いません。</p>
+</section>
+
+<section class="chapter"><h2 id="screens">5. 利用者に伝える画面例</h2>
+<p>説明用の画面例です。動作する登録画面ではなく、UI全体・文言・項目の採用は未決です。</p>
+<div class="cards proposal-screens">
+<article class="card"><p class="eyebrow">参加 / 画面例</p><h3>招待から参加する</h3><p>この招待は1回だけ使えます。会社アカウントの登録は不要です。</p><span class="proposal-action">パスキーを作って参加</span><p class="subtle">氏名・メール・電話の入力欄を設けない案。利用開始後の運営承認はありません。</p></article>
+<article class="card"><p class="eyebrow">日常 / 画面例</p><h3>いつもの利用画面へ</h3><p>有効なログイン状態なら入力を省きます。期限切れのときは同じアカウントへ再認証します。</p><span class="proposal-action">設定：ログイン中の端末</span><p class="subtle">重要操作は再認証。端末一覧の表示名や「全端末からログアウト」の詳細は検証する案です。</p></article>
+<article class="card"><p class="eyebrow">復旧 / 画面例</p><h3>ログインできないとき</h3><p>使えるパスキー等がなければ、普段の個人的な連絡経路で運営に相談してください。</p><span class="proposal-action">使えるパスキーで再認証</span><p class="subtle">本人と旧アカウントの対応が確認できない場合、旧データは引き継げません。秘密や記録本文は送らないでください。</p></article>
+</div></section>
+
+<section class="chapter"><h2 id="handoff">6. 他テーマへ引き継ぐ前提・仮定</h2>
+<p>以下はこの提案を評価するための前提・仮定です。他テーマの採用結果を先取りしません。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="他テーマへの引き継ぎ"><table><caption>今回決めないことと、他テーマで確認したい条件</caption><thead><tr><th scope="col">テーマ</th><th scope="col">前提・仮定／未決事項</th></tr></thead><tbody>
+<tr><th scope="row">記録・プロフィール・共有</th><td>会員制の閲覧を仮定。実際の共有対象、プロフィール項目、身体情報の保持、初期公開範囲、非公開の存在を隠すかは別途検討。認証成功だけで全データを読める設計にはしない。</td></tr>
+<tr><th scope="row">基盤・技術・費用</th><td>パスキー・端末別セッション・会員停止・権限確認を実現できることを評価条件とする。ホスト、DB、言語、認証ライブラリ、運営用の追加認証、予算は未選定。会社アカウントに依存しない条件を引き継ぐ。</td></tr>
+<tr><th scope="row">削除・退会・バックアップ</th><td>停止と削除を分ける案。退会時の記録・共有・管理ログ・バックアップの保持期間、削除済みデータを復活させない方法は未決。認証復旧とデータ復元は別。</td></tr>
+<tr><th scope="row">端末・UI・運営</th><td>スマートフォンでの利用と、内輪の規模で一定の手動対応を許容する比較条件。実際の担当者・対応時間・期限・体制を確定しない。iOS／Android、PWA、共有端末、会社管理端末の扱いは別途確認。</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="chapter"><h2 id="questions">7. チームに相談したい点と、検証の入口</h2>
+<ol class="steps">
+<li><div><h3>招待の引き換えだけで始める条件</h3><p>追加承認なしの手軽さを優先してよいか。個別連絡、期限、単回使用、取り消し、誤送信への対応をどう組み合わせるか。期限の数値は未決。</p></div></li>
+<li><div><h3>連絡先名簿を作らない手動復旧</h3><p>本人と旧会員の対応を何で確認するか。確認できない場合は旧データを渡さない境界でよいか。運営用の権限・記録・登録経路の安全性も検証する。</p></div></li>
+<li><div><h3>保持期間と失効の操作</h3><p>ログインの無操作・絶対期限、共有端末で保持しない操作、端末別失効、全端末失効、停止・再開の条件を詰める。具体値や復旧対応時間の保証は置かない。</p></div></li>
+<li><div><h3>主案を実機で検証してから選ぶ</h3><p>招待の二重引き換え・期限切れ・取り消し、別端末へのログイン、全喪失からの復旧を試す。復旧後の古いセッション・認証手段、停止会員、権限外の記録を拒否できることも確認する。今回の資料制作では認証システム自体の試作は行っていない。</p></div></li>
+</ol>
+<p>提案の採否や実施範囲はチームで相談します。既存の全体設計案の推奨を、そのまま私の意見やチームの決定として採用するページではありません。</p>
+</section>
+</div>
