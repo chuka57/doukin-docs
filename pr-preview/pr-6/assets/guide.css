@@ -24,7 +24,12 @@ details{border:1px solid var(--line);border-radius:14px;margin:15px 0;background
 
 .example-code{overflow-x:auto;padding:18px;background:#18252a;color:#eef6ef;border-radius:12px;font:13px/1.65 ui-monospace,monospace;white-space:pre;overflow-wrap:normal;margin:16px 0}.example-code code{font:inherit;color:inherit;background:transparent;padding:0;border-radius:0}@media print{.example-code{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f5f3;color:#18252a}}
 
-/* Personal MVP proposal: keep diagrams readable with local scrolling. */
+/* MVP proposal: use vertical diagrams and labelled table rows on small screens. */
+.mvp-summary{background:var(--sage);border:1px solid #cad8c4;border-radius:var(--radius);padding:20px 24px;margin:0 0 20px}
+.mvp-summary>strong{font-size:18px}.mvp-summary ul{padding-left:20px;margin:10px 0}.mvp-summary li{margin:7px 0;font-size:14px}.mvp-summary p{font-size:13px;color:var(--muted)}
+.mvp-page .page-toc{margin:0 0 28px}.mvp-page .page-toc .on-page{margin:0;padding:14px;border:0}
+.mvp-compact{display:none}
+.mvp-cell-label{display:none}
 .mvp-proposal .card .tag{position:static;display:inline-block;margin:0 0 12px}
 .mvp-visual{overflow-x:auto;margin:22px 0;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
 .mvp-visual svg{display:block;width:100%;min-width:650px;height:auto;color:var(--green)}
@@ -46,5 +51,23 @@ details{border:1px solid var(--line);border-radius:14px;margin:15px 0;background
 .mvp-mock-link{margin:14px 0;color:var(--green);font-size:14px}
 .mvp-flow{margin:22px 0;padding:22px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
 .mvp-flow ol{padding-left:25px}.mvp-flow li{margin:12px 0;padding-left:5px}.mvp-flow p{font-size:14px;color:var(--muted)}
-@media(max-width:680px){.mvp-screens{grid-template-columns:1fr}.mvp-phone{padding:18px}.mvp-visual{padding:12px}.mvp-flow{padding:18px}.mvp-proposal .card .tag{margin-bottom:12px}}
+@media screen and (max-width:1000px){
+  .mvp-visual{overflow:visible;padding:16px}.mvp-visual>svg{display:none}.mvp-compact{display:block}
+  .mvp-vertical{list-style:none;margin:0;padding:0}.mvp-vertical>li{position:relative;text-align:center;padding:16px 12px;background:var(--sage);border:1px solid var(--line);border-radius:12px}
+  .mvp-vertical>li+li{margin-top:30px}.mvp-vertical>li+li::before{content:"↓";position:absolute;top:-30px;left:0;right:0;color:var(--green);font-size:20px;line-height:28px}
+  .mvp-compact strong,.mvp-compact b{display:block;font-size:15px}.mvp-compact span{display:block;margin-top:5px;font-size:13px;color:var(--muted)}
+  .mvp-branches{display:grid;gap:10px;margin-top:12px}.mvp-branches>div{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:12px}
+  .mvp-relations{margin:0}.mvp-relations>div{padding:12px 0;border-bottom:1px solid var(--line)}.mvp-relations>div:first-child{padding-top:0}.mvp-relations>div:last-child{border:0;padding-bottom:0}.mvp-relations dt{font-size:14px}.mvp-relations dd{font-size:13px;margin:5px 0 0}
+  .mvp-proposal .table-wrap{overflow:visible}.mvp-proposal table,.mvp-proposal tbody,.mvp-proposal tr,.mvp-proposal th,.mvp-proposal td{display:block;width:100%;min-width:0}
+  .mvp-proposal caption{display:block;width:100%}.mvp-proposal thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .mvp-proposal tbody tr+tr{border-top:1px solid var(--line)}.mvp-proposal tbody th{padding:14px 16px 8px;background:var(--sage);border:0;font-size:15px}
+  .mvp-proposal tbody td{padding:10px 16px;border:0;font-size:14px}.mvp-proposal tbody td:last-child{padding-bottom:16px}
+  .mvp-proposal .mvp-cell-label{display:block;color:var(--green);font-size:12px;font-weight:700;margin-bottom:4px}
+}
+@media screen and (max-width:760px){
+  .mvp-page .hero{display:block;padding:22px 0 18px}.mvp-page .hero>div{display:block}.mvp-page .hero h1{font-size:24px;margin-top:10px}.mvp-page .hero .mascot{display:none}
+  .mvp-summary{padding:16px}.mvp-summary>strong{font-size:16px}.mvp-summary ul{margin:8px 0}.mvp-page .scope-note{font-size:12px;margin-bottom:14px}
+  .mvp-proposal .chapter>h2{position:relative;padding-left:20px;font-size:20px}.mvp-proposal .chapter>h2::before{position:absolute;left:0;top:4px;margin:0}
+  .mvp-screens{grid-template-columns:1fr}.mvp-phone{padding:18px}.mvp-flow{padding:18px}.mvp-proposal .card .tag{margin-bottom:12px}
+}
 @media print{.mvp-visual{overflow:visible;break-inside:avoid}.mvp-visual svg{min-width:0}.mvp-phone,.mvp-flow{break-inside:avoid}.mvp-screens{grid-template-columns:repeat(2,minmax(0,1fr))}}
