@@ -18,7 +18,7 @@ def load_history(path=REVISIONS):
         raise ValueError('At least one document revision is required')
     versions = set()
     previous_date = date.max
-    for revision in revisions:
+    for index, revision in enumerate(revisions):
         version = revision['version']
         if not re.fullmatch(r'\d+\.\d+', version) or version in versions:
             raise ValueError('Document versions must be unique numbers such as 0.2')
@@ -27,7 +27,10 @@ def load_history(path=REVISIONS):
         if revised > previous_date:
             raise ValueError('Document revisions must be newest first')
         previous_date = revised
-        if not revision['title'] or not revision['summary'] or not revision['pull_requests']:
+        pending = revision.get('pending_pr') is True
+        if pending and (index != 0 or revision['pull_requests']):
+            raise ValueError('Only the newest revision may await its first PR')
+        if not revision['title'] or not revision['summary'] or (not revision['pull_requests'] and not pending):
             raise ValueError('Each revision needs a title, summary and PR link')
     for entry in [*revisions, *history.get('publishing_changes', [])]:
         date.fromisoformat(entry['date'])
@@ -41,6 +44,8 @@ def version_anchor(revision):
 
 
 def pr_links(numbers):
+    if not numbers:
+        return 'PR未作成（ローカル草案）'
     return ' ／ '.join(f'<a href="{PR_BASE}{number}">PR #{number} ↗</a>' for number in numbers)
 
 
