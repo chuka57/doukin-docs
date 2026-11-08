@@ -49,13 +49,16 @@ def render(slug, page, pages, bibliography, revision):
         body += f'<details class="sources"><summary>このページの一次情報・出典（{len(refs)}件）</summary><p>出典確認日：{source_dates}（日本時間）。各項目にも確認日を記載。公式の仕様と、今回の設計提案を分けて読もう。</p><ul>{items}</ul></details>'
     toc = re.findall(r'<h2 id="([^"]+)">(.*?)</h2>', body)
     toc_html = '<nav class="on-page" aria-label="このページの目次">' + ''.join(f'<a href="#{key}">{re.sub("<[^>]+>", "", title)}</a>' for key, title in toc) + '</nav>' if toc else ''
+    if toc_html and page.get('compact_toc'):
+        toc_html = '<details class="page-toc"><summary>このページの目次</summary>' + toc_html + '</details>'
+    body_class = f' class="{escape(page["body_class"], quote=True)}"' if page.get('body_class') else ''
     related = ''.join(f'<a class="next-link" href="{key}.html">{icon(pages[key]["icon"])}<span>{pages[key]["nav"]}</span><span aria-hidden="true">↗</span></a>' for key in page.get('related', []))
     return f'''<!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="{escape(page['intro'], quote=True)}">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; connect-src 'none'">
 <title>{escape(re.sub('<[^>]+>', '', page['title']))} | doukin の検討ノート</title><link rel="icon" type="image/svg+xml" href="assets/guide.svg"><link rel="stylesheet" href="assets/guide.css"><script src="assets/guide.js" defer></script></head>
-<body><a class="skip" href="#main">本文へすすむ</a>
+<body{body_class}><a class="skip" href="#main">本文へすすむ</a>
 <header class="mobile-head"><a href="index.html">doukin <span>の検討ノート</span></a><button id="menu-button" type="button" aria-controls="sidebar" aria-expanded="false">目次をひらく</button></header>
 <aside class="sidebar" id="sidebar"><a class="brand" href="index.html">{icon('book')}<span>doukin<small>みんなで選ぶ、技術の手引き</small></span></a>
 <p class="edition"><a href="history.html#{version_anchor(revision)}">資料 v{escape(revision['version'])}</a> / 調査・検討用</p><nav aria-label="資料全体の目次">{navigation(pages, slug)}</nav>
@@ -63,7 +66,7 @@ def render(slug, page, pages, bibliography, revision):
 <main id="main"><div class="topline"><a href="index.html">検討ノート</a><span>／ {escape(page['nav'])}</span><span class="status">調査・検討用</span></div>
 <header class="hero"><div><p class="eyebrow">{page['kicker']}</p><h1>{page['title']}</h1><p class="intro">{page['intro']}</p><div class="meta"><span>{page['issue']}</span><a class="revision-link" href="history.html#{version_anchor(revision)}">資料 v{escape(revision['version'])} · 改訂 {escape(revision['date'])}</a>{f'<span>出典確認 {source_dates} · JST</span>' if refs else ''}</div></div>
 <img class="mascot" src="assets/guide.svg" width="220" height="190" alt="" aria-hidden="true"></header>
-<aside class="scope-note" aria-label="資料の位置づけ">公開用の調査・検討資料です。推奨や数値は比較のための提案で、アプリの確定事項・採用結果・実運用の記録は掲載しません。</aside>
+{page.get('lead', '')}<aside class="scope-note" aria-label="資料の位置づけ">公開用の調査・検討資料です。推奨や数値は比較のための提案で、アプリの確定事項・採用結果・実運用の記録は掲載しません。</aside>
 {toc_html}{body}
 <nav class="related" aria-label="関連するページ"><p class="eyebrow">つづきは、こちらから</p><div>{related}</div></nav>
 <footer>doukin の検討ノート · 公開用の調査・検討資料<br><a href="history.html#{version_anchor(revision)}">資料 v{escape(revision['version'])} · 改訂履歴</a> <span>／</span> <a href="sources.html">出典・用語・レビュー記録</a> <span>／</span> <a href="index.html">表紙にもどる</a></footer></main></body></html>'''
