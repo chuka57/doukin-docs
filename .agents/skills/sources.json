@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "skills": [
+    {
+      "name": "yomiyasu",
+      "repository": "https://github.com/nanaism/yomiyasu",
+      "commit": "db78b9bc5e868549b517a037df7a4d1c93edac23",
+      "path": "skills/yomiyasu",
+      "local_path": "yomiyasu"
+    },
+    {
+      "name": "visual-explainer",
+      "repository": "https://github.com/nicobailon/visual-explainer",
+      "commit": "9d5f880b7e8e0a9a80c890b8e1bb6918b68481ad",
+      "path": "plugins/visual-explainer",
+      "local_path": "visual-explainer",
+      "additional_files": {
+        "LICENSE": "LICENSE"
+      }
+    },
+    {
+      "name": "stack-diagram",
+      "repository": "https://github.com/caru-ini/stack-diagram",
+      "commit": "9175bde8449cc8f5390d6eb72ecc2e1f5bfe21f3",
+      "path": "skills/stack-diagram",
+      "local_path": "stack-diagram"
+    }
+  ]
+}

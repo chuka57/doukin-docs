@@ -58,6 +58,14 @@
 
 ## 変更・生成する
 
+### AIエージェントで資料を作る
+
+日本語を推敲する `yomiyasu`、図解中心のHTMLを作る `visual-explainer`、技術ロゴ付き構成図を作る `stack-diagram` を [.agents/skills/](.agents/skills/README.md) に同梱しています。Codexはこの配置を読み込み、Claude Code向けには `.claude/skills/` から同じファイルを参照します。
+
+使い方・追加の実行環境・配布元・更新方法は [スキルの案内](.agents/skills/README.md) を参照してください。スキルを使う場合も、以下の原稿編集・HTML生成手順に従います。
+
+### HTMLを生成する
+
 Python 3の標準ライブラリだけで生成できます。Pandocやアプリ本体の依存追加は不要です。
 
 ```sh
