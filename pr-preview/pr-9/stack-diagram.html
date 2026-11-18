@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja"><!-- set lang to the label language, e.g. "ja" for Japanese labels -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>doukin / 推奨構成 N1</title>
+<style>
+/* engineered-paper theme (cool near-white, one accent, mono labels)
+ * All colors/fonts flow through the :root tokens — tweak tokens, not scattered values. */
+:root {
+  color-scheme: light;
+  --color-paper:   oklch(98.5% 0.004 250);
+  --color-paper-2: oklch(96.5% 0.005 252);
+  --color-rule:    oklch(93% 0.007 255);    /* graph-paper grid */
+  --color-rule-2:  oklch(83% 0.011 255);    /* hairline borders */
+  --color-muted:   oklch(56% 0.013 255);
+  --color-neutral: oklch(46% 0.015 255);    /* neutral edges */
+  --color-ink-2:   oklch(34% 0.018 257);
+  --color-ink:     oklch(24% 0.020 258);
+  --color-accent:  oklch(58% 0.20 256);     /* primary-flow edges, one signal color */
+  --color-graphite:oklch(24% 0.018 260);    /* dark tile for white/light logos */
+  /* group palette A — warm vendor (e.g. Cloudflare/AWS orange). Retune hue per vendor. */
+  --color-g1:      oklch(68% 0.15 55);
+  --color-g1-soft: oklch(78% 0.12 55);
+  --color-g1-ink:  oklch(52% 0.14 50);
+  --color-g1-tint: oklch(96.5% 0.015 60 / .5);
+  /* group palette B — accent-family (repo/tooling groups) */
+  --color-accent-soft: oklch(58% 0.20 256 / .45);
+  --color-accent-tint: oklch(97% 0.012 256 / .5);
+  /* JP glyphs: name JP faces explicitly — bare sans-serif fallback on Linux picks Chinese-variant CJK */
+  --font-display: "Geist", "Hiragino Sans", "Yu Gothic UI", "Noto Sans CJK JP", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Hiragino Sans", "Yu Gothic UI", "Noto Sans CJK JP", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --space-xs: 4px; --space-sm: 8px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px;
+  --radius-card: 10px; --radius-tile: 12px;
+  /* translucent veil behind node label text: matches paper on plain canvas, blends into
+     group tints instead of punching an off-color rectangle through them */
+  --color-veil: oklch(98.5% 0.004 250 / .78);
+}
+/* Dark variant: set data-theme="dark" on <html>. Tiles stay white — brand logos are drawn
+   for light grounds. Everything (arrowheads via context-stroke, legend via border-color)
+   follows the tokens, so toggling the attribute is all it takes. */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-paper:   oklch(18% 0.012 255);
+  --color-paper-2: oklch(22% 0.014 255);
+  --color-rule:    oklch(24% 0.013 255);
+  --color-rule-2:  oklch(38% 0.018 255);
+  --color-muted:   oklch(65% 0.014 255);
+  --color-neutral: oklch(72% 0.012 255);
+  --color-ink-2:   oklch(85% 0.010 255);
+  --color-ink:     oklch(94% 0.008 255);
+  --color-accent:  oklch(70% 0.16 256);
+  --color-graphite:oklch(31% 0.020 260);
+  --color-g1:      oklch(70% 0.14 55);
+  --color-g1-soft: oklch(58% 0.11 55);
+  --color-g1-ink:  oklch(78% 0.12 55);
+  --color-g1-tint: oklch(26% 0.030 60 / .40);
+  --color-accent-soft: oklch(70% 0.16 256 / .5);
+  --color-accent-tint: oklch(28% 0.045 256 / .35);
+  --color-veil: oklch(18% 0.012 255 / .78);
+}
+
+
+/* JetBrains Mono reads cramped at 9.5–11px; open every mono label slightly */
+.kicker, .node .role, .el, .legend, .foot { letter-spacing: 0.04em; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { overflow-x: clip; }
+body { background: var(--color-paper); color: var(--color-ink); font-family: var(--font-body); padding: var(--space-xl) var(--space-lg) var(--space-2xl); }
+.page { width: fit-content; max-width: 100%; margin: 0 auto; }
+
+.head { display:grid; grid-template-columns: 1fr auto; gap: var(--space-lg); align-items:end;
+  padding-bottom: var(--space-md); border-bottom: 1px solid var(--color-rule-2); margin-bottom: var(--space-lg); }
+.kicker { font-family: var(--font-mono); font-size: 11px;
+  color: var(--color-accent); margin-bottom: var(--space-sm); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(22px, 4vw, 30px);
+  letter-spacing: -0.005em; line-height: 1.2; }
+.lede { max-width: 300px; font-size: 12px; line-height: 1.7; color: var(--color-neutral); padding-bottom: 2px; }
+@media (max-width: 680px) { .head { grid-template-columns: 1fr; align-items:start; } .lede { max-width:none; } }
+
+.scroller { overflow-x: auto; border: 1px solid var(--color-rule-2); border-radius: var(--radius-card); }
+/* CANVAS SIZE: set width/height here AND on svg.edges AND its viewBox — keep the three in sync */
+.canvas { position: relative; width: 1000px; height: 700px; background: var(--color-paper);
+  background-image:
+    linear-gradient(var(--color-rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-rule) 1px, transparent 1px);
+  background-size: 24px 24px; background-position: -1px -1px; }
+
+.group { position:absolute; border-radius: var(--radius-tile); }
+/* group labels are names like node names (display font), written in the brand's own case.
+   They sit inside the top-left corner, so the border stays unbroken and needs no mask */
+.g-label { position:absolute; top:12px; left:12px; display:flex; align-items:center; gap:6px;
+  font-family: var(--font-display); font-size: 12px; font-weight: 600;
+  color: var(--color-neutral); white-space: nowrap; }
+.g-label img { width: 14px; height: 14px; }
+/* group labels sit on the group's tint, not on a white tile: in the dark theme swap in the brand's own
+   dark-theme logo (lt/dk pair), or give a mark with black parts a white plate */
+.g-label img.dk, .tile img.dk { display:none; }
+[data-theme="dark"] .g-label img.lt, [data-theme="dark"] .tile img.lt { display:none; }
+[data-theme="dark"] .g-label img.dk, [data-theme="dark"] .tile img.dk { display:block; }
+[data-theme="dark"] .g-label img.plate { background:#fff; border-radius:3px; padding:2px; width:18px; height:18px; }
+.group.ga { border:1.5px solid var(--color-g1); background: var(--color-g1-tint); }
+.group.ga-nested { border:1.5px dashed var(--color-g1-soft); }
+.group.gb { border:1.5px solid var(--color-accent-soft); background: var(--color-accent-tint); }
+.group.ga > .g-label, .group.ga-nested > .g-label { color: var(--color-g1-ink); }
+.group.gb > .g-label { color: var(--color-accent); }
+.group.aws { border:1.5px solid var(--color-ink); border-radius:0; }
+.group.aws > .g-label { top:-1.5px; left:-1.5px; gap:8px; color: var(--color-ink); }
+.group.aws > .g-label img { width:30px; height:30px; }
+.group.aws.az > .g-label { top:8px; left:12px; }
+.group.aws.region, .group.aws.az { border-color:#00A4A6; border-style:dashed; }
+.group.aws.vpc { border-color:#8C4FFF; }
+.group.aws.private { border-color:#00A4A6; }
+.group.aws.public { border-color:#7AA116; }
+
+.node { position:absolute; width:132px; text-align:center; }
+.tile { width:60px; height:60px; margin:0 auto; border-radius: var(--radius-tile);
+  background:#fff; border:1px solid var(--color-rule-2); display:grid; place-items:center;
+  box-shadow: 0 1px 2px oklch(24% 0.02 258 / 0.05); transition: border-color .15s cubic-bezier(0.16,1,0.3,1); }
+.node:hover .tile { border-color: var(--color-accent); }
+.tile img { width:34px; height:34px; object-fit:contain; }
+.tile.wide img { width:44px; }                       /* wide-aspect logos */
+.tile.dark { background: var(--color-graphite); border-color: var(--color-graphite); }  /* white/light logos */
+.tile.bare { background:none; border:none; box-shadow:none; }
+.tile.bare img { width:60px; height:60px; }
+.tile.bare.res img { width:44px; height:44px; }
+.node .name { font-family: var(--font-display); font-weight:600; font-size:13px; margin-top: var(--space-sm); letter-spacing:0; }
+.node .role { font-family: var(--font-mono); font-size:9.5px; color: var(--color-muted); margin-top:2px; }
+/* veil behind label spans: crossing edges/grid fade behind text; translucent so it
+   blends into group tints (a solid paper rectangle looks pasted-on inside tinted groups) */
+.node .name span, .node .role span { background: var(--color-veil); backdrop-filter: blur(1.5px);
+  padding: 0 var(--space-xs); border-radius: 3px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+svg.edges { position:absolute; inset:0; width:1000px; height:700px; pointer-events:none; }
+.e  { stroke: var(--color-accent); stroke-width:1.6; fill:none; }   /* primary flow */
+.n  { stroke: var(--color-neutral); stroke-width:1.4; fill:none; }  /* internal */
+path.aws { stroke: var(--color-ink); stroke-width:1.6; fill:none; }
+.dash { stroke-dasharray:4 5; }                                     /* dev / deploy */
+.el { font-family: var(--font-mono); font-size:10.5px; fill: var(--color-neutral);
+  paint-order: stroke; stroke: var(--color-paper); stroke-width:4px; stroke-linejoin:round; }  /* halo */
+.el.a { fill: var(--color-accent); }
+
+.legend { display:flex; gap: var(--space-lg); align-items:center; margin-top: var(--space-md);
+  font-family: var(--font-mono); font-size:10px; color: var(--color-muted); flex-wrap:wrap; }
+.legend .sw { display:inline-block; width:30px; vertical-align:middle; margin-right:6px;
+  border-top:1.6px solid var(--color-accent); }
+.legend .sw.n { border-color: var(--color-neutral); border-top-width:1.4px; }
+.legend .sw.dash { border-top-style: dashed; }
+
+.foot { margin-top: var(--space-xl); padding-top: var(--space-md); border-top: 1px solid var(--color-rule-2);
+  display:flex; justify-content:space-between; gap: var(--space-md); flex-wrap:wrap;
+  font-family: var(--font-mono); font-size:10px; color: var(--color-muted); }
+.foot a { color: inherit; text-decoration-color: var(--color-rule-2); text-underline-offset: 2px; }
+.foot a:hover { color: var(--color-accent); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="head">
+    <div>
+      <div class="kicker">設計案 / 2026-11-02 / <a href="history.html#version-0-4">資料 v0.4</a></div>
+      <h1>doukin / 推奨構成 N1</h1>
+    </div>
+    <p class="lede">サービス名と処理の境界を示す構成案。実装・採用済みを表しません。</p>
+  </header>
+
+  <div class="scroller">
+  <div class="canvas">
+
+<div class="group ga" style="left:310px;top:40px;width:640px;height:470px"><div class="g-label"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMjU2cHgiIGhlaWdodD0iMTE3cHgiIHZpZXdCb3g9IjAgMCAyNTYgMTE3IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQiPgogICAgPHRpdGxlPkNsb3VkZmxhcmU8L3RpdGxlPgogICAgPGc+CiAgICAgICAgPHBhdGggZD0iTTIwNS41MTk5NTEsNTAuODEyNTc0MiBDMjA0LjY2MTc4MSw1MC44MTI1NzQyIDIwMy44MTUzMTQsNTAuODQzNzc2MiAyMDIuOTY4ODQ2LDUwLjg3MTA3OCBDMjAyLjgzMTcyMSw1MC44Nzg0NTU2IDIwMi42OTY5OTcsNTAuOTEwMTUwOSAyMDIuNTcwOTY4LDUwLjk2NDY4NDIgQzIwMi4xMTU4NTUsNTEuMTE5NTQ2NyAyMDEuNzY5NjM1LDUxLjQ5MzU5MDIgMjAxLjY1MDM4Nyw1MS45NTkyNTAyIEwxOTguMDIyNjY4LDY0LjYzMTE5MTggQzE5Ni40NTg0Niw3MC4wNzk4NTM2IDE5Ny4wMzk2NzMsNzUuMTExMTg3NiAxOTkuNjY4Nzk0LDc4LjgwNDczMjkgQzIwMi4wNzk0NzEsODIuMjIxMzU5OSAyMDYuMDg5NDY1LDg0LjIyNjA5MyAyMTAuOTU3NjI3LDg0LjQ2MDEwODQgTDIzMC42MzcwMiw4NS42NTM1ODc3IEMyMzEuMjIyMTM1LDg1LjY4NDc4OTkgMjMxLjcyOTIzNiw4NS45NjU2MDg0IDIzMi4wMzczOTYsODYuNDI5NzM5MyBDMjMyLjM2NDQyNiw4Ni45MzE5NjA1IDIzMi40MzgwMTcsODcuNTU4MTA5MSAyMzIuMjM2MzM2LDg4LjEyMjQ1MTcgQzIzMS45MTI2OTcsODkuMDQ2ODc4MyAyMzEuMDc4MjY5LDg5LjY5NjY0MDEgMjMwLjEwMjYxNSw4OS43ODM5NjIgTDIwOS42NTQ3NjksOTAuOTc3NDQxMyBDMTk4LjU0NTM3Miw5MS40OTIyNzU0IDE4Ni41OTM0MDksMTAwLjU1NjQ3NyAxODIuNDAwMDc4LDExMS42MDk4MTEgTDE4MC45MjU1ODYsMTE1LjUxMDA3IEMxODAuNzk2ODM4LDExNS44MzgxMDggMTgwLjgzNDMxNSwxMTYuMjA4MTA1IDE4MS4wMjYyMjYsMTE2LjUwMzY3MiBDMTgxLjIxODEzOSwxMTYuNzk5MjQgMTgxLjU0MDg5OSwxMTYuOTg0MDUxIDE4MS44OTI5NzgsMTE3IEwyNTIuMzE3NTA4LDExNyBDMjUzLjE1OTA5NSwxMTcuMDAzMzY3IDI1My44OTk1NDEsMTE2LjQ0NDkxNSAyNTQuMTI3NDY2LDExNS42MzQ4NzkgQzI1NS4zNzgyNTUsMTExLjEzOTQ1NSAyNTYuMDA4MjE3LDEwNi40OTQwOTggMjU2LDEwMS44Mjc5NjIgQzI1Niw3My42NjgwOTE5IDIzMy40MTgyNyw1MC44NDM3NzYyIDIwNS41NTExNTgsNTAuODQzNzc2MiIgZmlsbD0iI0ZCQUQ0MSI+PC9wYXRoPgogICAgICAgIDxwYXRoIGQ9Ik0xNzQuNzgxODcxLDExNS4zNjE4NiBMMTc2LjA4NDczLDExMC43NzkwNTYgQzE3Ny42NTI4MzksMTA1LjMzMDM5NCAxNzcuMDcxNjI0LDEwMC4yOTkwNiAxNzQuNDQ2NDA1LDk2LjYwNTUxNDkgQzE3Mi4wMjc5MjcsOTMuMTg4ODg4MSAxNjguMDIxODM0LDkxLjE4NDE1NSAxNjMuMTQ5NzcxLDkwLjk1MDEzOTQgTDcwLjgzODAxMTYsODkuNzU2NjYwMSBDNzAuMjU1NTcxOCw4OS43NDYwNTgzIDY5LjcxMzMzMDEsODkuNDU3NTc3MyA2OS4zNzkxMjMsODguOTgwNTA4NyBDNjkuMDUwNzg2OCw4OC40Nzg5MjQ2IDY4Ljk3NTc1LDg3Ljg1MjczODcgNjkuMTc2MjgyOSw4Ny4yODc3OTYzIEM2OS41MDI3OTgsODYuMzU3MzI4OCA3MC4zNDY1NDgsODUuNzA2MjU5NCA3MS4zMjk1MDg4LDg1LjYyNjI4NTkgTDE2NC41MDMzMzksODQuNDMyODA2NyBDMTc1LjU2NTkyNyw4My45MjE4NzI4IDE4Ny41MTc4OTEsNzQuODUzNzcwNiAxOTEuNzExMjIsNjMuODAwNDM2NSBMMTk3LjAyNDA3MSw0OS43NTk1MDQyIEMxOTcuMjM4MDg1LDQ5LjE2NDIzMzcgMTk3LjI5NDMwOCw0OC41MjIwNjk2IDE5Ny4xODAxMDEsNDcuODk5MDgwNyBDMTkxLjEyNjEwNSwyMC41MTE0NjIgMTY2LjkxMDExNSwwIDEzNy45NTg1ODgsMCBDMTExLjI2OTUwOSwwIDg4LjYyNTUzLDE3LjQwMjk1NTYgODAuNTAwMjIyOCw0MS41OTYyNjIxIEM3NS4wMjk3ODE4LDM3LjQzNjczNDcgNjguMTc4NTUzMSwzNS41MjAxNDkyIDYxLjM0MzUzMzcsMzYuMjM3MzA2MiBDNDguNTQ5MDAyOSwzNy41MjQzOTE3IDM4LjI1MDk2Niw0Ny45NDU4ODM4IDM2Ljk3OTMxNDUsNjAuODc5MTQyNiBDMzYuNjUwMDYwNyw2NC4xMDkzMTcyIDM2Ljg4NzY3ODQsNjcuMzcyMTcxMyAzNy42ODE0NTM0LDcwLjUyMDU4MjggQzE2Ljc3MzMxNzgsNzEuMTQ0NjI0MiAwLDg4LjQ1Mzk3MzYgMCwxMDkuNzI1OTg2IEMwLDExMS42NDg4MTQgMC4xMzY1MjcwMDUsMTEzLjU0NDM0IDAuNDEzNDgxNzg3LDExNS4zOTMwNjIgQzAuNTI3NTI4ODY3LDExNi4yOTAyNDUgMS4yOTE2MTYzOSwxMTYuOTYyMjg2IDIuMTk2MTM0NCwxMTYuOTYwOTcgTDE3Mi42NzU0NTUsMTE2Ljk2MDk3IEMxNzMuNjYxNDk0LDExNi45NDQ3MzggMTc0LjUxOTAyNiwxMTYuMjgxMDMzIDE3NC43ODE4NzEsMTE1LjMzMDY1OCIgZmlsbD0iI0Y2ODIxRiI+PC9wYXRoPgogICAgPC9nPgo8L3N2Zz4KCg==" alt="">Cloudflare（検証・本番は分離）</div></div><div class="group gb" style="left:30px;top:40px;width:200px;height:470px"><div class="g-label">利用者の端末</div></div><svg class="edges" viewBox="0 0 1000 700" aria-hidden="true"><defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>
+<path class="n" d="M396 160H166" marker-end="url(#ar)"/><text class="el" x="280" y="150" text-anchor="middle">画面配信</text>
+<path class="n" d="M130 236V354" marker-end="url(#ar)"/><text class="el" x="140" y="295">画面を実行</text>
+<path class="e" d="M166 390H604" marker-end="url(#ar)"/><text class="el a" x="385" y="380" text-anchor="middle">HTTPS /api/*</text>
+<path class="e" d="M674 390H814" marker-end="url(#ar)"/><text class="el a" x="744" y="380" text-anchor="middle">D1 binding</text>
+<path class="n" d="M850 466V554" marker-end="url(#ar)"/><text class="el" x="860" y="537">export</text></svg><div class="node" style="left:64px;top:130px"><div class="tile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjM2Q0NjYwIiBzdHJva2Utd2lkdGg9IjEuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSIyLjUiIHk9IjQiIHdpZHRoPSIxOSIgaGVpZ2h0PSIxMyIgcng9IjEuNSIvPjxwYXRoIGQ9Ik04IDIxaDhNMTIgMTd2NCIvPjwvc3ZnPgoK" alt=""></div><div class="name"><span>ブラウザ</span></div><div class="role"><span>cookie / passkey</span></div></div><div class="node" style="left:64px;top:360px"><div class="tile"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMjU2cHgiIGhlaWdodD0iMjI4cHgiIHZpZXdCb3g9IjAgMCAyNTYgMjI4IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaWRZTWlkIj4KICAgIDxnPgogICAgICAgIDxwYXRoIGQ9Ik0yMTAuNDgzMzgxLDczLjgyMzYzNzQgQzIwNy44Mjc2OTgsNzIuOTA5NTUwMyAyMDUuMDc1ODY3LDcyLjA0NDY3NjEgMjAyLjI0MjQ3LDcxLjIyNjczNjggQzIwMi43MDgxNzIsNjkuMzI2MTA5OCAyMDMuMTM1NTk2LDY3LjQ1MDA4OTQgMjAzLjUxNTYzMSw2NS42MDU5NjY0IEMyMDkuNzUzODQzLDM1LjMyNDg5MjIgMjA1LjY3NTA4MiwxMC45MzAyNDc4IDE5MS43NDczMjgsMi44OTg0OTI4MyBDMTc4LjM5MjM1OSwtNC44MDI4OTY2MSAxNTYuNTUxMzI3LDMuMjI3MDM1NjcgMTM0LjQ5MjkzNiwyMi40MjM3Nzc2IEMxMzIuMzcxNzYxLDI0LjI2OTcyMzMgMTMwLjI0NDY2MiwyNi4yMjQxMjAxIDEyOC4xMTg0NzcsMjguMjcyMzg2MSBDMTI2LjcwMTc3NywyNi45MTcyMDQgMTI1LjI4NzM1OCwyNS42MDc1ODk3IDEyMy44NzY1ODQsMjQuMzU0OTM0OCBDMTAwLjc1ODc0NSwzLjgyODUyODYzIDc3LjU4NjY4MDIsLTQuODIxNTc5MzcgNjMuNjcyNTk2NiwzLjIzMzQxNTE1IEM1MC4zMzAzODY5LDEwLjk1NzEzMjggNDYuMzc5MjE1NiwzMy44OTA0MjI0IDUxLjk5NDUxNzgsNjIuNTg4MDIwNiBDNTIuNTM2NzcyOSw2NS4zNTk5MDExIDUzLjE3MDYxODksNjguMTkwNTYzOSA1My44ODczOTgyLDcxLjA2ODYxNyBDNTAuNjA3ODk0MSw3MS45OTk1NjQxIDQ3LjQ0MTg1MzQsNzIuOTkyMDI3NyA0NC40MTI1MTU2LDc0LjA0NzgzMDMgQzE3LjMwOTMyOTcsODMuNDk3MTk1IDAsOTguMzA2NjgyOCAwLDExMy42Njc5OTUgQzAsMTI5LjUzMzI4NyAxOC41ODE1Nzg2LDE0NS40NDY0MjMgNDYuODExNjUyNiwxNTUuMDk1MzczIEM0OS4wMzk0NTUzLDE1NS44NTY4MDkgNTEuMzUxMTAyNSwxNTYuNTc2Nzc4IDUzLjczMzM3OTYsMTU3LjI2MDI5MyBDNTIuOTYwMDk2NSwxNjAuMzczMDIgNTIuMjg3NTE3OSwxNjMuNDIzMzE4IDUxLjcyMjkzNDUsMTY2LjM5ODQzMSBDNDYuMzY4NzM1MSwxOTQuNTk3OTc1IDUwLjU1MDAyMzEsMjE2Ljk4OTQ2NCA2My44NTY2ODk5LDIyNC42NjQ0MjUgQzc3LjYwMTI2MTksMjMyLjU5MDQ2NCAxMDAuNjY4NTIsMjI0LjQ0MzQyMiAxMjMuMTMwMTg1LDIwNC44MDkyMzEgQzEyNC45MDU1MDEsMjAzLjI1NzE5NiAxMjYuNjg3MTk2LDIwMS42MTEyOTMgMTI4LjQ3MjA4MSwxOTkuODg2MTAyIEMxMzAuNzg1NTUyLDIwMi4xMTM5MDQgMTMzLjA5NTM3NSwyMDQuMjIyMzE5IDEzNS4zOTI4OTcsMjA2LjE5OTk1NSBDMTU3LjE0OTYzLDIyNC45MjIzMzggMTc4LjYzNzk2OSwyMzIuNDgyNDY5IDE5MS45MzIzMzIsMjI0Ljc4NjA5MiBDMjA1LjY2MzIzNCwyMTYuODM3MjY4IDIxMC4xMjU2NzUsMTkyLjc4MzQ3IDIwNC4zMzIyMDIsMTYzLjUxODEgQzIwMy44ODk3NCwxNjEuMjgzMDA2IDIwMy4zNzQ4MjYsMTU4Ljk5OTYxIDIwMi43OTY1NzMsMTU2LjY3NTY2MSBDMjA0LjQxNjUwMywxNTYuMTk2NzQzIDIwNi4wMDY4MTQsMTU1LjcwMjMzNSAyMDcuNTU3NDgyLDE1NS4xODgzMzIgQzIzNi45MDUzMzEsMTQ1LjQ2NDY1IDI1NiwxMjkuNzQ1MTc1IDI1NiwxMTMuNjY3OTk1IEMyNTYsOTguMjUxMDkwNiAyMzguMTMyNDY2LDgzLjM0MTgwOTMgMjEwLjQ4MzM4MSw3My44MjM2Mzc0IEwyMTAuNDgzMzgxLDczLjgyMzYzNzQgWiBNMjA0LjExODAzNSwxNDQuODA3NTY1IEMyMDIuNzE4MTk3LDE0NS4yNzA5ODcgMjAxLjI4MTkwNCwxNDUuNzE4OTE4IDE5OS44MTgyNzEsMTQ2LjE1MzE3NyBDMTk2LjU3ODQxMSwxMzUuODk2MzU0IDE5Mi4yMDU3MzksMTI0Ljk4OTczNSAxODYuODU0NzI5LDExMy43MjEzMSBDMTkxLjk2MTA0MSwxMDIuNzIxMjc3IDE5Ni4xNjQ2NTYsOTEuOTU0MDk2MyAxOTkuMzEzODM3LDgxLjc2MzgwMTQgQzIwMS45MzI2MSw4Mi41MjE1OTE1IDIwNC40NzQzNzQsODMuMzIwODQ4MyAyMDYuOTIzNjM2LDg0LjE2NDMwNTYgQzIzMC42MTMzNDgsOTIuMzE5NTQ4OCAyNDUuMDYzNzYzLDEwNC4zNzcyMDYgMjQ1LjA2Mzc2MywxMTMuNjY3OTk1IEMyNDUuMDYzNzYzLDEyMy41NjQzNzkgMjI5LjQ1Nzc1MywxMzYuNDExMjY4IDIwNC4xMTgwMzUsMTQ0LjgwNzU2NSBMMjA0LjExODAzNSwxNDQuODA3NTY1IFogTTE5My42MDM3NTQsMTY1LjY0MjAwNyBDMTk2LjE2NTU2NywxNzguNTgyNzY2IDE5Ni41MzE0NzUsMTkwLjI4MjcxNyAxOTQuODM0NTM2LDE5OS40MjkwNTcgQzE5My4zMDk4NDMsMjA3LjY0NzY0IDE5MC4yNDM1OTUsMjEzLjEyNzE1IDE4Ni40NTIzNjYsMjE1LjMyMTY4OSBDMTc4LjM4NDYxMiwyMTkuOTkxNDYyIDE2MS4xMzE3ODgsMjEzLjkyMTM5NSAxNDIuNTI1MTQ2LDE5Ny45MDk4MzIgQzE0MC4zOTIxMjQsMTk2LjA3NDM2NiAxMzguMjQzNjA5LDE5NC4xMTQ1MDIgMTM2LjA4ODI1OSwxOTIuMDQwMjYxIEMxNDMuMzAxNjE5LDE4NC4xNTExMzMgMTUwLjUxMDg3OCwxNzQuOTc5NzMyIDE1Ny41NDY5OCwxNjQuNzkzOTkzIEMxNjkuOTIyNjk5LDE2My42OTU4MTQgMTgxLjYxNDkwNSwxNjEuOTAwNDQ3IDE5Mi4yMTgwNDIsMTU5LjQ0OTM2MyBDMTkyLjc0MDI0NywxNjEuNTU1OTU2IDE5My4yMDQxMjYsMTYzLjYyMTk5MyAxOTMuNjAzNzU0LDE2NS42NDIwMDcgTDE5My42MDM3NTQsMTY1LjY0MjAwNyBaIE04Ny4yNzYxODY2LDIxNC41MTQ2ODYgQzc5LjM5Mzg5MzQsMjE3LjI5ODQxNCA3My4xMTYwMzc1LDIxNy4zNzgxNTcgNjkuMzIxMTYzMSwyMTUuMTg5OTk4IEM2MS4yNDYxMTg5LDIxMC41MzI1MjggNTcuODg5MTQ5OCwxOTIuNTU0MjY1IDYyLjQ2ODI0MzQsMTY4LjQzODAzOSBDNjIuOTkyNzI3MiwxNjUuNjc2MTgzIDYzLjYxNzAwNDEsMTYyLjgzOTE0MiA2NC4zMzY1MTczLDE1OS45MzkyMTYgQzc0LjgyMzQ1NzUsMTYyLjI1ODE1NCA4Ni40Mjk5OTUxLDE2My45MjY4NDEgOTguODM1MzMzNCwxNjQuOTMyNTE5IEMxMDUuOTE4ODI2LDE3NC44OTk1MzQgMTEzLjMzNjMyOSwxODQuMDYwOTEgMTIwLjgxMTI0NywxOTIuMDgyNjQgQzExOS4xNzgxMDIsMTkzLjY1OTI4IDExNy41NTEzMzYsMTk1LjE2MDI4IDExNS45MzM2ODUsMTk2LjU3NDY5OSBDMTA2LjAwMTMwMywyMDUuMjU2NzA1IDk2LjA0Nzk2MDUsMjExLjQxNjU0IDg3LjI3NjE4NjYsMjE0LjUxNDY4NiBMODcuMjc2MTg2NiwyMTQuNTE0Njg2IFogTTUwLjM0ODYxNDEsMTQ0Ljc0Njk1OSBDMzcuODY1ODEwNSwxNDAuNDgwNDYgMjcuNTU3MDM5OCwxMzQuOTM1MzMyIDIwLjQ5MDg2MzQsMTI4Ljg4NDQwMyBDMTQuMTQxNDY2NCwxMjMuNDQ2ODE1IDEwLjkzNTc4MTcsMTE4LjA0ODQxNSAxMC45MzU3ODE3LDExMy42Njc5OTUgQzEwLjkzNTc4MTcsMTA0LjM0NjIyIDI0LjgzMzQ2MTEsOTIuNDU2MjUxNyA0OC4wMTIzNjA0LDg0LjM3NDgyODEgQzUwLjgyNDc5NjEsODMuMzk0MjEyMSA1My43Njg5MjIzLDgyLjQ3MDEwMDEgNTYuODI0MjMzNyw4MS42MDIwMzYzIEM2MC4wMjc2Mzk4LDkyLjAyMjQ0NzcgNjQuMjI5ODg5LDEwMi45MTcyMTggNjkuMzAxMTEzNSwxMTMuOTM0MTEgQzY0LjE2NDI3MTYsMTI1LjExNDU5IDU5LjkwMjMyODgsMTM2LjE4Mjk3NSA1Ni42Njc0ODA5LDE0Ni43MjU1MDYgQzU0LjQ4OTM0NywxNDYuMDk5NDA3IDUyLjM3OTEwODksMTQ1LjQ0MDQ5OSA1MC4zNDg2MTQxLDE0NC43NDY5NTkgTDUwLjM0ODYxNDEsMTQ0Ljc0Njk1OSBaIE02Mi43MjcwNjc4LDYwLjQ4NzgwNzMgQzU3LjkxNjAzNDYsMzUuOTAwNDExOCA2MS4xMTEyMzg3LDE3LjM1MjU1MzIgNjkuMTUxNjUxNSwxMi42OTgyNzI5IEM3Ny43MTYwOTI0LDcuNzQwMDU2MjQgOTYuNjU0NDY1MywxNC44MDk0MjIyIDExNi42MTQ5MjIsMzIuNTMyOTYxOSBDMTE3Ljg5MDgxNiwzMy42NjU3NzM5IDExOS4xNzE3MjMsMzQuODUxNDQ0MiAxMjAuNDU2Mjc1LDM2LjA3ODEyNTYgQzExMy4wMTgyNjcsNDQuMDY0NzY4NiAxMDUuNjY4NjYsNTMuMTU3MzM4NiA5OC42NDgwNTE0LDYzLjA2NTU2OTUgQzg2LjYwODE2NDYsNjQuMTgxNTIxNSA3NS4wODMxOTMxLDY1Ljk3NDE1MzEgNjQuNDg2ODkwNyw2OC4zNzQ2NTcxIEM2My44MjA2OTE0LDY1LjY5NDgyMzMgNjMuMjMwNTkwMyw2My4wNjE5MjQyIDYyLjcyNzA2NzgsNjAuNDg3ODA3MyBMNjIuNzI3MDY3OCw2MC40ODc4MDczIFogTTE3My4xNTM5MDEsODcuNzU1MDM2NyBDMTcwLjYyMDc5Niw4My4zNzk2MzA0IDE2OC4wMjAyNDksNzkuMTA3NjYyNyAxNjUuMzY5MTI0LDc0Ljk1MjM0ODMgQzE3My41MzcxMjYsNzUuOTg0OTExMyAxODEuMzYyOTE0LDc3LjM1NTU4NjQgMTg4LjcxMjA2Niw3OS4wMzI5MzE5IEMxODYuNTA1Njc5LDg2LjEwNDEyMDYgMTgzLjc1NTY3Myw5My40OTc0NzI4IDE4MC41MTg1NDYsMTAxLjA3Njc0MSBDMTc4LjE5NjQxOSw5Ni42NjgwNzAyIDE3NS43NDAzMjIsOTIuMjIyOTQ1NCAxNzMuMTUzOTAxLDg3Ljc1NTAzNjcgTDE3My4xNTM5MDEsODcuNzU1MDM2NyBaIE0xMjguMTIyMTIxLDQzLjg5Mzg4OTkgQzEzMy4xNjY0NjEsNDkuMzU4ODE4OSAxMzguMjE4MDkxLDU1LjQ2MDMyNzkgMTQzLjE4Njc4OSw2Mi4wODAzOTY4IEMxMzguMTc5ODE0LDYxLjg0MzkwMDcgMTMzLjExMDg2OCw2MS43MjA4NjggMTI4LjAwMDAwMSw2MS43MjA4NjggQzEyMi45Mzc0MzQsNjEuNzIwODY4IDExNy45MDU4NTQsNjEuODQxMTY2NyAxMTIuOTI5ODY1LDYyLjA3MzU2MTcgQzExNy45MDM1NzUsNTUuNTE1MDA5IDEyMi45OTg5NSw0OS40MjE3MDIxIDEyOC4xMjIxMjEsNDMuODkzODg5OSBMMTI4LjEyMjEyMSw0My44OTM4ODk5IFogTTgyLjgwMTg5ODQsODcuODMwNjc5IEM4MC4yNzE1MjY1LDkyLjIxODM4ODYgNzcuODYwOTk3NSw5Ni42MzkzNjI3IDc1LjU3NTMyMzksMTAxLjA2ODUzOSBDNzIuMzkwNjAwNCw5My41MTU2OTk4IDY5LjY2NjExMDMsODYuMDg4NjI3NiA2Ny40NDA1ODYsNzguOTE3MTg5OSBDNzQuNzQ0NjI1NSw3Ny4yODI2NzgxIDgyLjUzMzUwNDksNzUuOTQ2MTc4OSA5MC42NDk1NjAxLDc0LjkzMzIwOTkgQzg3Ljk2MTA2ODQsNzkuMTI2ODAxMSA4NS4zMzkxMDU0LDgzLjQzMDIxMDYgODIuODAxODk4NCw4Ny44Mjk3Njc3IEw4Mi44MDE4OTg0LDg3LjgzMDY3OSBMODIuODAxODk4NCw4Ny44MzA2NzkgWiBNOTAuODgzMzIyMSwxNTMuMTgyODk5IEM4Mi40OTc5NjIxLDE1Mi4yNDczOTUgNzQuNTkxOTczOSwxNTAuOTc5NzA0IDY3LjI4OTc1NywxNDkuMzkwMzAzIEM2OS41NTA4MjQyLDE0Mi4wOTA4MiA3Mi4zMzU0NjM2LDEzNC41MDUxNzMgNzUuNTg3NjI3MSwxMjYuNzg5NjU3IEM3Ny44NzkyMjQ2LDEzMS4yMTU2NDQgODAuMjk5MzIyOCwxMzUuNjM4NDQxIDgyLjg0NTE4NzcsMTQwLjAzNTcyIEw4Mi44NDU2NDMzLDE0MC4wMzU3MiBDODUuNDM4ODk4NywxNDQuNTE1NDc2IDg4LjEyNTU2NzYsMTQ4LjkwMzY0IDkwLjg4MzMyMjEsMTUzLjE4Mjg5OSBMOTAuODgzMzIyMSwxNTMuMTgyODk5IFogTTEyOC40MjQ2OTEsMTg0LjIxMzEwNSBDMTIzLjI0MTM3LDE3OC42MjA1ODcgMTE4LjA3MTI2NCwxNzIuNDM0MzIzIDExMy4wMjE5MTIsMTY1Ljc4MDA3OCBDMTE3LjkyMzYyNCwxNjUuOTcyMzczIDEyMi45MjEwMjksMTY2LjA3MDggMTI4LjAwMDAwMSwxNjYuMDcwOCBDMTMzLjIxNzk1MywxNjYuMDcwOCAxMzguMzc2MjExLDE2NS45NTMyMzUgMTQzLjQ1MzM2LDE2NS43MjcyMTkgQzEzOC40NjgyNTcsMTcyLjUwMTMwOCAxMzMuNDM0ODU1LDE3OC42OTcxNDEgMTI4LjQyNDY5MSwxODQuMjEzMTA1IEwxMjguNDI0NjkxLDE4NC4yMTMxMDUgWiBNMTgwLjYyMjg5NiwxMjYuMzk2NDA5IEMxODQuMDQ0NTcxLDEzNC4xOTUzMTMgMTg2LjkyOTAwNCwxNDEuNzQxMzE3IDE4OS4yMTkyMzQsMTQ4LjkxNjQgQzE4MS43OTY3MTksMTUwLjYwOTY5MyAxNzMuNzgyNzM2LDE1MS45NzM1MzQgMTY1LjMzOTA0OSwxNTIuOTg2OTU5IEMxNjcuOTk2NTU1LDE0OC43NzU1OTUgMTcwLjYxOTg4NCwxNDQuNDMwMjYzIDE3My4xOTc2NDYsMTM5Ljk2MDUzMiBDMTc1LjgwNTQ4NCwxMzUuNDM4Mzk5IDE3OC4yODE2MywxMzAuOTA5NDMgMTgwLjYyMjg5NiwxMjYuMzk2NDA5IEwxODAuNjIyODk2LDEyNi4zOTY0MDkgWiBNMTYzLjcyNDU4NiwxMzQuNDk2OTcxIEMxNTkuNzIyODM1LDE0MS40MzU1NTcgMTU1LjYxNDQ1NSwxNDguMDU5MjcxIDE1MS40NDM2NDgsMTU0LjMxMTYxMSBDMTQzLjg0NzA2MywxNTQuODU0Nzc2IDEzNS45OTg5NDYsMTU1LjEzNDU2MiAxMjguMDAwMDAxLDE1NS4xMzQ1NjIgQzEyMC4wMzM0MDgsMTU1LjEzNDU2MiAxMTIuMjg0MTcxLDE1NC44ODcxMjkgMTA0LjgyMjAxMywxNTQuNDAyNzQ1IEMxMDAuNDgzMDYsMTQ4LjA2ODM4NiA5Ni4yODUzNjgsMTQxLjQyNTA3OCA5Mi4zMDkxMzQxLDEzNC41NTY2NjQgTDkyLjMxMDA0NTUsMTM0LjU1NjY2NCBDODguMzQ0MjkyMywxMjcuNzA2OTM1IDg0LjY5NDMyMzIsMTIwLjc5OTMzMyA4MS4zODcwMjI4LDExMy45MzA0NjYgQzg0LjY5MzQxMTgsMTA3LjA0NTY0OCA4OC4zMzM4MTE3LDEwMC4xMzAzMDEgOTIuMjc2NzgxLDkzLjI5Mjg3NCBMOTIuMjc1ODY5Nyw5My4yOTQyNDEgQzk2LjIyOTMxOTMsODYuNDM4NTg3MiAxMDAuMzkwMTAyLDc5LjgyNzYzMTcgMTA0LjY4ODk1NCw3My41MzI5MTU3IEMxMTIuMzAyMzk4LDcyLjk1NzM5NjQgMTIwLjEwOTUwNSw3Mi42NTcxMDU1IDEyNy45OTk1NDUsNzIuNjU3MTA1NSBMMTI4LjAwMDAwMSw3Mi42NTcxMDU1IEMxMzUuOTI1NTgzLDcyLjY1NzEwNTUgMTQzLjc0MjcxNCw3Mi45NTk2NzQ2IDE1MS4zNTM4NzksNzMuNTQwMjA2NyBDMTU1LjU4NzExNCw3OS43ODg4OTkzIDE1OS43MTk2NDUsODYuMzc4NDM3OCAxNjMuNjg4NTg4LDkzLjIzNTAwMzEgQzE2Ny43MDI2NDQsMTAwLjE2ODU3OCAxNzEuMzg5OTc4LDEwNy4wMzc5MDEgMTc0LjcyNDYxOCwxMTMuNzc1MDggQzE3MS40MDAwMDMsMTIwLjYyNzk5OSAxNjcuNzIwODcxLDEyNy41NjY1ODcgMTYzLjcyNDU4NiwxMzQuNDk2OTcxIEwxNjMuNzI0NTg2LDEzNC40OTY5NzEgWiBNMTg2LjI4NDY3NywxMi4zNzI5MTk4IEMxOTQuODU3MzIxLDE3LjMxNjU1NDggMTk4LjE5MTA0OSwzNy4yNTQyMjY4IDE5Mi44MDQ5NTMsNjMuMzk4NjY5MiBDMTkyLjQ2MTM3Miw2NS4wNjY5MDExIDE5Mi4wNzQ1MDQsNjYuNzY2MTE4OSAxOTEuNjU0MzY5LDY4LjQ4ODEyMDYgQzE4MS4wMzM0Niw2Ni4wMzc0OTIxIDE2OS41MDAyODYsNjQuMjEzODc0NiAxNTcuNDI1MzE1LDYzLjA4MTA2MjYgQzE1MC4zOTEwMzUsNTMuMDYzOTI0OSAxNDMuMTAxNTc3LDQzLjk1NzIyODkgMTM1Ljc4NDc3OCwzNi4wNzMxMTMgQzEzNy43NTE5MzQsMzQuMTgwNjg4NSAxMzkuNzE2MzU2LDMyLjM3NjIwOTIgMTQxLjY3MjU3NSwzMC42NzMzNDYgQzE2MC41NzIyMTYsMTQuMjI1NzAwNyAxNzguMjM2NTE4LDcuNzMxODU0MDYgMTg2LjI4NDY3NywxMi4zNzI5MTk4IEwxODYuMjg0Njc3LDEyLjM3MjkxOTggWiBNMTI4LjAwMDAwMSw5MC44MDgwNjk2IEMxNDAuNjI0OTc1LDkwLjgwODA2OTYgMTUwLjg1OTkyNiwxMDEuMDQyNTY1IDE1MC44NTk5MjYsMTEzLjY2Nzk5NSBDMTUwLjg1OTkyNiwxMjYuMjkyOTY5IDE0MC42MjQ5NzUsMTM2LjUyNzkyMiAxMjguMDAwMDAxLDEzNi41Mjc5MjIgQzExNS4zNzUwMjYsMTM2LjUyNzkyMiAxMDUuMTQwMDc1LDEyNi4yOTI5NjkgMTA1LjE0MDA3NSwxMTMuNjY3OTk1IEMxMDUuMTQwMDc1LDEwMS4wNDI1NjUgMTE1LjM3NTAyNiw5MC44MDgwNjk2IDEyOC4wMDAwMDEsOTAuODA4MDY5NiBMMTI4LjAwMDAwMSw5MC44MDgwNjk2IFoiIGZpbGw9IiMwMEQ4RkYiPjwvcGF0aD4KICAgIDwvZz4KPC9zdmc+Cgo=" alt=""></div><div class="name"><span>React</span></div><div class="role"><span>画面 / TypeScript</span></div></div><div class="node" style="left:364px;top:130px"><div class="tile"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMjU2cHgiIGhlaWdodD0iMTE3cHgiIHZpZXdCb3g9IjAgMCAyNTYgMTE3IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQiPgogICAgPHRpdGxlPkNsb3VkZmxhcmU8L3RpdGxlPgogICAgPGc+CiAgICAgICAgPHBhdGggZD0iTTIwNS41MTk5NTEsNTAuODEyNTc0MiBDMjA0LjY2MTc4MSw1MC44MTI1NzQyIDIwMy44MTUzMTQsNTAuODQzNzc2MiAyMDIuOTY4ODQ2LDUwLjg3MTA3OCBDMjAyLjgzMTcyMSw1MC44Nzg0NTU2IDIwMi42OTY5OTcsNTAuOTEwMTUwOSAyMDIuNTcwOTY4LDUwLjk2NDY4NDIgQzIwMi4xMTU4NTUsNTEuMTE5NTQ2NyAyMDEuNzY5NjM1LDUxLjQ5MzU5MDIgMjAxLjY1MDM4Nyw1MS45NTkyNTAyIEwxOTguMDIyNjY4LDY0LjYzMTE5MTggQzE5Ni40NTg0Niw3MC4wNzk4NTM2IDE5Ny4wMzk2NzMsNzUuMTExMTg3NiAxOTkuNjY4Nzk0LDc4LjgwNDczMjkgQzIwMi4wNzk0NzEsODIuMjIxMzU5OSAyMDYuMDg5NDY1LDg0LjIyNjA5MyAyMTAuOTU3NjI3LDg0LjQ2MDEwODQgTDIzMC42MzcwMiw4NS42NTM1ODc3IEMyMzEuMjIyMTM1LDg1LjY4NDc4OTkgMjMxLjcyOTIzNiw4NS45NjU2MDg0IDIzMi4wMzczOTYsODYuNDI5NzM5MyBDMjMyLjM2NDQyNiw4Ni45MzE5NjA1IDIzMi40MzgwMTcsODcuNTU4MTA5MSAyMzIuMjM2MzM2LDg4LjEyMjQ1MTcgQzIzMS45MTI2OTcsODkuMDQ2ODc4MyAyMzEuMDc4MjY5LDg5LjY5NjY0MDEgMjMwLjEwMjYxNSw4OS43ODM5NjIgTDIwOS42NTQ3NjksOTAuOTc3NDQxMyBDMTk4LjU0NTM3Miw5MS40OTIyNzU0IDE4Ni41OTM0MDksMTAwLjU1NjQ3NyAxODIuNDAwMDc4LDExMS42MDk4MTEgTDE4MC45MjU1ODYsMTE1LjUxMDA3IEMxODAuNzk2ODM4LDExNS44MzgxMDggMTgwLjgzNDMxNSwxMTYuMjA4MTA1IDE4MS4wMjYyMjYsMTE2LjUwMzY3MiBDMTgxLjIxODEzOSwxMTYuNzk5MjQgMTgxLjU0MDg5OSwxMTYuOTg0MDUxIDE4MS44OTI5NzgsMTE3IEwyNTIuMzE3NTA4LDExNyBDMjUzLjE1OTA5NSwxMTcuMDAzMzY3IDI1My44OTk1NDEsMTE2LjQ0NDkxNSAyNTQuMTI3NDY2LDExNS42MzQ4NzkgQzI1NS4zNzgyNTUsMTExLjEzOTQ1NSAyNTYuMDA4MjE3LDEwNi40OTQwOTggMjU2LDEwMS44Mjc5NjIgQzI1Niw3My42NjgwOTE5IDIzMy40MTgyNyw1MC44NDM3NzYyIDIwNS41NTExNTgsNTAuODQzNzc2MiIgZmlsbD0iI0ZCQUQ0MSI+PC9wYXRoPgogICAgICAgIDxwYXRoIGQ9Ik0xNzQuNzgxODcxLDExNS4zNjE4NiBMMTc2LjA4NDczLDExMC43NzkwNTYgQzE3Ny42NTI4MzksMTA1LjMzMDM5NCAxNzcuMDcxNjI0LDEwMC4yOTkwNiAxNzQuNDQ2NDA1LDk2LjYwNTUxNDkgQzE3Mi4wMjc5MjcsOTMuMTg4ODg4MSAxNjguMDIxODM0LDkxLjE4NDE1NSAxNjMuMTQ5NzcxLDkwLjk1MDEzOTQgTDcwLjgzODAxMTYsODkuNzU2NjYwMSBDNzAuMjU1NTcxOCw4OS43NDYwNTgzIDY5LjcxMzMzMDEsODkuNDU3NTc3MyA2OS4zNzkxMjMsODguOTgwNTA4NyBDNjkuMDUwNzg2OCw4OC40Nzg5MjQ2IDY4Ljk3NTc1LDg3Ljg1MjczODcgNjkuMTc2MjgyOSw4Ny4yODc3OTYzIEM2OS41MDI3OTgsODYuMzU3MzI4OCA3MC4zNDY1NDgsODUuNzA2MjU5NCA3MS4zMjk1MDg4LDg1LjYyNjI4NTkgTDE2NC41MDMzMzksODQuNDMyODA2NyBDMTc1LjU2NTkyNyw4My45MjE4NzI4IDE4Ny41MTc4OTEsNzQuODUzNzcwNiAxOTEuNzExMjIsNjMuODAwNDM2NSBMMTk3LjAyNDA3MSw0OS43NTk1MDQyIEMxOTcuMjM4MDg1LDQ5LjE2NDIzMzcgMTk3LjI5NDMwOCw0OC41MjIwNjk2IDE5Ny4xODAxMDEsNDcuODk5MDgwNyBDMTkxLjEyNjEwNSwyMC41MTE0NjIgMTY2LjkxMDExNSwwIDEzNy45NTg1ODgsMCBDMTExLjI2OTUwOSwwIDg4LjYyNTUzLDE3LjQwMjk1NTYgODAuNTAwMjIyOCw0MS41OTYyNjIxIEM3NS4wMjk3ODE4LDM3LjQzNjczNDcgNjguMTc4NTUzMSwzNS41MjAxNDkyIDYxLjM0MzUzMzcsMzYuMjM3MzA2MiBDNDguNTQ5MDAyOSwzNy41MjQzOTE3IDM4LjI1MDk2Niw0Ny45NDU4ODM4IDM2Ljk3OTMxNDUsNjAuODc5MTQyNiBDMzYuNjUwMDYwNyw2NC4xMDkzMTcyIDM2Ljg4NzY3ODQsNjcuMzcyMTcxMyAzNy42ODE0NTM0LDcwLjUyMDU4MjggQzE2Ljc3MzMxNzgsNzEuMTQ0NjI0MiAwLDg4LjQ1Mzk3MzYgMCwxMDkuNzI1OTg2IEMwLDExMS42NDg4MTQgMC4xMzY1MjcwMDUsMTEzLjU0NDM0IDAuNDEzNDgxNzg3LDExNS4zOTMwNjIgQzAuNTI3NTI4ODY3LDExNi4yOTAyNDUgMS4yOTE2MTYzOSwxMTYuOTYyMjg2IDIuMTk2MTM0NCwxMTYuOTYwOTcgTDE3Mi42NzU0NTUsMTE2Ljk2MDk3IEMxNzMuNjYxNDk0LDExNi45NDQ3MzggMTc0LjUxOTAyNiwxMTYuMjgxMDMzIDE3NC43ODE4NzEsMTE1LjMzMDY1OCIgZmlsbD0iI0Y2ODIxRiI+PC9wYXRoPgogICAgPC9nPgo8L3N2Zz4KCg==" alt=""></div><div class="name"><span>Workers Static Assets</span></div><div class="role"><span>html / css / js</span></div></div><div class="node" style="left:574px;top:360px"><div class="tile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3NiA5OCI+CiAgPHBhdGggZmlsbD0idXJsKCNhKSIgZD0ibTExIDI1IDcgOXM5LTE4IDIyLTM0YzE3IDIwIDM2IDQ4IDM2IDY0IDAgMjAtMTkgMzQtMzcgMzRDMTcgOTggMCA4MSAwIDYxYzAtNiAzLTI0IDExLTM2WiIvPgogIDxwYXRoIGZpbGw9IiNGOTUiIGQ9Ik0zOSAyMWM0NyA1MSAxNCA2NiAwIDY2LTExIDAtNTEtMTEgMC02NloiLz4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iYSIgeDI9IjAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIHN0b3AtY29sb3I9IiNGODQiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjMwIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KPC9zdmc+Cgo=" alt=""></div><div class="name"><span>Workers + Hono</span></div><div class="role"><span>認証・認可 / API</span></div></div><div class="node" style="left:784px;top:360px"><div class="tile"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMjU2cHgiIGhlaWdodD0iMTE3cHgiIHZpZXdCb3g9IjAgMCAyNTYgMTE3IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQiPgogICAgPHRpdGxlPkNsb3VkZmxhcmU8L3RpdGxlPgogICAgPGc+CiAgICAgICAgPHBhdGggZD0iTTIwNS41MTk5NTEsNTAuODEyNTc0MiBDMjA0LjY2MTc4MSw1MC44MTI1NzQyIDIwMy44MTUzMTQsNTAuODQzNzc2MiAyMDIuOTY4ODQ2LDUwLjg3MTA3OCBDMjAyLjgzMTcyMSw1MC44Nzg0NTU2IDIwMi42OTY5OTcsNTAuOTEwMTUwOSAyMDIuNTcwOTY4LDUwLjk2NDY4NDIgQzIwMi4xMTU4NTUsNTEuMTE5NTQ2NyAyMDEuNzY5NjM1LDUxLjQ5MzU5MDIgMjAxLjY1MDM4Nyw1MS45NTkyNTAyIEwxOTguMDIyNjY4LDY0LjYzMTE5MTggQzE5Ni40NTg0Niw3MC4wNzk4NTM2IDE5Ny4wMzk2NzMsNzUuMTExMTg3NiAxOTkuNjY4Nzk0LDc4LjgwNDczMjkgQzIwMi4wNzk0NzEsODIuMjIxMzU5OSAyMDYuMDg5NDY1LDg0LjIyNjA5MyAyMTAuOTU3NjI3LDg0LjQ2MDEwODQgTDIzMC42MzcwMiw4NS42NTM1ODc3IEMyMzEuMjIyMTM1LDg1LjY4NDc4OTkgMjMxLjcyOTIzNiw4NS45NjU2MDg0IDIzMi4wMzczOTYsODYuNDI5NzM5MyBDMjMyLjM2NDQyNiw4Ni45MzE5NjA1IDIzMi40MzgwMTcsODcuNTU4MTA5MSAyMzIuMjM2MzM2LDg4LjEyMjQ1MTcgQzIzMS45MTI2OTcsODkuMDQ2ODc4MyAyMzEuMDc4MjY5LDg5LjY5NjY0MDEgMjMwLjEwMjYxNSw4OS43ODM5NjIgTDIwOS42NTQ3NjksOTAuOTc3NDQxMyBDMTk4LjU0NTM3Miw5MS40OTIyNzU0IDE4Ni41OTM0MDksMTAwLjU1NjQ3NyAxODIuNDAwMDc4LDExMS42MDk4MTEgTDE4MC45MjU1ODYsMTE1LjUxMDA3IEMxODAuNzk2ODM4LDExNS44MzgxMDggMTgwLjgzNDMxNSwxMTYuMjA4MTA1IDE4MS4wMjYyMjYsMTE2LjUwMzY3MiBDMTgxLjIxODEzOSwxMTYuNzk5MjQgMTgxLjU0MDg5OSwxMTYuOTg0MDUxIDE4MS44OTI5NzgsMTE3IEwyNTIuMzE3NTA4LDExNyBDMjUzLjE1OTA5NSwxMTcuMDAzMzY3IDI1My44OTk1NDEsMTE2LjQ0NDkxNSAyNTQuMTI3NDY2LDExNS42MzQ4NzkgQzI1NS4zNzgyNTUsMTExLjEzOTQ1NSAyNTYuMDA4MjE3LDEwNi40OTQwOTggMjU2LDEwMS44Mjc5NjIgQzI1Niw3My42NjgwOTE5IDIzMy40MTgyNyw1MC44NDM3NzYyIDIwNS41NTExNTgsNTAuODQzNzc2MiIgZmlsbD0iI0ZCQUQ0MSI+PC9wYXRoPgogICAgICAgIDxwYXRoIGQ9Ik0xNzQuNzgxODcxLDExNS4zNjE4NiBMMTc2LjA4NDczLDExMC43NzkwNTYgQzE3Ny42NTI4MzksMTA1LjMzMDM5NCAxNzcuMDcxNjI0LDEwMC4yOTkwNiAxNzQuNDQ2NDA1LDk2LjYwNTUxNDkgQzE3Mi4wMjc5MjcsOTMuMTg4ODg4MSAxNjguMDIxODM0LDkxLjE4NDE1NSAxNjMuMTQ5NzcxLDkwLjk1MDEzOTQgTDcwLjgzODAxMTYsODkuNzU2NjYwMSBDNzAuMjU1NTcxOCw4OS43NDYwNTgzIDY5LjcxMzMzMDEsODkuNDU3NTc3MyA2OS4zNzkxMjMsODguOTgwNTA4NyBDNjkuMDUwNzg2OCw4OC40Nzg5MjQ2IDY4Ljk3NTc1LDg3Ljg1MjczODcgNjkuMTc2MjgyOSw4Ny4yODc3OTYzIEM2OS41MDI3OTgsODYuMzU3MzI4OCA3MC4zNDY1NDgsODUuNzA2MjU5NCA3MS4zMjk1MDg4LDg1LjYyNjI4NTkgTDE2NC41MDMzMzksODQuNDMyODA2NyBDMTc1LjU2NTkyNyw4My45MjE4NzI4IDE4Ny41MTc4OTEsNzQuODUzNzcwNiAxOTEuNzExMjIsNjMuODAwNDM2NSBMMTk3LjAyNDA3MSw0OS43NTk1MDQyIEMxOTcuMjM4MDg1LDQ5LjE2NDIzMzcgMTk3LjI5NDMwOCw0OC41MjIwNjk2IDE5Ny4xODAxMDEsNDcuODk5MDgwNyBDMTkxLjEyNjEwNSwyMC41MTE0NjIgMTY2LjkxMDExNSwwIDEzNy45NTg1ODgsMCBDMTExLjI2OTUwOSwwIDg4LjYyNTUzLDE3LjQwMjk1NTYgODAuNTAwMjIyOCw0MS41OTYyNjIxIEM3NS4wMjk3ODE4LDM3LjQzNjczNDcgNjguMTc4NTUzMSwzNS41MjAxNDkyIDYxLjM0MzUzMzcsMzYuMjM3MzA2MiBDNDguNTQ5MDAyOSwzNy41MjQzOTE3IDM4LjI1MDk2Niw0Ny45NDU4ODM4IDM2Ljk3OTMxNDUsNjAuODc5MTQyNiBDMzYuNjUwMDYwNyw2NC4xMDkzMTcyIDM2Ljg4NzY3ODQsNjcuMzcyMTcxMyAzNy42ODE0NTM0LDcwLjUyMDU4MjggQzE2Ljc3MzMxNzgsNzEuMTQ0NjI0MiAwLDg4LjQ1Mzk3MzYgMCwxMDkuNzI1OTg2IEMwLDExMS42NDg4MTQgMC4xMzY1MjcwMDUsMTEzLjU0NDM0IDAuNDEzNDgxNzg3LDExNS4zOTMwNjIgQzAuNTI3NTI4ODY3LDExNi4yOTAyNDUgMS4yOTE2MTYzOSwxMTYuOTYyMjg2IDIuMTk2MTM0NCwxMTYuOTYwOTcgTDE3Mi42NzU0NTUsMTE2Ljk2MDk3IEMxNzMuNjYxNDk0LDExNi45NDQ3MzggMTc0LjUxOTAyNiwxMTYuMjgxMDMzIDE3NC43ODE4NzEsMTE1LjMzMDY1OCIgZmlsbD0iI0Y2ODIxRiI+PC9wYXRoPgogICAgPC9nPgo8L3N2Zz4KCg==" alt=""></div><div class="name"><span>Cloudflare D1</span></div><div class="role"><span>会員・記録 / SQL</span></div></div><div class="node" style="left:784px;top:560px"><div class="tile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjM2Q0NjYwIiBzdHJva2Utd2lkdGg9IjEuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSIzLjUiIHk9IjQiIHdpZHRoPSIxNyIgaGVpZ2h0PSI3IiByeD0iMS41Ii8+PHJlY3QgeD0iMy41IiB5PSIxMyIgd2lkdGg9IjE3IiBoZWlnaHQ9IjciIHJ4PSIxLjUiLz48cGF0aCBkPSJNNyA3LjVoLjAxTTcgMTYuNWguMDFNMTEgNy41aDNNMTEgMTYuNWgzIi8+PC9zdmc+Cgo=" alt=""></div><div class="name"><span>別保管先（未選定）</span></div><div class="role"><span>暗号化 / 日次7世代</span></div></div>
+  </div>
+  </div>
+
+  <div class="legend">
+    <span><span class="sw"></span>API要求・データ処理</span>
+    <span><span class="sw n"></span>画面配信・実行・退避</span>
+    
+  </div>
+
+  <div class="foot">
+    <span><a href="overall-spec.html#s2">全体設計案へ戻る</a> / 退避は外部ジョブを別途選定</span>
+    <span>icons: gilbarbara/logos / Hono / stack-diagram generic; trademarks belong to their owners · made with <a href="https://github.com/caru-ini/stack-diagram" target="_blank" rel="noopener">stack-diagram</a></span>
+  </div>
+
+</div>
+</body>
+</html>
+
