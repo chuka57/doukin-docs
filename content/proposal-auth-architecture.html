@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>参加・認証の役割案</title>
+<title>ログインと会員管理の役割</title>
 <style>
 /* engineered-paper theme (cool near-white, one accent, mono labels)
  * All colors/fonts flow through the :root tokens — tweak tokens, not scattered values. */
@@ -139,7 +139,7 @@ h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(22px, 
 .tile.bare img { width:60px; height:60px; }
 .tile.bare.res img { width:44px; height:44px; }
 .node .name { font-family: var(--font-display); font-weight:600; font-size:13px; margin-top: var(--space-sm); letter-spacing:0; }
-.node .role { font-family: var(--font-mono); font-size:9.5px; color: var(--color-muted); margin-top:2px; }
+.node .role { font-family: var(--font-mono); font-size:10.5px; color: var(--color-muted); margin-top:2px; }
 /* veil behind label spans: crossing edges/grid fade behind text; translucent so it
    blends into group tints (a solid paper rectangle looks pasted-on inside tinted groups) */
 .node .name span, .node .role span { background: var(--color-veil); backdrop-filter: blur(1.5px);
@@ -147,7 +147,7 @@ h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(22px, 
 
 svg.edges { position:absolute; inset:0; width:1000px; height:540px; pointer-events:none; }
 .e  { stroke: var(--color-accent); stroke-width:1.6; fill:none; }   /* primary flow */
-.n  { stroke: var(--color-neutral); stroke-width:1.4; fill:none; }  /* 運営の管理経路 */
+.n  { stroke: var(--color-neutral); stroke-width:1.4; fill:none; }  /* 管理者の操作と会員状態の反映 */
 path.aws { stroke: var(--color-ink); stroke-width:1.6; fill:none; }
 .dash { stroke-dasharray:4 5; }                                     /* dev / deploy */
 .el { font-family: var(--font-mono); font-size:10.5px; fill: var(--color-neutral);
@@ -173,50 +173,72 @@ path.aws { stroke: var(--color-ink); stroke-width:1.6; fill:none; }
 
   <header class="head">
     <div>
-      <div class="kicker">PROPOSAL / NO STACK SELECTED</div>
-      <h1>参加・認証の役割案</h1>
+      <div class="kicker">仕様例</div>
+      <h1>ログインと会員管理の役割</h1>
     </div>
-    <p class="lede">個人からの提案。サービス・実装方式の採用決定ではありません。</p>
+    <p class="lede">個人アカウントの認証と、doukin の参加承認・ログイン保持の役割を示します。</p>
   </header>
 
   <div class="scroller">
   <div class="canvas">
 
-<div class="group gb" style="left:310px;top:60px;width:640px;height:210px"><div class="g-label">アプリ側の役割（実装基盤は未選定）</div></div>
-<div class="group ga" style="left:360px;top:290px;width:470px;height:210px"><div class="g-label">運営だけが使える管理経路</div></div>
-<svg class="edges" viewBox="0 0 1000 540" aria-hidden="true"><defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="context-stroke"/></marker></defs>
-<path class="e" d="M176 150H364" marker-end="url(#ar)"/><text class="el a" x="260" y="139" text-anchor="middle">認証・保持セッション</text>
-<path class="e" d="M436 150H604" marker-end="url(#ar)"/><text class="el a" x="520" y="139" text-anchor="middle">会員が有効</text>
-<path class="e" d="M676 150H824" marker-end="url(#ar)"/><text class="el a" x="750" y="139" text-anchor="middle">許可した範囲だけ</text>
-<path class="n" d="M176 380H414" marker-end="url(#ar)"/><text class="el" x="280" y="367" text-anchor="middle">運営権限で操作</text>
-<path class="n" d="M486 380H704" marker-end="url(#ar)"/><text class="el" x="595" y="367" text-anchor="middle">招待・復旧・停止</text>
-<path class="n" d="M740 344V250H400V226" marker-end="url(#ar)"/>
+<div class="group gb" style="left:375px;top:60px;width:400px;height:440px"><div class="g-label">doukin</div></div>
+<svg class="edges" viewBox="0 0 1000 540" aria-hidden="true">
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="context-stroke"/></marker></defs>
+  <path class="e" d="M176 150H429" marker-end="url(#ar)"/>
+  <text class="el a" x="302" y="139" text-anchor="middle">ログイン開始</text>
+  <path class="e" d="M501 141H829" marker-end="url(#ar)"/>
+  <text class="el a" x="665" y="130" text-anchor="middle">認証リクエスト</text>
+  <path class="e" d="M829 159H501" marker-end="url(#ar)"/>
+  <text class="el a" x="665" y="178" text-anchor="middle">認証結果</text>
+  <path class="e" d="M465 225V344" marker-end="url(#ar)"/>
+  <text class="el a" x="478" y="293">会員状態を確認</text>
+  <path class="n" d="M176 380H429" marker-end="url(#ar)"/>
+  <text class="el" x="302" y="369" text-anchor="middle">招待・承認・利用停止</text>
+  <path class="n" d="M501 380H649" marker-end="url(#ar)"/>
+  <text class="el" x="575" y="369" text-anchor="middle">会員状態を適用</text>
 </svg>
-<div class="node" style="left:74px;top:120px"><div class="tile"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3d4660" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="13" height="10" rx="1.5"/><path d="M6 19h7"/><rect x="17.5" y="8" width="4" height="11" rx="1.2"/></svg>
-</div><div class="name"><span>利用者の端末</span></div><div class="role"><span>パスキーとセッション</span></div></div>
-<div class="node" style="left:334px;top:120px"><div class="tile"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3d4660" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="7" rx="1.5"/><rect x="3.5" y="13" width="17" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01M11 7.5h3M11 16.5h3"/></svg>
-</div><div class="name"><span>認証・会員状態</span></div><div class="role"><span>停止会員の利用を拒否</span></div></div>
-<div class="node" style="left:574px;top:120px"><div class="tile"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3d4660" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="7" rx="1.5"/><rect x="3.5" y="13" width="17" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01M11 7.5h3M11 16.5h3"/></svg>
-</div><div class="name"><span>データごとの権限</span></div><div class="role"><span>本人・共有先を確認</span></div></div>
-<div class="node" style="left:794px;top:120px"><div class="tile"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3d4660" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="7" rx="1.5"/><rect x="3.5" y="13" width="17" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01M11 7.5h3M11 16.5h3"/></svg>
-</div><div class="name"><span>最小限の保存情報</span></div><div class="role"><span>会員・検証情報・記録</span></div></div>
-<div class="node" style="left:74px;top:350px"><div class="tile"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3d4660" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20.5c1.4-3.6 4.2-5.4 7.5-5.4s6.1 1.8 7.5 5.4"/></svg>
-</div><div class="name"><span>運営</span></div><div class="role"><span>個人的な連絡経路で確認</span></div></div>
-<div class="node" style="left:384px;top:350px"><div class="tile"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3d4660" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg>
-</div><div class="name"><span>管理画面・管理API</span></div><div class="role"><span>別途運営権限を確認</span></div></div>
-<div class="node" style="left:674px;top:350px"><div class="tile"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3d4660" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="7" rx="1.5"/><rect x="3.5" y="13" width="17" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01M11 7.5h3M11 16.5h3"/></svg>
-</div><div class="name"><span>会員・認証の管理</span></div><div class="role"><span>旧会員との対応を確認</span></div></div>
+<div class="node" style="left:74px;top:120px">
+  <div class="tile"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3d4660" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="13" height="10" rx="1.5"/><path d="M6 19h7"/><rect x="17.5" y="8" width="4" height="11" rx="1.2"/></svg></div>
+  <div class="name"><span>利用者の端末</span></div>
+  <div class="role"><span>個人アカウントを使う</span></div>
+</div>
+<div class="node" style="left:399px;top:120px">
+  <div class="tile"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3d4660" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="7" rx="1.5"/><rect x="3.5" y="13" width="17" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01M11 7.5h3M11 16.5h3"/></svg></div>
+  <div class="name"><span>ログイン受付</span></div>
+  <div class="role"><span>外部の認証結果を確認</span></div>
+</div>
+<div class="node" style="left:799px;top:120px">
+  <div class="tile"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3d4660" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v2"/></svg></div>
+  <div class="name"><span>外部認証サービス</span></div>
+  <div class="role"><span>個人アカウントを認証</span></div>
+</div>
+<div class="node" style="left:74px;top:350px">
+  <div class="tile"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3d4660" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20.5c1.4-3.6 4.2-5.4 7.5-5.4s6.1 1.8 7.5 5.4"/></svg></div>
+  <div class="name"><span>管理者</span></div>
+  <div class="role"><span>参加対象を確認</span></div>
+</div>
+<div class="node" style="left:399px;top:350px">
+  <div class="tile"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3d4660" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="m8 12 2.5 2.5L16 9"/></svg></div>
+  <div class="name"><span>会員管理</span></div>
+  <div class="role"><span>承認済みか確認</span></div>
+</div>
+<div class="node" style="left:619px;top:350px">
+  <div class="tile"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3d4660" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></div>
+  <div class="name"><span>セッション管理</span></div>
+  <div class="role"><span>発行・全端末失効</span></div>
+</div>
   </div>
   </div>
 
   <div class="legend">
-    <span><span class="sw"></span>日常の利用経路</span>
-    <span><span class="sw n"></span>運営の管理経路</span>
+    <span><span class="sw"></span>ログイン時のやり取り</span>
+    <span><span class="sw n"></span>管理者の操作と会員状態の反映</span>
     
   </div>
 
   <div class="foot">
-    <span>連絡先の名簿をアプリに作らない要件案</span>
+    <span>矢印はログインと会員管理に関わる主なやり取りを示します。</span>
     <span>icons: stack-diagram generic pictograms · made with <a href="https://github.com/caru-ini/stack-diagram" target="_blank" rel="noopener">stack-diagram</a></span>
   </div>
 
