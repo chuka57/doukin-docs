@@ -5,6 +5,100 @@
 </aside>
 
 <section class="chapter">
+  <h2 id="journey">招待から利用停止まで</h2>
+  <figure class="auth-walkthrough" data-auth-walkthrough>
+    <div class="auth-step-controls" role="group" aria-label="図で見る場面" hidden>
+      <button type="button" data-auth-step="invite" aria-pressed="false" aria-controls="auth-scenes">招待</button>
+      <button type="button" data-auth-step="apply" aria-pressed="false" aria-controls="auth-scenes">参加申請</button>
+      <button type="button" data-auth-step="approve" aria-pressed="false" aria-controls="auth-scenes">管理者の<wbr>承認</button>
+      <button type="button" data-auth-step="return" aria-pressed="false" aria-controls="auth-scenes">同じ端末で<wbr>再訪</button>
+      <button type="button" data-auth-step="device" aria-pressed="false" aria-controls="auth-scenes">別端末で<wbr>ログイン</button>
+      <button type="button" data-auth-step="stop" aria-pressed="false" aria-controls="auth-scenes">利用停止</button>
+    </div>
+    <div class="auth-map" aria-hidden="true" hidden>
+      <div class="auth-map-node auth-map-visitor">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M10 17h4"/></svg>
+        <span>利用者</span>
+        <strong data-auth-value="visitor"></strong>
+      </div>
+      <svg class="auth-map-route auth-map-visitor-route" data-auth-route="visitor-route" viewBox="0 0 44 24" preserveAspectRatio="none" aria-hidden="true">
+        <path class="auth-map-track" d="M3 12H40"/>
+        <path class="auth-map-signal" pathLength="1" d="M3 12H40"/>
+        <path class="auth-map-tip" d="m35 7 5 5-5 5"/>
+        <path class="auth-map-return" d="m8 7-5 5 5 5"/>
+        <path class="auth-map-cross" d="m18 8 8 8m0-8-8 8"/>
+      </svg>
+      <div class="auth-map-node auth-map-app">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18m-13 5h8"/></svg>
+        <span>doukin</span>
+        <strong data-auth-value="app"></strong>
+      </div>
+      <svg class="auth-map-route auth-map-provider-route" data-auth-route="provider-route" viewBox="0 0 44 24" preserveAspectRatio="none" aria-hidden="true">
+        <path class="auth-map-track" d="M3 12H40"/>
+        <path class="auth-map-signal" pathLength="1" d="M3 12H40"/>
+        <path class="auth-map-tip" d="m35 7 5 5-5 5"/>
+        <path class="auth-map-return" d="m8 7-5 5 5 5"/>
+        <path class="auth-map-cross" d="m18 8 8 8m0-8-8 8"/>
+      </svg>
+      <div class="auth-map-node auth-map-provider">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v2"/></svg>
+        <span>外部認証</span>
+        <strong data-auth-value="provider"></strong>
+      </div>
+      <svg class="auth-map-route auth-map-admin-route" data-auth-route="admin-route" viewBox="0 0 44 24" preserveAspectRatio="none" aria-hidden="true">
+        <path class="auth-map-track" d="M3 12H40"/>
+        <path class="auth-map-signal" pathLength="1" d="M3 12H40"/>
+        <path class="auth-map-tip" d="m35 7 5 5-5 5"/>
+        <path class="auth-map-return" d="m8 7-5 5 5 5"/>
+        <path class="auth-map-cross" d="m18 8 8 8m0-8-8 8"/>
+      </svg>
+      <div class="auth-map-node auth-map-admin">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
+        <span>管理者</span>
+        <strong data-auth-value="admin"></strong>
+      </div>
+    </div>
+    <ol class="auth-scenes" id="auth-scenes">
+      <li data-auth-scene="invite" data-visitor="申請前" data-app="招待あり" data-provider="待機" data-admin="招待を発行" data-visitor-route="forward" data-admin-route="forward">
+        <strong>招待リンクを開く</strong>
+        <p>管理者が招待を発行します。招待を受け取った人は参加申請へ進めます。</p>
+      </li>
+      <li data-auth-scene="apply" data-visitor="認証済み" data-app="承認待ち" data-provider="認証する" data-admin="申請を確認" data-visitor-route="forward" data-provider-route="exchange">
+        <strong>認証後も承認を待つ</strong>
+        <p>個人アカウントで認証して参加を申請します。招待リンクが転送されても、承認前は記録を閲覧・登録できません。</p>
+      </li>
+      <li data-auth-scene="approve" data-visitor="利用できる" data-app="承認済み" data-provider="待機" data-admin="承認する" data-visitor-route="reverse" data-admin-route="forward">
+        <strong>承認すると利用できる</strong>
+        <p>管理者1人が参加対象を確認して承認します。承認済みの利用者が開くと、doukin がセッションを発行します。</p>
+      </li>
+      <li data-auth-scene="return" data-visitor="再認証なし" data-app="ログイン中" data-provider="通信なし" data-admin="操作なし" data-visitor-route="forward">
+        <strong>ログインしたまま開く</strong>
+        <p>同じブラウザで doukin のセッションが有効なら、外部認証を通さずに使えます。</p>
+      </li>
+      <li data-auth-scene="device" data-visitor="別の端末" data-app="同じ会員" data-provider="再び認証" data-admin="操作なし" data-visitor-route="forward" data-provider-route="exchange">
+        <strong>別端末でも同じ履歴に戻る</strong>
+        <p>別端末では、同じ外部アカウントで認証します。doukin は同じ会員の履歴を表示し、その端末にセッションを発行します。</p>
+      </li>
+      <li data-auth-scene="stop" data-visitor="利用不可" data-app="全端末失効" data-provider="認証は可能" data-admin="利用を停止" data-visitor-route="blocked" data-admin-route="forward">
+        <strong>停止すると全端末から利用できなくなる</strong>
+        <p>管理者が停止すると、doukin は全端末のセッションを失効させます。外部認証に成功しても停止中は利用できません。</p>
+      </li>
+    </ol>
+    <p class="auth-scene-announcement" aria-live="polite"></p>
+    <figcaption>利用者ができることは、doukin の会員状態とセッションで決まります。</figcaption>
+  </figure>
+  <p>ログイン状態（セッション）の無操作時の期限と最長保持期間は検討項目です。</p>
+  <h3>ログインと会員管理の構成図</h3>
+  <figure class="proposal-architecture">
+    <picture>
+      <source srcset="assets/proposal-auth-architecture-dark.png" media="(prefers-color-scheme: dark)">
+      <img class="stack-image" src="assets/proposal-auth-architecture.png" width="1000" height="540" alt="利用者は外部認証サービスで認証し、doukin が認証結果と会員状態を確認してセッションを発行する。管理者は doukin で招待・承認・利用停止を行う。">
+    </picture>
+    <figcaption>外部事業者がアカウントを認証し、doukin が参加資格とログイン状態を管理します。<a href="assets/proposal-auth-architecture.png">構成図を拡大</a></figcaption>
+  </figure>
+</section>
+
+<section class="chapter">
   <h2 id="scope">参加対象と権限</h2>
   <div class="cards">
     <article class="card">
@@ -17,30 +111,6 @@
     </article>
   </div>
   <p>「同期」の範囲は厳密に定義せず、管理者が招待と承認の段階で参加対象を確認します。招待権限を絞る目的は利用者数の把握と費用の管理です。基盤側の利用上限や課金制限は別に確認し、人数増加に伴う費用を制御できる場合はメンバーへの権限付与も検討します。</p>
-</section>
-
-<section class="chapter">
-  <h2 id="journey">招待から日常利用まで</h2>
-  <figure class="diagram">
-    <ol>
-      <li><div class="diagram-icon" aria-hidden="true">1</div><strong>招待する</strong><span>管理者が招待を渡す</span></li>
-      <li><div class="diagram-icon" aria-hidden="true">2</div><strong>参加を申請する</strong><span>利用者が個人アカウントで認証する</span></li>
-      <li><div class="diagram-icon" aria-hidden="true">3</div><strong>承認する</strong><span>管理者が参加対象を確認する</span></li>
-      <li><div class="diagram-icon" aria-hidden="true">4</div><strong>利用を始める</strong><span>doukin が会員として利用を許可する</span></li>
-    </ol>
-    <figcaption>招待リンクが転送されたり、別の相手に届いたりしても、承認前は記録の閲覧や登録を許可しません。</figcaption>
-  </figure>
-  <p>承認済みの利用者には、doukin がログイン状態（セッション）を発行します。同じブラウザでは、セッションが有効な間はそのまま使えます。別の端末やブラウザでも、同じ外部アカウントでログインすれば同じ履歴を使えます。無操作時の期限と最長保持期間は検討項目です。</p>
-  <details>
-    <summary>ログインの役割分担を図で見る</summary>
-    <figure class="proposal-architecture">
-      <picture>
-        <source srcset="assets/proposal-auth-architecture-dark.png" media="(prefers-color-scheme: dark)">
-        <img class="stack-image" src="assets/proposal-auth-architecture.png" width="1000" height="540" alt="利用者は外部認証サービスで認証し、doukin が認証結果と会員状態を確認してセッションを発行する。管理者は doukin で招待・承認・利用停止を行う。">
-      </picture>
-      <figcaption>外部事業者がアカウントを認証し、doukin が参加資格とログイン状態を管理します。</figcaption>
-    </figure>
-  </details>
 </section>
 
 <section class="chapter">
