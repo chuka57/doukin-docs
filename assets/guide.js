@@ -82,3 +82,41 @@ if (form) {
   }));
   calculate();
 }
+
+const authWalkthrough = document.querySelector('[data-auth-walkthrough]');
+if (authWalkthrough) {
+  const controls = authWalkthrough.querySelector('.auth-step-controls');
+  const buttons = Array.from(controls.querySelectorAll('[data-auth-step]'));
+  const scenes = Array.from(authWalkthrough.querySelectorAll('[data-auth-scene]'));
+  const map = authWalkthrough.querySelector('.auth-map');
+  const announcement = authWalkthrough.querySelector('.auth-scene-announcement');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function showAuthScene(key, announce) {
+    const scene = scenes.find(item => item.dataset.authScene === key);
+    if (!scene) return;
+    buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.authStep === key)));
+    scenes.forEach(item => { item.hidden = item !== scene; });
+    map.querySelectorAll('[data-auth-value]').forEach(label => {
+      label.textContent = scene.getAttribute('data-' + label.dataset.authValue);
+    });
+    map.querySelectorAll('[data-auth-route]').forEach(route => {
+      const direction = scene.getAttribute('data-' + route.dataset.authRoute);
+      route.dataset.direction = direction || '';
+      const signal = route.querySelector('.auth-map-signal');
+      signal.getAnimations?.().forEach(animation => animation.cancel());
+      if (direction && announce && !reducedMotion.matches) {
+        signal.animate?.([{strokeDashoffset: 1}, {strokeDashoffset: 0}], {duration: 420, easing: 'ease-out'});
+      }
+    });
+    if (announce) announcement.textContent = scene.innerText.trim();
+  }
+
+  controls.addEventListener('click', event => {
+    const button = event.target.closest('button[data-auth-step]');
+    if (button?.getAttribute('aria-pressed') === 'false') showAuthScene(button.dataset.authStep, true);
+  });
+  showAuthScene(buttons[0].dataset.authStep, false);
+  controls.hidden = false;
+  map.hidden = false;
+}
