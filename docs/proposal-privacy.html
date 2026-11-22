@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="記録は登録のたびに共有範囲を選び、体重は別に設定する案です。">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; connect-src 'none'">
+<title>記録とプロフィールの公開範囲の提案 | doukin の検討ノート</title><link rel="icon" type="image/svg+xml" href="assets/guide.svg"><link rel="stylesheet" href="assets/guide.css"><script src="assets/guide.js" defer></script></head>
+<body class="privacy-proposal"><a class="skip" href="#main">本文へすすむ</a>
+<header class="mobile-head"><a href="index.html">doukin <span>の検討ノート</span></a><button id="menu-button" type="button" aria-controls="sidebar" aria-expanded="false">目次をひらく</button></header>
+<aside class="sidebar" id="sidebar"><a class="brand" href="index.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6c2 0 2 1 2 1s0-1 2-1h6v14h-6c-2 0-2 1-2 1s0-1-2-1H4zM12 6v14M7 9h2M15 9h2M7 12h2M15 12h2"/></svg><span>doukin<small>みんなで選ぶ、技術の手引き</small></span></a>
+<p class="edition"><a href="history.html#version-0-7">資料 v0.7</a> / 調査・検討用</p><nav aria-label="資料全体の目次"><div class="nav-group"><p>はじめに</p><a href="index.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6c2 0 2 1 2 1s0-1 2-1h6v14h-6c-2 0-2 1-2 1s0-1-2-1H4zM12 6v14M7 9h2M15 9h2M7 12h2M15 12h2"/></svg><span>はじめに</span></a><a href="compare.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2zM9 3v16M15 5v16"/></svg><span>構成案を見くらべる</span></a><a href="overall-spec.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2zM9 3v16M15 5v16"/></svg><span>全体設計案（要約）</span></a><a href="proposal-mvp.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 6h6a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h6"/></svg><span>MVP機能の提案</span></a><a href="proposal-privacy.html" aria-current="page"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v5c0 5-8 10-8 10S4 16 4 11V6zM8 12l3 3 5-6"/></svg><span>記録・プロフィールの公開範囲の提案</span></a></div><div class="nav-group"><p>テーマから調べる</p><a href="auth.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-1 5 3-3"/></svg><span>認証・招待・復旧</span></a><a href="privacy.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v5c0 5-8 10-8 10S4 16 4 11V6zM8 12l3 3 5-6"/></svg><span>公開範囲・権限</span></a><a href="platform.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a5 5 0 1 1 0-10 6 6 0 0 1 11-1 5.5 5.5 0 0 1 0 11z"/></svg><span>技術スタック・配信</span></a><a href="data.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 4 16 4 16 0V6M4 12c0 4 16 4 16 0"/></svg><span>データ・画像・復元</span></a><a href="cost.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 12h2m4 0h2M8 16h2m4 0h2"/></svg><span>無料枠・費用</span></a><a href="calculator.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 12h2m4 0h2M8 16h2m4 0h2"/></svg><span>利用量の計算機</span></a></div><div class="nav-group"><p>追加調査</p><a href="minimization.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v5c0 5-8 10-8 10S4 16 4 11V6zM8 12l3 3 5-6"/></svg><span>個人との紐付きを減らす</span></a><a href="sessions.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-1 5 3-3"/></svg><span>ログインを保持する</span></a><a href="workers-hono.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a5 5 0 1 1 0-10 6 6 0 0 1 11-1 5.5 5.5 0 0 1 0 11z"/></svg><span>Workers＋Hono入門</span></a></div><div class="nav-group"><p>構成案をくわしく</p><a href="plan-n1.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-1 5 3-3"/></svg><span>N1 パスキー</span></a><a href="plan-n2.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3"/></svg><span>N2 ユーザー名</span></a><a href="plan-p1.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3"/></svg><span>P1 個人OAuth</span></a><a href="plan-p2.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg><span>P2 個人メール</span></a><a href="plan-f1.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a5 5 0 1 1 0-10 6 6 0 0 1 11-1 5.5 5.5 0 0 1 0 11z"/></svg><span>F1 Firebase</span></a></div><div class="nav-group"><p>相談と資料のこと</p><a href="workflow.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 6h6a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h6"/></svg><span>検討の進め方</span></a><a href="sharing.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="5" r="3"/><circle cx="18" cy="19" r="3"/><path d="m9 10 6-4M9 14l6 3"/></svg><span>資料の共有・更新</span></a><a href="sources.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6c2 0 2 1 2 1s0-1 2-1h6v14h-6c-2 0-2 1-2 1s0-1-2-1H4zM12 6v14M7 9h2M15 9h2M7 12h2M15 12h2"/></svg><span>出典・用語・レビュー</span></a><a href="proposal-auth.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-1 5 3-3"/></svg><span>参加・認証の仕様例</span></a><a href="history.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6c2 0 2 1 2 1s0-1 2-1h6v14h-6c-2 0-2 1-2 1s0-1-2-1H4zM12 6v14M7 9h2M15 9h2M7 12h2M15 12h2"/></svg><span>改訂履歴</span></a></div></nav>
+<div class="side-note">一度にぜんぶ読まなくて大丈夫。<br>気になるところからどうぞ。</div></aside>
+<main id="main"><div class="topline"><a href="index.html">検討ノート</a><span>／ 記録・プロフィールの公開範囲の提案</span><span class="status">調査・検討用</span></div>
+<header class="hero"><div><p class="eyebrow">個人提案</p><h1>記録とプロフィールの公開範囲の提案</h1><p class="intro">記録は登録のたびに共有範囲を選び、体重は別に設定する案です。</p><div class="meta"><span>チームへの提案</span><a class="revision-link" href="history.html#version-0-7">資料 v0.7 · 改訂 2026-11-22</a></div></div>
+<img class="mascot" src="assets/guide.svg" width="220" height="190" alt="" aria-hidden="true"></header>
+<figure class="privacy-figure privacy-registration">
+  <div class="privacy-origin">トレーニング記録を保存</div>
+  <div class="privacy-branches">
+    <div class="privacy-option">
+      <strong>共有で登録</strong>
+      <span>本人と閲覧資格のある同期に表示</span>
+    </div>
+    <div class="privacy-option privacy-private">
+      <strong>非公開で登録</strong>
+      <span>記録の内容は本人だけに表示</span>
+    </div>
+  </div>
+  <figcaption>2つの登録ボタンから選び、記録の保存と公開範囲の指定を一度に済ませる案です。</figcaption>
+</figure><aside class="scope-note" aria-label="資料の位置づけ">公開用の調査・検討資料です。推奨や数値は比較のための提案で、アプリの確定事項・採用結果・実運用の記録は掲載しません。</aside>
+<details class="page-toc"><summary>このページの目次</summary><nav class="on-page" aria-label="このページの目次"><a href="#registration">登録するたびに共有範囲を選ぶ</a><a href="#reshare">共有を解除しても応援を残す</a><a href="#profile">基本プロフィールと体重の公開設定を分ける</a><a href="#permissions">利用者ごとにできる操作</a><a href="#deletion">記録の削除と退会で消すデータ</a><a href="#assumptions">前提・仮定</a></nav></details>
+
+<section class="chapter">
+  <h2 id="registration">登録するたびに共有範囲を選ぶ</h2>
+  <p>公開範囲は記録ごとに選び、初期値は設けません。</p>
+  <h3>非公開記録の存在・件数はチームで相談</h3>
+  <div class="privacy-comparison">
+    <div><strong>同期に見える集計から除く</strong><p>議論で出た案です。内容・存在・件数を同期から隠します。</p></div>
+    <div><strong>全体集計に限って含める</strong><p>個別の記録や本人が分からない集計だけに含める案です。</p></div>
+  </div>
+  <p>少人数や短い期間の集計から、誰が記録したか推測できるかを確認したいです。</p>
+</section>
+
+<section class="chapter">
+  <h2 id="reshare">共有を解除しても応援を残す</h2>
+  <figure class="privacy-figure">
+    <ol class="privacy-states">
+      <li>
+        <h3>共有中</h3>
+        <dl><dt>保存データ</dt><dd>記録と応援</dd><dt>同期からの見え方</dt><dd>記録と応援が見える</dd></dl>
+      </li>
+      <li class="privacy-private">
+        <h3>共有を解除</h3>
+        <dl><dt>保存データ</dt><dd>記録と応援を保持</dd><dt>同期からの見え方</dt><dd>一覧・詳細・応援表示に出ない</dd></dl>
+      </li>
+      <li>
+        <h3>再共有する</h3>
+        <dl><dt>保存データ</dt><dd>記録と以前の応援</dd><dt>同期からの見え方</dt><dd>以前の応援も見える</dd></dl>
+      </li>
+    </ol>
+    <figcaption>非公開の間も応援を保持し、本人が再共有すると記録と一緒に表示する案です。</figcaption>
+  </figure>
+  <p>同期に見える全体集計への反映は、<a href="#registration">非公開記録の集計方針</a>に合わせます。</p>
+</section>
+
+<section class="chapter">
+  <h2 id="profile">基本プロフィールと体重の公開設定を分ける</h2>
+  <figure class="privacy-figure">
+    <div class="privacy-comparison">
+      <div><strong>基本プロフィール</strong><p>表示名・アイコンなど</p><p>項目や画面ごとの見え方は要相談</p></div>
+      <div class="privacy-private"><strong>体重・体重履歴</strong><p>体重機能を入れる場合</p><p>初期値は非公開</p></div>
+    </div>
+    <figcaption>基本情報と体重は別々に設定します。記録を共有してもプロフィールの設定は変わりません。</figcaption>
+  </figure>
+  <p>プロフィールを一括で切り替える案も出ています。基本情報をどの画面に出し、どこまで項目別に設定できるようにするかは、画面例を見ながら相談したいです。</p>
+</section>
+
+<section class="chapter">
+  <h2 id="permissions">利用者ごとにできる操作</h2>
+  <p>管理者にもアプリ上では一般の同期と同じ公開設定を適用したいです。本人からデータの訂正などの依頼があった場合は、権限を絞った保守用ツールやDB作業で対応する方法を候補にします。誰が本人確認を行い、どこまで操作できるかは保守手順を検討する際に決めます。</p>
+  <div class="table-wrap privacy-permissions">
+    <table role="table">
+      <caption>通常のアプリ画面での権限案</caption>
+      <thead role="rowgroup">
+        <tr role="row"><th scope="col" role="columnheader">利用者</th><th scope="col" role="columnheader">閲覧</th><th scope="col" role="columnheader">作成</th><th scope="col" role="columnheader">更新</th><th scope="col" role="columnheader">削除</th></tr>
+      </thead>
+      <tbody role="rowgroup">
+        <tr role="row">
+          <th scope="row" role="rowheader">本人</th>
+          <td role="cell"><span aria-hidden="true">閲覧</span>自分の記録・プロフィール</td>
+          <td role="cell"><span aria-hidden="true">作成</span>自分の記録・プロフィール</td>
+          <td role="cell"><span aria-hidden="true">更新</span>自分の内容と公開範囲</td>
+          <td role="cell"><span aria-hidden="true">削除</span>自分の記録と<a href="#deletion">退会時の対象データ</a></td>
+        </tr>
+        <tr role="row">
+          <th scope="row" role="rowheader">閲覧資格のある同期</th>
+          <td role="cell"><span aria-hidden="true">閲覧</span>共有された記録と公開設定で許可されたプロフィール</td>
+          <td role="cell"><span aria-hidden="true">作成</span>共有記録に自分の応援を付ける</td>
+          <td role="cell"><span aria-hidden="true">更新</span>他人の記録・プロフィールは変更不可</td>
+          <td role="cell"><span aria-hidden="true">削除</span>他人の記録・プロフィールは削除不可</td>
+        </tr>
+        <tr role="row"><th scope="row" role="rowheader">管理者</th><td role="cell" colspan="4">本人または閲覧資格のある同期と同じ権限</td></tr>
+        <tr role="row"><th scope="row" role="rowheader">利用資格のない人</th><td role="cell" colspan="4">閲覧・作成・更新・削除はすべて不可</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="chapter">
+  <h2 id="deletion">記録の削除と退会で消すデータ</h2>
+  <ul class="plain-list">
+    <li><strong>記録の削除。</strong> 本人が記録を削除したら、その記録と付いていた応援を削除し、集計からも除きます。</li>
+    <li><strong>退会。</strong> 本人のアカウント・プロフィール・体重履歴、すべての記録とそれらに付いた応援、本人がほかの人の記録に付けた応援を削除します。集計にも削除を反映し、ほかの人の記録・プロフィールは保持します。</li>
+    <li><strong>バックアップ。</strong> 削除対象のデータが既存のバックアップに残る場合は、個別に取り除かず、保存期間の満了に合わせて消す案です。保存期間は未定です。復元手順を検討するときは、削除・退会済みの状態を復元後にも反映できるか確認します。</li>
+  </ul>
+</section>
+
+<section class="chapter">
+  <h2 id="assumptions">前提・仮定</h2>
+  <ul class="plain-list">
+    <li>本人と閲覧資格のある同期をアプリで識別できると仮定します。対象者の範囲、招待、認証、資格を止める方法は参加・認証のテーマで検討します。</li>
+    <li>体重を記録する機能を作る場合を想定しています。体重入力・履歴をMVPに含めるか、応援の種類や通知をどうするかはMVPのテーマで検討します。</li>
+    <li>データベース、バックアップ方法・保存期間、アプリ外の保守手順は未定です。まず共有・非公開・削除の操作で何が見えるかをチームで確認したいです。</li>
+  </ul>
+</section>
+
+<nav class="related" aria-label="関連するページ"><p class="eyebrow">つづきは、こちらから</p><div><a class="next-link" href="privacy.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v5c0 5-8 10-8 10S4 16 4 11V6zM8 12l3 3 5-6"/></svg><span>公開範囲・権限</span><span aria-hidden="true">↗</span></a><a class="next-link" href="proposal-mvp.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 6h6a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h6"/></svg><span>MVP機能の提案</span><span aria-hidden="true">↗</span></a><a class="next-link" href="proposal-auth.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="4"/><path d="m11 12 8 8m-4-4 3-3m-1 5 3-3"/></svg><span>参加・認証の仕様例</span><span aria-hidden="true">↗</span></a><a class="next-link" href="data.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 4 16 4 16 0V6M4 12c0 4 16 4 16 0"/></svg><span>データ・画像・復元</span><span aria-hidden="true">↗</span></a></div></nav>
+<footer>doukin の検討ノート · 公開用の調査・検討資料<br><a href="history.html#version-0-7">資料 v0.7 · 改訂履歴</a> <span>／</span> <a href="sources.html">出典・用語・レビュー記録</a> <span>／</span> <a href="index.html">表紙にもどる</a></footer></main></body></html>
