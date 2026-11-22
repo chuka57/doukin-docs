@@ -1,0 +1,180 @@
+<div class="auth-proposal">
+<aside class="note green">
+  <div><strong>管理者が招待・承認し、利用者は個人アカウントでログインする</strong>
+  <p>ログインの第一候補は外部認証（OAuth／OIDC）です。参加には管理者の承認が必要です。doukin は認証用の識別子を保存し、氏名・メールアドレス・電話番号は認証のために保存しません。</p></div>
+</aside>
+
+<section class="chapter">
+  <h2 id="journey">招待から利用停止まで</h2>
+  <figure class="auth-walkthrough" data-auth-walkthrough>
+    <div class="auth-step-controls" role="group" aria-label="図で見る場面" hidden>
+      <button type="button" data-auth-step="invite" aria-pressed="false" aria-controls="auth-scenes">招待</button>
+      <button type="button" data-auth-step="apply" aria-pressed="false" aria-controls="auth-scenes">参加申請</button>
+      <button type="button" data-auth-step="approve" aria-pressed="false" aria-controls="auth-scenes">管理者の<wbr>承認</button>
+      <button type="button" data-auth-step="return" aria-pressed="false" aria-controls="auth-scenes">同じ端末で<wbr>再訪</button>
+      <button type="button" data-auth-step="device" aria-pressed="false" aria-controls="auth-scenes">別端末で<wbr>ログイン</button>
+      <button type="button" data-auth-step="stop" aria-pressed="false" aria-controls="auth-scenes">利用停止</button>
+    </div>
+    <div class="auth-map" aria-hidden="true" hidden>
+      <div class="auth-map-node auth-map-visitor">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M10 17h4"/></svg>
+        <span>利用者</span>
+        <strong data-auth-value="visitor"></strong>
+      </div>
+      <svg class="auth-map-route auth-map-visitor-route" data-auth-route="visitor-route" viewBox="0 0 44 24" preserveAspectRatio="none" aria-hidden="true">
+        <path class="auth-map-track" d="M3 12H40"/>
+        <path class="auth-map-signal" pathLength="1" d="M3 12H40"/>
+        <path class="auth-map-tip" d="m35 7 5 5-5 5"/>
+        <path class="auth-map-return" d="m8 7-5 5 5 5"/>
+        <path class="auth-map-cross" d="m18 8 8 8m0-8-8 8"/>
+      </svg>
+      <div class="auth-map-node auth-map-app">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18m-13 5h8"/></svg>
+        <span>doukin</span>
+        <strong data-auth-value="app"></strong>
+      </div>
+      <svg class="auth-map-route auth-map-provider-route" data-auth-route="provider-route" viewBox="0 0 44 24" preserveAspectRatio="none" aria-hidden="true">
+        <path class="auth-map-track" d="M3 12H40"/>
+        <path class="auth-map-signal" pathLength="1" d="M3 12H40"/>
+        <path class="auth-map-tip" d="m35 7 5 5-5 5"/>
+        <path class="auth-map-return" d="m8 7-5 5 5 5"/>
+        <path class="auth-map-cross" d="m18 8 8 8m0-8-8 8"/>
+      </svg>
+      <div class="auth-map-node auth-map-provider">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v2"/></svg>
+        <span>外部認証</span>
+        <strong data-auth-value="provider"></strong>
+      </div>
+      <svg class="auth-map-route auth-map-admin-route" data-auth-route="admin-route" viewBox="0 0 44 24" preserveAspectRatio="none" aria-hidden="true">
+        <path class="auth-map-track" d="M3 12H40"/>
+        <path class="auth-map-signal" pathLength="1" d="M3 12H40"/>
+        <path class="auth-map-tip" d="m35 7 5 5-5 5"/>
+        <path class="auth-map-return" d="m8 7-5 5 5 5"/>
+        <path class="auth-map-cross" d="m18 8 8 8m0-8-8 8"/>
+      </svg>
+      <div class="auth-map-node auth-map-admin">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
+        <span>管理者</span>
+        <strong data-auth-value="admin"></strong>
+      </div>
+    </div>
+    <ol class="auth-scenes" id="auth-scenes">
+      <li data-auth-scene="invite" data-visitor="申請前" data-app="招待あり" data-provider="待機" data-admin="招待を発行" data-visitor-route="forward" data-admin-route="forward">
+        <strong>招待リンクを開く</strong>
+        <p>管理者が招待を発行します。招待を受け取った人は参加申請へ進めます。</p>
+      </li>
+      <li data-auth-scene="apply" data-visitor="認証済み" data-app="承認待ち" data-provider="認証する" data-admin="申請を確認" data-visitor-route="forward" data-provider-route="exchange">
+        <strong>認証後も承認を待つ</strong>
+        <p>個人アカウントで認証して参加を申請します。招待リンクが転送されても、承認前は記録を閲覧・登録できません。</p>
+      </li>
+      <li data-auth-scene="approve" data-visitor="利用できる" data-app="承認済み" data-provider="待機" data-admin="承認する" data-visitor-route="reverse" data-admin-route="forward">
+        <strong>承認すると利用できる</strong>
+        <p>管理者1人が参加対象を確認して承認します。承認済みの利用者が開くと、doukin がセッションを発行します。</p>
+      </li>
+      <li data-auth-scene="return" data-visitor="再認証なし" data-app="ログイン中" data-provider="通信なし" data-admin="操作なし" data-visitor-route="forward">
+        <strong>ログインしたまま開く</strong>
+        <p>同じブラウザで doukin のセッションが有効なら、外部認証を通さずに使えます。</p>
+      </li>
+      <li data-auth-scene="device" data-visitor="別の端末" data-app="同じ会員" data-provider="再び認証" data-admin="操作なし" data-visitor-route="forward" data-provider-route="exchange">
+        <strong>別端末でも同じ履歴に戻る</strong>
+        <p>別端末では、同じ外部アカウントで認証します。doukin は同じ会員の履歴を表示し、その端末にセッションを発行します。</p>
+      </li>
+      <li data-auth-scene="stop" data-visitor="利用不可" data-app="全端末失効" data-provider="認証は可能" data-admin="利用を停止" data-visitor-route="blocked" data-admin-route="forward">
+        <strong>停止すると全端末から利用できなくなる</strong>
+        <p>管理者が停止すると、doukin は全端末のセッションを失効させます。外部認証に成功しても停止中は利用できません。</p>
+      </li>
+    </ol>
+    <p class="auth-scene-announcement" aria-live="polite"></p>
+    <figcaption>利用者ができることは、doukin の会員状態とセッションで決まります。</figcaption>
+  </figure>
+  <p>ログイン状態（セッション）の無操作時の期限と最長保持期間は検討項目です。</p>
+  <h3>ログインと会員管理の構成図</h3>
+  <figure class="proposal-architecture">
+    <picture>
+      <source srcset="assets/proposal-auth-architecture-dark.png" media="(prefers-color-scheme: dark)">
+      <img class="stack-image" src="assets/proposal-auth-architecture.png" width="1000" height="540" alt="利用者は外部認証サービスで認証し、doukin が認証結果と会員状態を確認してセッションを発行する。管理者は doukin で招待・承認・利用停止を行う。">
+    </picture>
+    <figcaption>外部事業者がアカウントを認証し、doukin が参加資格とログイン状態を管理します。<a href="assets/proposal-auth-architecture.png">構成図を拡大</a></figcaption>
+  </figure>
+</section>
+
+<section class="chapter">
+  <h2 id="scope">参加対象と権限</h2>
+  <div class="cards">
+    <article class="card">
+      <h3>管理者</h3>
+      <p>立ち上げ時は初期メンバー3人が管理者を務める想定です。招待も承認も管理者1人の判断で行えます。</p>
+    </article>
+    <article class="card">
+      <h3>メンバー</h3>
+      <p>新規参加者は承認後にメンバーになります。当初はメンバーに招待・承認の権限を付けません。</p>
+    </article>
+  </div>
+  <p>「同期」の範囲は厳密に定義せず、管理者が招待と承認の段階で参加対象を確認します。招待権限を絞る目的は利用者数の把握と費用の管理です。基盤側の利用上限や課金制限は別に確認し、人数増加に伴う費用を制御できる場合はメンバーへの権限付与も検討します。</p>
+</section>
+
+<section class="chapter">
+  <h2 id="information">認証時に受け取る情報と保存する情報</h2>
+  <div class="cards">
+    <article class="card">
+      <h3>認証事業者とのやり取り</h3>
+      <p>ログイン時に認証事業者へ認証リクエストを送ります。事業者は、どのアカウントで doukin へのログインが要求されたかを把握できます。事業者がすでに持つ情報は、その事業者が管理します。</p>
+      <p>設定によって返るメールや氏名などの一時受信は許容します。要求する項目はできる限り絞ります。</p>
+    </article>
+    <article class="card">
+      <h3>doukin が保持する情報</h3>
+      <p>アプリ用の会員ID、会員状態、認証事業者とアカウントを識別する情報、ログイン状態に必要な情報を保持します。OIDC では発行元（<code>iss</code>）とユーザー識別子（<code>sub</code>）を会員IDに紐づけます。</p>
+      <p>認証時に受け取ったメール・氏名などはDBやログに保存しません。認証を仲介するサービスを使う場合は、そちらの保存内容も確認します。</p>
+    </article>
+  </div>
+</section>
+
+<section class="chapter">
+  <h2 id="comparison">第一候補と代替案</h2>
+  <div class="cards">
+    <article class="card">
+      <h3>第一候補　外部認証（OAuth／OIDC）</h3>
+      <p>既存の個人アカウントを使え、機種変更後も同じアカウントで入れます。アカウント自体の復旧は利用者と認証事業者が担います。既存のログイン機能を直接使う場合と認証管理サービスを追加する場合の費用を比べます。アプリの稼働費用は別に見積もります。</p>
+    </article>
+    <article class="card">
+      <h3>代替案　doukin 専用のパスキー</h3>
+      <p>ログイン用の外部アカウントへの依存と、認証時に受け取る属性を減らせます。利用者は同期や予備のパスキーで別端末から入れます。すべて失った場合の復旧手順と、運営が本人確認を担う場合の負担を見積もる必要があります。</p>
+    </article>
+  </div>
+</section>
+
+<section class="chapter">
+  <h2 id="screens">画面に表示する案内</h2>
+  <div class="cards proposal-screens">
+    <article class="card"><h3>参加する</h3><p>「個人アカウントでログインして、参加を申請してください。」</p></article>
+    <article class="card"><h3>承認を待つ</h3><p>「参加申請を受け付けました。管理者が承認すると利用できます。」</p></article>
+    <article class="card"><h3>ログインできない</h3><p>「登録したアカウントの認証事業者で、アカウントの復旧手続きを行ってください。」</p></article>
+  </div>
+</section>
+
+<section class="chapter">
+  <h2 id="handoff">復旧・退会・利用停止</h2>
+  <ul>
+    <li><strong>復旧。</strong> 利用者は認証事業者の手続きで元の外部アカウントを復旧し、同じアカウントでログインします。元のアカウントに戻れない場合に、旧会員データをどの条件で引き継げるかは検討項目です。</li>
+    <li><strong>退会。</strong> 本人が退会できます。退会した会員の全端末でログイン状態を失効させます。記録やバックアップの削除範囲・時期は別途決めます。</li>
+    <li><strong>利用停止。</strong> 管理者が会員を停止できます。全端末のログイン状態を失効させ、停止中は外部認証に成功しても利用を許可しません。</li>
+  </ul>
+</section>
+
+<section class="chapter">
+  <h2 id="questions">実装前の確認項目</h2>
+  <ul>
+    <li>認証事業者と、認証管理サービスを別に使うか。受信する項目とDB・ログ・仲介先に残る項目を確認する。</li>
+    <li>招待リンクの期限と取り消し、日常のログイン保持期間、退会後のデータの扱いを決める。</li>
+    <li>試作では承認前のアクセス拒否、同じブラウザでの再訪、別端末での履歴の引き継ぎ、退会・停止後の全端末失効を確認する。</li>
+  </ul>
+  <details>
+    <summary>認証方式の出典と関連資料</summary>
+    <ul>
+      <li><a href="https://openid.net/specs/openid-connect-core-1_0.html#ClaimStability">OpenID Connect Core の識別子仕様</a>と<a href="https://developers.google.com/identity/openid-connect/reference">Google の取得属性仕様</a>（確認日 2026-11-19）</li>
+      <li><a href="https://pages.nist.gov/800-63-4/sp800-63b/session/">NIST のセッション管理指針</a>と<a href="https://fidoalliance.org/passkeys/">FIDO Alliance のパスキー解説</a>（確認日 2026-11-19）</li>
+      <li>既存の検討資料は<a href="auth.html">認証方式</a>、<a href="minimization.html">情報の最小化</a>、<a href="sessions.html">ログインの保持</a>を参照。</li>
+    </ul>
+  </details>
+</section>
+</div>

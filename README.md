@@ -6,9 +6,17 @@
 
 メールをアプリで持たない条件を仮定すると、**N1（招待＋パスキー／Workers＋D1）を優先検証する案**を推奨します。認証保守の負担を抑え、個人OAuthを許容する条件なら**P1（Supabase）を第一代替**として比較します。初期非公開、写真を後にする、毎日の退避・費用監視等は検討用の運用例です。採用結果や確定要件を表しません。招待期限・復旧目標・監視しきい値等も提案値で、サービスの保証値とは異なります。
 
-全25ページで、共通の色・SVG・図解、テーマ間のリンク、折りたたみの補足、利用量の計算機を備えます。[追加調査・試作の例](docs/workflow.html#actions)と[改訂履歴](docs/history.html)から調査の内容を辿れます。
+全26ページで、共通の色・SVG・図解、テーマ間のリンク、折りたたみの補足、利用量の計算機を備えます。[追加調査・試作の例](docs/workflow.html#actions)と[改訂履歴](docs/history.html)から調査の内容を辿れます。
 
-[MVP機能の提案](docs/proposal-mvp.html)は、簡易記録・履歴コピー・テンプレート・応援・体重履歴の範囲を相談する資料です。原稿は `content/proposal-mvp.html`、ページ登録は `scripts/guide_proposal_mvp.py`。Discussion用概要は `content/proposal-mvp-discussion.md`、前提・未決事項は `content/proposal-mvp-handoff.md` に置きます。
+[MVP機能の提案](docs/proposal-mvp.html)は、公開範囲を選ぶワンタップ記録、セット別入力、絵文字の応援、プリセットアイコン、体重履歴の画面例と通知の工数比較をまとめた資料です。原稿は `content/proposal-mvp.html`、ページ登録は `scripts/guide_proposal_mvp.py`。Discussion用概要は `content/proposal-mvp-discussion.md`、前提・未決事項は `content/proposal-mvp-handoff.md` に置きます。
+
+## 参加・認証の仕様例
+
+[参加・認証の仕様例](docs/proposal-auth.html)は、管理者の招待・承認と外部認証（OAuth／OIDC）を組み合わせる検討例です。ログイン保持、退会・利用停止、保存する情報を、図と画面文言の例で示します。
+
+原稿は `content/proposal-auth.html`、登録は `scripts/guide_proposal_auth.py`。共有用概要は `content/proposal-auth-discussion.md`、引き継ぎは `content/proposal-auth-handoff.md` に置きます。構成図はstack-diagramテンプレートと同梱の汎用図形を使い、原稿 `content/proposal-auth-architecture.html` から、PlaywrightとChromiumを利用できる環境で `python scripts/render_auth_diagram.py` を実行すると明暗PNGを更新できます。通常のHTML生成に追加依存はありません。
+
+未投稿のローカル草案の版は、`content/revisions.json` の先頭に限り `pending_pr: true` と空の `pull_requests` を指定できます。PR作成後に実際の番号を記録し、`pending_pr` を削除して再生成します。架空のPR番号は記録しません。
 
 ## 推奨を統合した全体設計案
 
@@ -59,6 +67,16 @@
 | 資料の履歴 | `history.html`（版・改訂日・変更要約・関連PR） |
 
 ## 変更・生成する
+
+### AIエージェントで資料を作る
+
+日本語を推敲する `yomiyasu`、図解中心のHTMLを作る `visual-explainer`、技術ロゴ付き構成図を作る `stack-diagram` を [.agents/skills/](.agents/skills/README.md) に同梱しています。Codexはこの配置を読み込み、Claude Code向けには `.claude/skills/` から同じファイルを参照します。
+
+使い方・追加の実行環境・配布元・更新方法は [スキルの案内](.agents/skills/README.md) を参照してください。スキルを使う場合も、以下の原稿編集・HTML生成手順に従います。
+
+見た目は「既存の資料と並べて、自然に読めるように作る」を基本に、目次・案内キャラクター・雰囲気を引き継ぎます。図解や余白は内容に合わせて調整し、[AGENTS.md](AGENTS.md) の「HTML資料の作り方」を目安にしてください。
+
+### HTMLを生成する
 
 Python 3の標準ライブラリだけで生成できます。Pandocやアプリ本体の依存追加は不要です。
 
