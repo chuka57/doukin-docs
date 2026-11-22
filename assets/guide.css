@@ -261,3 +261,122 @@ details{border:1px solid var(--line);border-radius:14px;margin:15px 0;background
   .mvp-route li + li::before { content: "↓"; top: -29px; left: 0; }
   .mvp-profile { align-items: flex-start; flex-direction: column; }
 }
+
+.privacy-proposal .hero { padding-bottom: 20px; }
+.privacy-proposal .page-toc .on-page { margin: 0; padding: 0 14px 14px; border: 0; }
+.privacy-figure {
+  margin: 18px 0;
+  padding: clamp(14px, 3vw, 24px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.privacy-figure figcaption { margin-top: 14px; color: var(--muted); font-size: 14px; }
+.privacy-origin {
+  position: relative;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 5px 12px;
+  background: var(--sage);
+  color: var(--green);
+  font-weight: 700;
+  border-radius: 6px;
+}
+.privacy-origin::after, .privacy-option::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 50%;
+  width: 1px;
+  height: 12px;
+  background: var(--green);
+}
+.privacy-origin::after { top: 100%; }
+.privacy-branches, .privacy-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.privacy-branches { position: relative; gap: 0; padding-top: 24px; }
+.privacy-branches::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  inset-inline: 25%;
+  border-top: 1px solid var(--green);
+}
+.privacy-option { position: relative; margin-inline: 4px; padding: 10px; }
+.privacy-option::before { bottom: 100%; }
+.privacy-option, .privacy-comparison > div, .privacy-states > li {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.privacy-option:first-child { border-color: var(--green); background: var(--sage); }
+.privacy-proposal .privacy-private { border-color: var(--muted); border-style: dashed; }
+.privacy-option strong, .privacy-option span { display: block; }
+.privacy-option span, .privacy-comparison p { margin-top: 4px; color: var(--muted); font-size: 14px; }
+.privacy-comparison { margin: 10px 0; }
+.privacy-comparison > div, .privacy-states > li { padding: 14px; }
+.privacy-states {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.privacy-states > li { position: relative; }
+.privacy-states > li + li::before {
+  content: "→";
+  position: absolute;
+  top: 12px;
+  inset-inline-start: -23px;
+  color: var(--green);
+  font-weight: 700;
+}
+.privacy-states h3 { margin: 0 0 8px; }
+.privacy-states dl { margin: 0; }
+.privacy-states dt {
+  border-top: 1px solid var(--line);
+  margin-top: 6px;
+  padding-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.privacy-states dd { margin: 0; font-size: 14px; }
+.privacy-permissions td > span { display: none; }
+
+@media screen and (max-width: 760px) {
+  .privacy-proposal .hero { padding-top: 20px; padding-bottom: 14px; }
+  .privacy-registration { margin-top: 0; }
+  .privacy-proposal .chapter > h2 { position: relative; padding-inline-start: 20px; }
+  .privacy-proposal .chapter > h2::before { position: absolute; inset-inline-start: 0; top: 4px; margin: 0; }
+  .privacy-states { grid-template-columns: 1fr; gap: 25px; }
+  .privacy-states > li + li::before { content: "↓"; top: -25px; inset-inline-start: 14px; }
+  .privacy-permissions table, .privacy-permissions caption, .privacy-permissions tbody,
+  .privacy-permissions tr, .privacy-permissions th, .privacy-permissions td {
+    display: block;
+    min-width: 0;
+    width: 100%;
+  }
+  .privacy-permissions thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .privacy-permissions tbody th { background: var(--sage); color: var(--green); }
+  .privacy-permissions td > span {
+    display: inline-block;
+    min-width: 2.8em;
+    font-weight: 700;
+    color: var(--green);
+  }
+}
+
+@media (max-width: 560px) {
+  .privacy-comparison { grid-template-columns: 1fr; }
+  .privacy-option span, .privacy-figure figcaption { font-size: 13px; }
+}
