@@ -6,9 +6,11 @@
 
 メールをアプリで持たない条件を仮定すると、**N1（招待＋パスキー／Workers＋D1）を優先検証する案**を推奨します。認証保守の負担を抑え、個人OAuthを許容する条件なら**P1（Supabase）を第一代替**として比較します。初期非公開、写真を後にする、毎日の退避・費用監視等は検討用の運用例です。採用結果や確定要件を表しません。招待期限・復旧目標・監視しきい値等も提案値で、サービスの保証値とは異なります。
 
-全26ページで、共通の色・SVG・図解、テーマ間のリンク、折りたたみの補足、利用量の計算機を備えます。[追加調査・試作の例](docs/workflow.html#actions)と[改訂履歴](docs/history.html)から調査の内容を辿れます。
+全27ページで、共通の色・SVG・図解、テーマ間のリンク、折りたたみの補足、利用量の計算機を備えます。[追加調査・試作の例](docs/workflow.html#actions)と[改訂履歴](docs/history.html)から調査の内容を辿れます。
 
 [MVP機能の提案](docs/proposal-mvp.html)は、公開範囲を選ぶワンタップ記録、セット別入力、絵文字の応援、プリセットアイコン、体重履歴の画面例と通知の工数比較をまとめた資料です。原稿は `content/proposal-mvp.html`、ページ登録は `scripts/guide_proposal_mvp.py`。Discussion用概要は `content/proposal-mvp-discussion.md`、前提・未決事項は `content/proposal-mvp-handoff.md` に置きます。
+
+[記録とプロフィールの公開範囲の提案](docs/proposal-privacy.html)は、共有範囲を選ぶ登録操作、応援の扱い、プロフィールの公開設定、利用者ごとの権限、削除・退会をまとめた個人提案です。
 
 ## 参加・認証の仕様例
 

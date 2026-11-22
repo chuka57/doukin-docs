@@ -98,7 +98,7 @@ def make_pages(bibliography):
         '会員B：Aが共有した記録だけ見える。非公開の体重は直接APIを呼んでも読めない。',
         '未承認の人：ログインできても、共有データは読めない。',
         '失効済みの人：手元に古いCookieやJWTがあっても、決めた時間内に読めなくなる。') + details('PWAと画像も忘れずに','<p>端末に体重・認証情報・他人の記録を安易に永続キャッシュしない方針です。ログアウト後の表示、共有端末、オフラインの残存を確認。非公開の画像には認可付き配信や短い期限のURLを使い、公開バケットへ置かない設計を検討します。</p>'))
-    add('privacy','公開範囲・権限','何を共有し、<br>どこで権限を守る？','初期非公開と明示共有を推奨する理由、API・DBの設計案、退会時の失効を検証する観点です。',privacy,'shield',issue='Issue #3',kicker='02 / PRIVACY',related=('auth','data','workflow'))
+    add('privacy','公開範囲・権限','何を共有し、<br>どこで権限を守る？','初期非公開と明示共有を推奨する理由、API・DBの設計案、退会時の失効を検証する観点です。',privacy,'shield',issue='Issue #3',kicker='02 / PRIVACY',related=('proposal-privacy','auth','data','workflow'))
 
     platform = theme_guide('platform')
     platform += section('roles','アプリをつくる４つの部品',diagram([

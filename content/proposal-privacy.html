@@ -1,0 +1,108 @@
+<figure class="privacy-figure privacy-registration">
+  <div class="privacy-origin">トレーニング記録を保存</div>
+  <div class="privacy-branches">
+    <div class="privacy-option">
+      <strong>共有で登録</strong>
+      <span>本人と閲覧資格のある同期に表示</span>
+    </div>
+    <div class="privacy-option privacy-private">
+      <strong>非公開で登録</strong>
+      <span>記録の内容は本人だけに表示</span>
+    </div>
+  </div>
+  <figcaption>2つの登録ボタンから選び、記録の保存と公開範囲の指定を一度に済ませる案です。</figcaption>
+</figure>
+
+<section class="chapter">
+  <h2 id="registration">登録するたびに共有範囲を選ぶ</h2>
+  <p>公開範囲は記録ごとに選び、初期値は設けません。</p>
+  <h3>非公開記録の存在・件数はチームで相談</h3>
+  <div class="privacy-comparison">
+    <div><strong>同期に見える集計から除く</strong><p>議論で出た案です。内容・存在・件数を同期から隠します。</p></div>
+    <div><strong>全体集計に限って含める</strong><p>個別の記録や本人が分からない集計だけに含める案です。</p></div>
+  </div>
+  <p>少人数や短い期間の集計から、誰が記録したか推測できるかを確認したいです。</p>
+</section>
+
+<section class="chapter">
+  <h2 id="reshare">共有を解除しても応援を残す</h2>
+  <figure class="privacy-figure">
+    <ol class="privacy-states">
+      <li>
+        <h3>共有中</h3>
+        <dl><dt>保存データ</dt><dd>記録と応援</dd><dt>同期からの見え方</dt><dd>記録と応援が見える</dd></dl>
+      </li>
+      <li class="privacy-private">
+        <h3>共有を解除</h3>
+        <dl><dt>保存データ</dt><dd>記録と応援を保持</dd><dt>同期からの見え方</dt><dd>一覧・詳細・応援表示に出ない</dd></dl>
+      </li>
+      <li>
+        <h3>再共有する</h3>
+        <dl><dt>保存データ</dt><dd>記録と以前の応援</dd><dt>同期からの見え方</dt><dd>以前の応援も見える</dd></dl>
+      </li>
+    </ol>
+    <figcaption>非公開の間も応援を保持し、本人が再共有すると記録と一緒に表示する案です。</figcaption>
+  </figure>
+  <p>同期に見える全体集計への反映は、<a href="#registration">非公開記録の集計方針</a>に合わせます。</p>
+</section>
+
+<section class="chapter">
+  <h2 id="profile">基本プロフィールと体重の公開設定を分ける</h2>
+  <figure class="privacy-figure">
+    <div class="privacy-comparison">
+      <div><strong>基本プロフィール</strong><p>表示名・アイコンなど</p><p>項目や画面ごとの見え方は要相談</p></div>
+      <div class="privacy-private"><strong>体重・体重履歴</strong><p>体重機能を入れる場合</p><p>初期値は非公開</p></div>
+    </div>
+    <figcaption>基本情報と体重は別々に設定します。記録を共有してもプロフィールの設定は変わりません。</figcaption>
+  </figure>
+  <p>プロフィールを一括で切り替える案も出ています。基本情報をどの画面に出し、どこまで項目別に設定できるようにするかは、画面例を見ながら相談したいです。</p>
+</section>
+
+<section class="chapter">
+  <h2 id="permissions">利用者ごとにできる操作</h2>
+  <p>管理者にもアプリ上では一般の同期と同じ公開設定を適用したいです。本人からデータの訂正などの依頼があった場合は、権限を絞った保守用ツールやDB作業で対応する方法を候補にします。誰が本人確認を行い、どこまで操作できるかは保守手順を検討する際に決めます。</p>
+  <div class="table-wrap privacy-permissions">
+    <table role="table">
+      <caption>通常のアプリ画面での権限案</caption>
+      <thead role="rowgroup">
+        <tr role="row"><th scope="col" role="columnheader">利用者</th><th scope="col" role="columnheader">閲覧</th><th scope="col" role="columnheader">作成</th><th scope="col" role="columnheader">更新</th><th scope="col" role="columnheader">削除</th></tr>
+      </thead>
+      <tbody role="rowgroup">
+        <tr role="row">
+          <th scope="row" role="rowheader">本人</th>
+          <td role="cell"><span aria-hidden="true">閲覧</span>自分の記録・プロフィール</td>
+          <td role="cell"><span aria-hidden="true">作成</span>自分の記録・プロフィール</td>
+          <td role="cell"><span aria-hidden="true">更新</span>自分の内容と公開範囲</td>
+          <td role="cell"><span aria-hidden="true">削除</span>自分の記録と<a href="#deletion">退会時の対象データ</a></td>
+        </tr>
+        <tr role="row">
+          <th scope="row" role="rowheader">閲覧資格のある同期</th>
+          <td role="cell"><span aria-hidden="true">閲覧</span>共有された記録と公開設定で許可されたプロフィール</td>
+          <td role="cell"><span aria-hidden="true">作成</span>共有記録に自分の応援を付ける</td>
+          <td role="cell"><span aria-hidden="true">更新</span>他人の記録・プロフィールは変更不可</td>
+          <td role="cell"><span aria-hidden="true">削除</span>他人の記録・プロフィールは削除不可</td>
+        </tr>
+        <tr role="row"><th scope="row" role="rowheader">管理者</th><td role="cell" colspan="4">本人または閲覧資格のある同期と同じ権限</td></tr>
+        <tr role="row"><th scope="row" role="rowheader">利用資格のない人</th><td role="cell" colspan="4">閲覧・作成・更新・削除はすべて不可</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="chapter">
+  <h2 id="deletion">記録の削除と退会で消すデータ</h2>
+  <ul class="plain-list">
+    <li><strong>記録の削除。</strong> 本人が記録を削除したら、その記録と付いていた応援を削除し、集計からも除きます。</li>
+    <li><strong>退会。</strong> 本人のアカウント・プロフィール・体重履歴、すべての記録とそれらに付いた応援、本人がほかの人の記録に付けた応援を削除します。集計にも削除を反映し、ほかの人の記録・プロフィールは保持します。</li>
+    <li><strong>バックアップ。</strong> 削除対象のデータが既存のバックアップに残る場合は、個別に取り除かず、保存期間の満了に合わせて消す案です。保存期間は未定です。復元手順を検討するときは、削除・退会済みの状態を復元後にも反映できるか確認します。</li>
+  </ul>
+</section>
+
+<section class="chapter">
+  <h2 id="assumptions">前提・仮定</h2>
+  <ul class="plain-list">
+    <li>本人と閲覧資格のある同期をアプリで識別できると仮定します。対象者の範囲、招待、認証、資格を止める方法は参加・認証のテーマで検討します。</li>
+    <li>体重を記録する機能を作る場合を想定しています。体重入力・履歴をMVPに含めるか、応援の種類や通知をどうするかはMVPのテーマで検討します。</li>
+    <li>データベース、バックアップ方法・保存期間、アプリ外の保守手順は未定です。まず共有・非公開・削除の操作で何が見えるかをチームで確認したいです。</li>
+  </ul>
+</section>
